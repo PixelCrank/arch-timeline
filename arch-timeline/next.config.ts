@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'standalone',
+  experimental: {
+    // Disable turbopack to avoid Sanity-related build issues
+    turbo: undefined,
+  },
 };
 
 export default nextConfig;
