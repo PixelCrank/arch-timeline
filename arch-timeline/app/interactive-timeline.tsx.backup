@@ -1,0 +1,1442 @@
+'use client';
+
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Types
+type TimelineItem = {
+  id: string;
+  name: string;
+  start: number;
+  end: number;
+  type: 'macro' | 'child' | 'work' | 'figure';
+  parent?: string;
+  colorClass?: string;
+  region?: string;
+  architect?: string;
+  location?: string;
+  role?: string;
+  lifespan?: string;
+  description?: string;
+  traits?: string[];
+  coordinates?: { lat: number; lng: number };
+};
+
+// Utility functions
+const fmtYear = (year: number) => {
+  if (year < 0) return `${Math.abs(year)} BCE`;
+  return `${year} CE`;
+};
+
+// Data fetching and conversion
+async function fetchTimelineData() {
+  const projectId = '9i4jo80o';
+  const dataset = 'production';
+  const apiVersion = '2024-09-22';
+  const baseUrl = `https://${projectId}.api.sanity.io/v${apiVersion}/data/query/${dataset}`;
+  
+  const [macroRes, childRes, worksRes, figuresRes] = await Promise.all([
+    fetch(`${baseUrl}?query=${encodeURIComponent('*[_type == "macroMovement"]')}`),
+    fetch(`${baseUrl}?query=${encodeURIComponent('*[_type == "childMovement"]')}`),
+    fetch(`${baseUrl}?query=${encodeURIComponent('*[_type == "architecturalWork"]')}`),
+    fetch(`${baseUrl}?query=${encodeURIComponent('*[_type == "keyFigure"]')}`),
+  ]);
+  
+  const [macroData, childData, worksData, figuresData] = await Promise.all([
+    macroRes.json(),
+    childRes.json(),
+    worksRes.json(),
+    figuresRes.json(),
+  ]);
+  
+  return {
+    macroMovements: macroData.result || [],
+    childMovements: childData.result || [],
+    works: worksData.result || [],
+    figures: figuresData.result || [],
+  };
+}
+
+function convertToTimelineItems(data: any): TimelineItem[] {
+  const items: TimelineItem[] = [];
+  
+  // Create ID mappings
+  const macroIdToSlug: Record<string, string> = {};
+  const childIdToSlug: Record<string, string> = {};
+  
+  data.macroMovements.forEach((macro: any) => {
+    macroIdToSlug[macro._id] = macro.slug?.current || macro._id;
+  });
+  
+  data.childMovements.forEach((child: any) => {
+    childIdToSlug[child._id] = child.slug?.current || child._id;
+  });
+  
+  // Modern gradient colors for macro movements
+  const modernGradients = [
+    'bg-gradient-to-r from-orange-400 to-pink-400',
+    'bg-gradient-to-r from-pink-400 to-rose-400', 
+    'bg-gradient-to-r from-purple-400 to-pink-400',
+    'bg-gradient-to-r from-indigo-400 to-purple-400',
+    'bg-gradient-to-r from-blue-400 to-indigo-400',
+    'bg-gradient-to-r from-cyan-400 to-blue-400',
+    'bg-gradient-to-r from-teal-400 to-cyan-400',
+    'bg-gradient-to-r from-emerald-400 to-teal-400',
+    'bg-gradient-to-r from-green-400 to-emerald-400',
+    'bg-gradient-to-r from-lime-400 to-green-400',
+    'bg-gradient-to-r from-yellow-400 to-lime-400',
+    'bg-gradient-to-r from-amber-400 to-yellow-400',
+    'bg-gradient-to-r from-orange-400 to-amber-400',
+    'bg-gradient-to-r from-red-400 to-orange-400',
+    'bg-gradient-to-r from-rose-400 to-red-400'
+  ];
+
+  // Add macro movements with modern gradients
+  data.macroMovements.forEach((macro: any, index: number) => {
+    items.push({
+      id: macro.slug?.current || macro._id,
+      name: macro.name,
+      start: macro.startYear,
+      end: macro.endYear,
+      type: 'macro',
+      colorClass: modernGradients[index % modernGradients.length],
+    });
+  });
+  
+  // Add child movements
+  data.childMovements.forEach((child: any) => {
+    const parentSlug = macroIdToSlug[child.parentMovement?._ref] || child.parentMovement?.current;
+    items.push({
+      id: child.slug?.current || child._id,
+      name: child.name,
+      start: child.startYear,
+      end: child.endYear,
+      type: 'child',
+      parent: parentSlug,
+      region: child.region,
+      description: child.description,
+      traits: child.traits || [],
+      coordinates: child.region ? getCoordinatesForLocation(child.region) || undefined : undefined,
+      colorClass: 'bg-gradient-to-r from-yellow-400 to-orange-400',
+    });
+  });
+  
+  // Add works - parent should be the child movement they belong to
+  data.works.forEach((work: any) => {
+    const parentSlug = childIdToSlug[work.parentMovement?._ref] || work.parentMovement?.current;
+    items.push({
+      id: work.slug?.current || work._id,
+      name: work.name,
+      start: work.year,
+      end: work.year,
+      type: 'work',
+      parent: parentSlug, // This should be a child movement slug
+      architect: work.architect,
+      location: work.location,
+      coordinates: work.location ? getCoordinatesForLocation(work.location) || undefined : undefined,
+      colorClass: 'bg-gradient-to-r from-green-400 to-cyan-400',
+    });
+  });
+  
+  // Add figures - parent should be the child movement they belong to
+  data.figures.forEach((figure: any) => {
+    const parentSlug = childIdToSlug[figure.parentMovement?._ref] || figure.parentMovement?.current;
+    const birthYear = figure.birthYear || figure.startYear || 0;
+    const deathYear = figure.deathYear || figure.endYear || birthYear + 70;
+    
+    items.push({
+      id: figure.slug?.current || figure._id,
+      name: figure.name,
+      start: birthYear,
+      end: deathYear,
+      type: 'figure',
+      parent: parentSlug, // This should be a child movement slug
+      role: figure.role,
+      lifespan: `${fmtYear(birthYear)} - ${fmtYear(deathYear)}`,
+      coordinates: figure.location ? getCoordinatesForLocation(figure.location) || undefined : undefined,
+      colorClass: 'bg-gradient-to-r from-cyan-400 to-blue-400',
+    });
+  });
+  
+  return items;
+}
+
+// Function to get approximate coordinates for known locations
+function getCoordinatesForLocation(locationName: string): { lat: number; lng: number } | null {
+  const locationMap: Record<string, { lat: number; lng: number }> = {
+    // Egypt
+    'Luxor, Egypt': { lat: 25.6872, lng: 32.6396 },
+    'Giza, Egypt': { lat: 29.9792, lng: 31.1342 },
+    'Cairo, Egypt': { lat: 30.0444, lng: 31.2357 },
+    'Egypt': { lat: 26.8206, lng: 30.8025 },
+    
+    // Greece
+    'Athens, Greece': { lat: 37.9838, lng: 23.7275 },
+    'Greece': { lat: 39.0742, lng: 21.8243 },
+    'Delphi, Greece': { lat: 38.4824, lng: 22.5012 },
+    
+    // Italy
+    'Rome, Italy': { lat: 41.9028, lng: 12.4964 },
+    'Florence, Italy': { lat: 43.7696, lng: 11.2558 },
+    'Venice, Italy': { lat: 45.4408, lng: 12.3155 },
+    'Milan, Italy': { lat: 45.4642, lng: 9.1900 },
+    'Italy': { lat: 41.8719, lng: 12.5674 },
+    
+    // France
+    'Paris, France': { lat: 48.8566, lng: 2.3522 },
+    'Chartres, France': { lat: 48.4469, lng: 1.4896 },
+    'Reims, France': { lat: 49.2583, lng: 4.0317 },
+    'France': { lat: 46.2276, lng: 2.2137 },
+    
+    // England/UK
+    'London, England': { lat: 51.5074, lng: -0.1278 },
+    'Canterbury, England': { lat: 51.2802, lng: 1.0789 },
+    'England': { lat: 52.3555, lng: -1.1743 },
+    'London': { lat: 51.5074, lng: -0.1278 },
+    
+    // Spain
+    'Barcelona, Spain': { lat: 41.3851, lng: 2.1734 },
+    'Madrid, Spain': { lat: 40.4168, lng: -3.7038 },
+    'Spain': { lat: 40.4637, lng: -3.7492 },
+    
+    // Germany
+    'Berlin, Germany': { lat: 52.5200, lng: 13.4050 },
+    'Cologne, Germany': { lat: 50.9375, lng: 6.9603 },
+    'Germany': { lat: 51.1657, lng: 10.4515 },
+    
+    // Turkey/Byzantine
+    'Istanbul, Turkey': { lat: 41.0082, lng: 28.9784 },
+    'Constantinople': { lat: 41.0082, lng: 28.9784 },
+    'Turkey': { lat: 38.9637, lng: 35.2433 },
+    
+    // India
+    'Agra, India': { lat: 27.1767, lng: 78.0081 },
+    'Delhi, India': { lat: 28.7041, lng: 77.1025 },
+    'India': { lat: 20.5937, lng: 78.9629 },
+    
+    // USA
+    'New York, USA': { lat: 40.7128, lng: -74.0060 },
+    'Chicago, USA': { lat: 41.8781, lng: -87.6298 },
+    'New York': { lat: 40.7128, lng: -74.0060 },
+    'Chicago': { lat: 41.8781, lng: -87.6298 },
+    
+    // Default regions
+    'Eastern Mediterranean': { lat: 35.0, lng: 33.0 },
+    'Europe & Colonies': { lat: 50.0, lng: 10.0 },
+    'Europe': { lat: 54.5260, lng: 15.2551 },
+    'Mediterranean': { lat: 35.0, lng: 18.0 },
+  };
+  
+  // Try exact match first
+  if (locationMap[locationName]) {
+    return locationMap[locationName];
+  }
+  
+  // Try partial matches
+  for (const [key, coords] of Object.entries(locationMap)) {
+    if (locationName.includes(key) || key.includes(locationName)) {
+      return coords;
+    }
+  }
+  
+  return null;
+}
+
+export default function InteractiveTimeline() {
+  const [data, setData] = useState<TimelineItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [selectedItem, setSelectedItem] = useState<TimelineItem | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, offset: 0 });
+  const [controlsExpanded, setControlsExpanded] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
+  const [isMobile, setIsMobile] = useState(false);
+  
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  // Load data
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const rawData = await fetchTimelineData();
+        const timelineItems = convertToTimelineItems(rawData);
+        setData(timelineItems);
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message);
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+  
+  // Calculate timeline bounds
+  const timelineBounds = useMemo(() => {
+    if (data.length === 0) return { min: 0, max: 2025, range: 2025 };
+    
+    const years = data.flatMap(item => [item.start, item.end]);
+    const min = Math.min(...years);
+    const max = Math.max(...years);
+    const padding = (max - min) * 0.1;
+    
+    return {
+      min: min - padding,
+      max: max + padding,
+      range: (max - min) + (padding * 2)
+    };
+  }, [data]);
+  
+  // Convert year to pixel position
+  const yearToPixel = (year: number) => {
+    const normalizedYear = (year - timelineBounds.min) / timelineBounds.range;
+    return normalizedYear * 4000 * zoom; // Base width of 4000px
+  };
+  
+  // Helper function to determine item period
+  const getItemPeriod = (item: TimelineItem): string => {
+    const year = item.start;
+    if (year < -500) return 'Ancient';
+    if (year < 500) return 'Classical';
+    if (year < 1400) return 'Medieval';
+    if (year < 1750) return 'Renaissance';
+    return 'Modern';
+  };
+
+  // Filter data based on search and filters
+  const filteredData = useMemo(() => {
+    let filtered = data;
+    
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(item => 
+        item.name.toLowerCase().includes(query) ||
+        (item.location && item.location.toLowerCase().includes(query)) ||
+        (item.architect && item.architect.toLowerCase().includes(query)) ||
+        (item.region && item.region.toLowerCase().includes(query)) ||
+        (item.description && item.description.toLowerCase().includes(query)) ||
+        (item.role && item.role.toLowerCase().includes(query))
+      );
+    }
+    
+    // Apply period filters
+    if (activeFilters.size > 0) {
+      filtered = filtered.filter(item => {
+        const itemPeriod = getItemPeriod(item);
+        return Array.from(activeFilters).some(filter => itemPeriod.includes(filter));
+      });
+    }
+    
+    return filtered;
+  }, [data, searchQuery, activeFilters]);
+
+  // Group filtered items by type and parent
+  const groupedItems = useMemo(() => {
+    const macros = filteredData.filter(item => item.type === 'macro');
+    const children = filteredData.filter(item => item.type === 'child');
+    const works = filteredData.filter(item => item.type === 'work');
+    const figures = filteredData.filter(item => item.type === 'figure');
+    
+    // Group by direct parent (macro movements)
+    const byMacroParent: Record<string, TimelineItem[]> = {};
+    children.forEach(item => {
+      if (item.parent) {
+        if (!byMacroParent[item.parent]) byMacroParent[item.parent] = [];
+        byMacroParent[item.parent].push(item);
+      }
+    });
+    
+    // Group works and figures by their parent (which could be child movements)
+    const byChildParent: Record<string, TimelineItem[]> = {};
+    [...works, ...figures].forEach(item => {
+      if (item.parent) {
+        // Try to find if this belongs to a child movement first
+        const childMovement = children.find(child => child.id === item.parent);
+        if (childMovement) {
+          if (!byChildParent[item.parent]) byChildParent[item.parent] = [];
+          byChildParent[item.parent].push(item);
+        } else {
+          // If not found in children, it belongs directly to a macro
+          if (!byMacroParent[item.parent]) byMacroParent[item.parent] = [];
+          byMacroParent[item.parent].push(item);
+        }
+      }
+    });
+    
+    return { macros, byMacroParent, byChildParent };
+  }, [filteredData]);
+  
+  // Handle item click for expansion
+  const handleItemClick = (itemId: string) => {
+    const newExpanded = new Set(expandedItems);
+    if (newExpanded.has(itemId)) {
+      newExpanded.delete(itemId);
+    } else {
+      newExpanded.add(itemId);
+    }
+    setExpandedItems(newExpanded);
+  };
+
+  // Handle item selection for detailed view
+  const handleItemSelect = (item: TimelineItem) => {
+    setSelectedItem(item);
+  };
+  
+  // Handle mouse events for panning
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, offset: panOffset });
+  };
+  
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - dragStart.x;
+    setPanOffset(dragStart.offset + deltaX);
+  };
+  
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+  
+  // Handle zoom
+  const handleZoom = (delta: number, centerX?: number) => {
+    const newZoom = Math.max(0.1, Math.min(5, zoom + delta));
+    
+    if (centerX !== undefined && timelineRef.current) {
+      const rect = timelineRef.current.getBoundingClientRect();
+      const relativeX = centerX - rect.left;
+      const zoomRatio = newZoom / zoom;
+      const newOffset = panOffset - (relativeX * (zoomRatio - 1));
+      setPanOffset(newOffset);
+    }
+    
+    setZoom(newZoom);
+  };
+  
+  // Handle wheel zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    handleZoom(delta, e.clientX);
+  };
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div>Loading interactive timeline...</div>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 text-xl mb-4">Error: {error}</div>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-stone-100 text-slate-800">
+      {/* Enhanced Header with Search & Navigation */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
+        <div className="p-4">
+          {/* Main Header Row */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent">
+                Interactive Architecture Timeline
+              </h1>
+              {selectedItem && (
+                <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-blue-700 font-medium">{selectedItem?.name}</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-slate-600 font-medium">
+                Zoom: {(zoom * 100).toFixed(0)}%
+              </div>
+              {!isMobile && (
+                <div className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                  {data.length} items loaded
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Search & Filter Row */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search movements, works, architects..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 pl-10 bg-white/80 border border-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 transition-all text-sm"
+              />
+              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 hover:text-slate-600"
+                >
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+            
+            {/* Quick Filters */}
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {['Ancient', 'Classical', 'Medieval', 'Renaissance', 'Modern'].map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => {
+                    const newFilters = new Set(activeFilters);
+                    if (newFilters.has(filter)) {
+                      newFilters.delete(filter);
+                    } else {
+                      newFilters.add(filter);
+                    }
+                    setActiveFilters(newFilters);
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                    activeFilters.has(filter)
+                      ? 'bg-blue-500 text-white shadow-md'
+                      : 'bg-white/80 text-slate-600 hover:bg-blue-50 border border-slate-200'
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Control Bar */}
+        <div className="px-4 pb-3 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-3">
+            {/* Zoom Controls */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleZoom(-0.2)}
+                className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-xs font-medium transition-all"
+              >
+                Zoom Out
+              </button>
+              <button
+                onClick={() => handleZoom(0.2)}
+                className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-xs font-medium transition-all"
+              >
+                Zoom In
+              </button>
+              <button
+                onClick={() => {
+                  setZoom(1);
+                  setPanOffset(0);
+                }}
+                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-xs font-medium transition-all"
+              >
+                Reset
+              </button>
+            </div>
+            
+            {/* Navigation Hints */}
+            <div className="hidden lg:flex items-center gap-4 text-xs text-slate-500">
+              <span>🖱️ Drag to pan</span>
+              <span>🔍 Scroll to zoom</span>
+              <span>👆 Click for details</span>
+            </div>
+          </div>
+        </div>
+      </header>
+        
+        {/* Search Results & Quick Actions */}
+        <div className="px-4 py-3 bg-gradient-to-r from-slate-50 to-stone-50 border-b border-slate-200/50">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-4">
+              <span className={`font-medium ${
+                filteredData.length !== data.length ? 'text-blue-600' : 'text-slate-600'
+              }`}>
+                📊 {filteredData.length === data.length 
+                  ? `${data.length} total items` 
+                  : `${filteredData.length} of ${data.length} items`
+                }
+              </span>
+              
+              {(searchQuery || activeFilters.size > 0) && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setActiveFilters(new Set());
+                  }}
+                  className="text-xs text-slate-500 hover:text-slate-700 underline"
+                >
+                  Clear all filters
+                </button>
+              )}
+              
+              {activeFilters.size > 0 && (
+                <div className="flex items-center gap-1">
+                  {Array.from(activeFilters).map(filter => (
+                    <span key={filter} className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
+                      {filter}
+                      <button
+                        onClick={() => {
+                          const newFilters = new Set(activeFilters);
+                          newFilters.delete(filter);
+                          setActiveFilters(newFilters);
+                        }}
+                        className="ml-1 hover:text-blue-900"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-4 text-slate-500">
+              {searchQuery && (
+                <span className="text-xs">
+                  � "{searchQuery}"
+                </span>
+              )}
+              <span className="text-xs">
+                Timeline: 5000+ years
+              </span>
+            </div>
+          </div>
+          
+          {/* Quick Search Suggestions */}
+          {searchQuery && filteredData.length === 0 && (
+            <div className="mt-3 pt-3 border-t border-slate-200">
+              <div className="text-sm text-slate-600 mb-2">No results found. Try searching for:</div>
+              <div className="flex flex-wrap gap-2">
+                {['Parthenon', 'Gothic', 'Renaissance', 'Baroque', 'Modern', 'Byzantine'].map(suggestion => (
+                  <button
+                    key={suggestion}
+                    onClick={() => setSearchQuery(suggestion)}
+                    className="px-2 py-1 bg-white text-slate-600 rounded-full text-xs hover:bg-slate-100 border border-slate-200"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Legend */}
+        <div className="flex flex-wrap gap-6 text-sm font-medium">
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full shadow-sm"></div>
+            <span className="text-slate-600">Macro Movements</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full shadow-sm"></div>
+            <span className="text-slate-600">Sub-movements</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 bg-gradient-to-r from-green-400 to-cyan-400 rounded-full shadow-sm"></div>
+            <span className="text-slate-600">Works</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full shadow-sm"></div>
+            <span className="text-slate-600">Figures</span>
+          </div>
+        </div>
+      </header>
+      
+      {/* Detailed Information Card */}
+      <AnimatePresence>
+        {selectedItem && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="mx-4 mb-4 bg-white/90 backdrop-blur-xl rounded-2xl border border-slate-200/50 shadow-2xl"
+          >
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-6 h-6 ${selectedItem?.colorClass || 'bg-slate-500'} rounded flex items-center justify-center text-sm`}>
+                    {selectedItem?.type === 'work' && '🏛️'}
+                    {selectedItem?.type === 'figure' && '👤'}
+                    {selectedItem?.type === 'macro' && '🏛️'}
+                    {selectedItem?.type === 'child' && '🎨'}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent">{selectedItem?.name}</h2>
+                    <p className="text-slate-500 capitalize font-medium">
+                      {selectedItem?.type === 'work' && 'Architectural Work'}
+                      {selectedItem?.type === 'figure' && 'Key Figure'}
+                      {selectedItem?.type === 'macro' && 'Macro Movement'}
+                      {selectedItem?.type === 'child' && 'Sub-movement'} • 
+                      {selectedItem?.type === 'work' 
+                        ? ` ${fmtYear(selectedItem?.start)}`
+                        : ` ${fmtYear(selectedItem?.start)} - ${fmtYear(selectedItem?.end)}`
+                      }
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedItem(null)}
+                  className="text-slate-400 hover:text-slate-600 text-xl font-bold px-2 py-1 hover:bg-slate-100 rounded-full transition-all"
+                >
+                  ×
+                </button>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Left Column - Main Details */}
+                <div className="space-y-4">
+                  {/* Architectural Works */}
+                  {selectedItem?.type === 'work' && (
+                    <>
+                      {selectedItem?.location && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">Location</h3>
+                          <p className="text-slate-700 font-medium">{selectedItem?.location}</p>
+                        </div>
+                      )}
+                      {selectedItem?.architect && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">Architect</h3>
+                          <p className="text-slate-700 font-medium">{selectedItem?.architect}</p>
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">Year Completed</h3>
+                        <p className="text-slate-700 font-medium">{fmtYear(selectedItem?.start)}</p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Key Figures */}
+                  {selectedItem?.type === 'figure' && (
+                    <>
+                      {selectedItem?.role && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Role</h3>
+                          <p className="text-white">{selectedItem?.role}</p>
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Lifespan</h3>
+                        <p className="text-white">{selectedItem?.lifespan}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Period</h3>
+                        <p className="text-white">
+                          {fmtYear(selectedItem?.start)} - {fmtYear(selectedItem?.end)}
+                          <span className="text-slate-400 ml-2">
+                            ({selectedItem?.end - selectedItem?.start} years)
+                          </span>
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Macro Movements */}
+                  {selectedItem?.type === 'macro' && (
+                    <>
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Time Period</h3>
+                        <p className="text-white">
+                          {fmtYear(selectedItem?.start)} - {fmtYear(selectedItem?.end)}
+                          <span className="text-slate-400 ml-2">
+                            ({selectedItem?.end - selectedItem?.start} years)
+                          </span>
+                        </p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Sub-movements</h3>
+                        <p className="text-white">
+                          {(() => {
+                            const children = groupedItems.byMacroParent[selectedItem?.id] || [];
+                            const childCount = children.filter(c => c.type === 'child').length;
+                            return childCount > 0 ? `${childCount} architectural styles` : 'No sub-movements';
+                          })()}
+                        </p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Influence</h3>
+                        <p className="text-white">Major architectural period</p>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Sub-movements (Child Movements) */}
+                  {selectedItem?.type === 'child' && (
+                    <>
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Time Period</h3>
+                        <p className="text-white">
+                          {fmtYear(selectedItem?.start)} - {fmtYear(selectedItem?.end)}
+                          <span className="text-slate-400 ml-2">
+                            ({selectedItem?.end - selectedItem?.start} years)
+                          </span>
+                        </p>
+                      </div>
+                      {selectedItem?.region && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">Region</h3>
+                          <p className="text-white">{selectedItem?.region}</p>
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Associated Works & Figures</h3>
+                        {(() => {
+                          const childItems = groupedItems.byChildParent[selectedItem?.id] || [];
+                          const works = childItems.filter(c => c.type === 'work');
+                          const figures = childItems.filter(c => c.type === 'figure');
+                          
+                          if (works.length === 0 && figures.length === 0) {
+                            return <p className="text-slate-500 text-sm italic">No associated items</p>;
+                          }
+                          
+                          return (
+                            <div className="space-y-3">
+                              {/* Works Section */}
+                              {works.length > 0 && (
+                                <div>
+                                  <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-cyan-400 rounded-full"></div>
+                                    Architectural Works ({works.length})
+                                  </h4>
+                                  <div className="space-y-1">
+                                    {works.map((work) => (
+                                      <button
+                                        key={work.id}
+                                        onClick={() => handleItemSelect(work)}
+                                        className="w-full text-left p-2 bg-gradient-to-r from-slate-50 to-stone-50 hover:from-green-50 hover:to-cyan-50 rounded-lg border border-slate-200/50 hover:border-green-200 transition-all group"
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-sm text-green-600 group-hover:text-green-700">🏛️</span>
+                                          <div>
+                                            <p className="text-sm font-medium text-slate-700 group-hover:text-green-700">{work.name}</p>
+                                            <p className="text-xs text-slate-500">
+                                              {fmtYear(work.start)}{work.location && ` • ${work.location}`}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Figures Section */}
+                              {figures.length > 0 && (
+                                <div>
+                                  <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full"></div>
+                                    Key Figures ({figures.length})
+                                  </h4>
+                                  <div className="space-y-1">
+                                    {figures.map((figure) => (
+                                      <button
+                                        key={figure.id}
+                                        onClick={() => handleItemSelect(figure)}
+                                        className="w-full text-left p-2 bg-gradient-to-r from-slate-50 to-stone-50 hover:from-cyan-50 hover:to-blue-50 rounded-lg border border-slate-200/50 hover:border-cyan-200 transition-all group"
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-sm text-cyan-600 group-hover:text-cyan-700">👤</span>
+                                          <div>
+                                            <p className="text-sm font-medium text-slate-700 group-hover:text-cyan-700">{figure.name}</p>
+                                            <p className="text-xs text-slate-500">
+                                              {fmtYear(figure.start)} - {fmtYear(figure.end)}{figure.role && ` • ${figure.role}`}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </>
+                  )}
+                </div>
+                
+                {/* Right Column - Additional Information */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-1">
+                      {selectedItem?.type === 'work' && 'About This Work'}
+                      {selectedItem?.type === 'figure' && 'About This Figure'}
+                      {selectedItem?.type === 'macro' && 'About This Movement'}
+                      {selectedItem?.type === 'child' && 'About This Style'}
+                    </h3>
+                    <div className="text-slate-600 bg-gradient-to-r from-slate-50 to-stone-50 rounded-xl p-4 shadow-sm">
+                      {selectedItem?.type === 'work' && (
+                        <p>
+                          This architectural work represents a significant example of its period's design principles and construction techniques. 
+                          {selectedItem?.location && ` Located in ${selectedItem?.location},`} it showcases the architectural innovations of {fmtYear(selectedItem?.start)}.
+                          {selectedItem?.architect && ` Designed by ${selectedItem?.architect},`} this structure contributes to our understanding of historical architectural practices.
+                        </p>
+                      )}
+                      {selectedItem?.type === 'figure' && (
+                        <p>
+                          This key figure played an important role in architectural history during the period from {fmtYear(selectedItem?.start)} to {fmtYear(selectedItem?.end)}.
+                          {selectedItem?.role && ` Working as ${selectedItem?.role.toLowerCase()},`} they contributed to the development and evolution of architectural design and construction methods of their era.
+                        </p>
+                      )}
+                      {selectedItem?.type === 'macro' && (
+                        <p>
+                          This macro movement represents a major period in architectural history spanning {selectedItem?.end - selectedItem?.start} years ({fmtYear(selectedItem?.start)} - {fmtYear(selectedItem?.end)}). 
+                          It encompasses multiple architectural styles and regional variations that shared common design principles, construction techniques, and cultural influences. 
+                          This movement significantly shaped the built environment and influenced subsequent architectural developments.
+                        </p>
+                      )}
+                      {selectedItem?.type === 'child' && (
+                        <p>
+                          {selectedItem?.description || 
+                            `This architectural style flourished from ${fmtYear(selectedItem?.start)} to ${fmtYear(selectedItem?.end)}${selectedItem?.region ? ` primarily in ${selectedItem?.region}` : ''}. It represents a distinct approach to design and construction within its broader architectural movement, characterized by unique formal qualities, construction methods, and cultural expressions that distinguished it from contemporary styles.`
+                          }
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Key Traits for Child Movements - Alternative Display */}
+                  {selectedItem?.type === 'child' && selectedItem?.traits && selectedItem?.traits.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">Architectural Characteristics</h3>
+                      <div className="bg-gradient-to-r from-slate-50 to-stone-50 rounded-xl p-4 space-y-3 shadow-sm">
+                        {selectedItem?.traits.map((trait, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full mt-1.5 flex-shrink-0 shadow-sm"></div>
+                            <p className="text-slate-600 text-sm leading-relaxed font-medium">{trait}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">Timeline Context</h3>
+                    <div className="bg-gradient-to-r from-slate-50 to-stone-50 rounded-xl p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={`w-3 h-3 rounded-full shadow-sm ${
+                          selectedItem?.type === 'macro' ? 'bg-gradient-to-r from-purple-400 to-pink-400' :
+                          selectedItem?.type === 'child' ? 'bg-gradient-to-r from-yellow-400 to-orange-400' :
+                          selectedItem?.type === 'work' ? 'bg-gradient-to-r from-green-400 to-cyan-400' : 'bg-gradient-to-r from-cyan-400 to-blue-400'
+                        }`}></div>
+                        <span className="text-sm text-slate-600 font-medium">
+                          {selectedItem?.type === 'macro' && 'Major architectural period'}
+                          {selectedItem?.type === 'child' && 'Regional architectural style'}
+                          {selectedItem?.type === 'work' && 'Part of architectural movement'}
+                          {selectedItem?.type === 'figure' && 'Key historical figure'}
+                        </span>
+                      </div>
+                      <p className="text-slate-500 text-sm">
+                        {selectedItem?.type === 'macro' && 'Expand this movement to explore its various architectural styles and regional variations.'}
+                        {selectedItem?.type === 'child' && 'Expand this style to see specific buildings and key figures from this period.'}
+                        {selectedItem?.type === 'work' && 'Click on timeline movements to explore related buildings and structures from this period.'}
+                        {selectedItem?.type === 'figure' && 'Click on timeline movements to explore related figures and architects from this era.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Timeline Container */}
+      <div 
+        ref={containerRef}
+        className="relative h-[calc(100vh-180px)] overflow-hidden cursor-grab active:cursor-grabbing"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
+      >
+        {/* Year markers */}
+        <div 
+          className="absolute top-0 h-full pointer-events-none"
+          style={{ transform: `translateX(${panOffset}px)` }}
+        >
+          {Array.from({ length: Math.ceil(timelineBounds.range / 100) }, (_, i) => {
+            const year = Math.ceil(timelineBounds.min / 100) * 100 + (i * 100);
+            const x = yearToPixel(year);
+            
+            return (
+              <div
+                key={year}
+                className="absolute top-0 h-full border-l border-slate-200 text-slate-400 text-xs"
+                style={{ left: `${x}px` }}
+              >
+                <div className="pl-2 pt-2 font-mono">{fmtYear(year)}</div>
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* Timeline Items */}
+        <div 
+          ref={timelineRef}
+          className="absolute top-16 h-full"
+          style={{ transform: `translateX(${panOffset}px)` }}
+        >
+          {/* Macro Movements */}
+          {groupedItems.macros.map((macro, index) => {
+            const x = yearToPixel(macro.start);
+            const width = yearToPixel(macro.end) - x;
+            const isExpanded = expandedItems.has(macro.id);
+            const children = groupedItems.byMacroParent[macro.id] || [];
+            
+            // All macro movements on the same horizontal line
+            const yOffset = 20; // Fixed position for all macro movements
+            
+            return (
+              <div key={macro.id} className="absolute" style={{ left: `${x}px`, top: `${yOffset}px` }}>
+                {/* Macro Movement Bar */}
+                <motion.div
+                  className={`${macro.colorClass} rounded-2xl shadow-lg cursor-pointer border-2 border-transparent hover:shadow-xl transition-all transform hover:scale-105`}
+                  style={{ width: `${width}px`, height: '36px' }}
+                  onClick={() => handleItemClick(macro.id)}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    handleItemSelect(macro);
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="p-2 h-full flex items-center justify-between text-white font-bold drop-shadow-sm">
+                    <span className="truncate text-sm">{macro.name}</span>
+                    <span className="text-xs opacity-80">
+                      {isExpanded ? '−' : '+'}
+                    </span>
+                  </div>
+                </motion.div>
+                
+                {/* Expanded Children */}
+                <AnimatePresence>
+                  {isExpanded && children.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="mt-1 space-y-0.5"
+                    >
+                      {children
+                        .filter((item: TimelineItem) => item.type === 'child')
+                        .sort((a: TimelineItem, b: TimelineItem) => a.start - b.start)
+                        .map((child: TimelineItem, childIndex: number) => {
+                          const childX = yearToPixel(child.start) - x;
+                          const childWidth = yearToPixel(child.end) - yearToPixel(child.start);
+                          const isChildExpanded = expandedItems.has(child.id);
+                          const childItems = groupedItems.byChildParent[child.id] || [];
+                          
+                          return (
+                            <div key={child.id} className="mb-1">
+                              <motion.div
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: childIndex * 0.05 }}
+                                className={`${child.colorClass} rounded-xl shadow-md relative h-7 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105`}
+                                style={{ 
+                                  width: `${Math.max(childWidth, 120)}px`,
+                                  marginLeft: `${Math.max(0, childX)}px`
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  // If child has content to expand, handle expansion
+                                  if (childItems.length > 0) {
+                                    handleItemClick(child.id);
+                                  }
+                                  // Always show details for sub-movements
+                                  handleItemSelect(child);
+                                }}
+                              >
+                                <div className="p-1 h-full flex items-center justify-between text-white text-xs font-semibold drop-shadow-sm">
+                                  <div className="flex items-center truncate">
+                                    <span className="font-medium">{child.name}</span>
+                                    {child.region && (
+                                      <span className="ml-1 opacity-75">• {child.region}</span>
+                                    )}
+                                  </div>
+                                  {childItems.length > 0 && (
+                                    <span className="text-xs opacity-80 ml-1">
+                                      {isChildExpanded ? '−' : '+'}
+                                    </span>
+                                  )}
+                                </div>
+                                
+                                {/* Tooltip */}
+                                <div className="absolute bottom-full left-0 mb-1 bg-black/90 text-white text-xs rounded px-2 py-1 opacity-0 hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                                  <div className="font-semibold">{child.name}</div>
+                                  <div>{fmtYear(child.start)} - {fmtYear(child.end)}</div>
+                                  {child.region && <div>Region: {child.region}</div>}
+                                  {childItems.length > 0 && (
+                                    <div>Click to see {childItems.length} works & figures</div>
+                                  )}
+                                </div>
+                              </motion.div>
+                              
+                              {/* Child's Works and Figures */}
+                              <AnimatePresence>
+                                {isChildExpanded && childItems.length > 0 && (
+                                  <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="mt-1 ml-4 space-y-1"
+                                  >
+                                    {childItems
+                                      .sort((a: TimelineItem, b: TimelineItem) => a.start - b.start)
+                                      .map((item: TimelineItem, itemIndex: number) => {
+                                        const itemX = yearToPixel(item.start) - x - (Math.max(0, childX) + 16);
+                                        const itemWidth = item.type === 'work' ? 6 : Math.max(yearToPixel(item.end) - yearToPixel(item.start), 80);
+                                        
+                                        return (
+                                          <motion.div
+                                            key={item.id}
+                                            initial={{ x: -10, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            transition={{ delay: itemIndex * 0.03 }}
+                                            className={`${item.colorClass} rounded-lg shadow-sm relative h-6 cursor-pointer hover:shadow-md transition-all transform hover:scale-105`}
+                                            style={{ 
+                                              width: `${Math.max(itemWidth, 80)}px`,
+                                              marginLeft: `${Math.max(0, itemX)}px`
+                                            }}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleItemSelect(item);
+                                            }}
+                                          >
+                                            <div className="p-1 h-full flex items-center text-white text-xs">
+                                              <span className="truncate font-medium">{item.name}</span>
+                                              {item.type === 'work' && (
+                                                <span className="ml-1 opacity-75 text-xs">🏛️</span>
+                                              )}
+                                              {item.type === 'figure' && (
+                                                <span className="ml-1 opacity-75 text-xs">👤</span>
+                                              )}
+                                            </div>
+                                            
+                                            {/* Item Tooltip */}
+                                            <div className="absolute bottom-full left-0 mb-1 bg-black/90 text-white text-xs rounded px-2 py-1 opacity-0 hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap">
+                                              <div className="font-semibold">{item.name}</div>
+                                              <div className="capitalize">{item.type}: {fmtYear(item.start)}{item.end !== item.start ? ` - ${fmtYear(item.end)}` : ''}</div>
+                                              {item.architect && <div>Architect: {item.architect}</div>}
+                                              {item.location && <div>Location: {item.location}</div>}
+                                              {item.role && <div>Role: {item.role}</div>}
+                                            </div>
+                                          </motion.div>
+                                        );
+                                      })}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          );
+                        })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      
+      {/* World Map */}
+      <div className="bg-white/90 backdrop-blur-xl border-t border-slate-200/50 p-6">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent mb-2">
+            Geographic Context
+          </h2>
+          <p className="text-slate-600 text-sm">
+            {selectedItem 
+              ? `Showing location of: ${selectedItem?.name}` 
+              : 'Select any architectural work or figure to see its geographic location'
+            }
+          </p>
+        </div>
+        
+        {/* Location Cards - Better Alternative to Abstract Map */}
+        <div className="space-y-4">
+          {selectedItem ? (
+            selectedItem?.coordinates ? (
+              /* Show detailed location card with map link */
+              <div className="bg-gradient-to-r from-slate-50 to-stone-50 rounded-2xl p-6 border border-slate-200/50 shadow-sm">
+                <div className="flex items-start gap-4">
+                  {/* Location Icon */}
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-md ${
+                    selectedItem?.type === 'work' 
+                      ? 'bg-gradient-to-r from-green-400 to-cyan-400' 
+                      : 'bg-gradient-to-r from-cyan-400 to-blue-400'
+                  }`}>
+                    <span className="text-white text-xl">
+                      {selectedItem?.type === 'work' ? '🏛️' : '👤'}
+                    </span>
+                  </div>
+                  
+                  {/* Location Details */}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-slate-800 mb-1">
+                      {selectedItem?.location || selectedItem?.region || 'Unknown Location'}
+                    </h3>
+                    <p className="text-slate-600 mb-2">
+                      Location of: <span className="font-semibold">{selectedItem?.name}</span>
+                    </p>
+                    <div className="flex items-center gap-4 text-sm text-slate-500">
+                      <span>📍 {selectedItem?.coordinates.lat.toFixed(2)}°, {selectedItem?.coordinates.lng.toFixed(2)}°</span>
+                      <span>🌍 {selectedItem?.coordinates.lat > 0 ? 'Northern' : 'Southern'} Hemisphere</span>
+                      <span>🗺️ {Math.abs(selectedItem?.coordinates.lng) < 90 ? 'European/African Region' : 
+                               selectedItem?.coordinates.lng > 0 ? 'Asian Region' : 'American Region'}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Google Maps Link - This is the direct map link! */}
+                  <a
+                    href={`https://www.google.com/maps/@${selectedItem?.coordinates.lat},${selectedItem?.coordinates.lng},15z`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-full text-sm font-medium shadow-md transition-all transform hover:scale-105"
+                  >
+                    View on Map 🗺️
+                  </a>
+                </div>
+              </div>
+            ) : (
+              /* Selected item without coordinates */
+              <div className="bg-gradient-to-r from-slate-50 to-stone-50 rounded-2xl p-6 border border-slate-200/50 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-md ${
+                    selectedItem?.type === 'work' 
+                      ? 'bg-gradient-to-r from-green-400 to-cyan-400' 
+                      : 'bg-gradient-to-r from-cyan-400 to-blue-400'
+                  }`}>
+                    <span className="text-white text-xl">
+                      {selectedItem?.type === 'work' ? '🏛️' : '👤'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-slate-800 mb-1">
+                      {selectedItem?.name}
+                    </h3>
+                    <p className="text-slate-600 mb-2">
+                      {selectedItem?.type === 'work' ? 'Architectural Work' : 'Key Figure'}
+                    </p>
+                    <div className="text-sm text-amber-600 bg-amber-50 px-3 py-2 rounded-lg border border-amber-200">
+                      📍 Location information not available for this item
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          ) : (
+            /* No item selected - Show instructions and regional context */
+            <div className="space-y-4">
+              {/* Clear instruction for map links */}
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4 text-center">
+                <p className="text-blue-700 font-medium mb-2">🗺️ Want to see direct Google Maps links?</p>
+                <p className="text-blue-600 text-sm">Click on any architectural work or figure in the timeline above to see its location with a clickable Google Maps link!</p>
+              </div>
+              
+              {/* Regional Context Cards */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { 
+                    region: 'Mediterranean Basin', 
+                    description: 'Cradle of Classical and Byzantine architecture',
+                    icon: '🏛️',
+                    gradient: 'from-blue-400 to-cyan-400',
+                    examples: ['Athens', 'Rome', 'Constantinople']
+                  },
+                  { 
+                    region: 'Western Europe', 
+                    description: 'Gothic, Renaissance, and Baroque centers',
+                    icon: '⛪',
+                    gradient: 'from-purple-400 to-pink-400',
+                    examples: ['Paris', 'Florence', 'London']
+                  },
+                  { 
+                    region: 'Ancient Near East', 
+                    description: 'Early monumental architecture origins',
+                    icon: '🏺',
+                    gradient: 'from-orange-400 to-yellow-400',
+                    examples: ['Egypt', 'Mesopotamia', 'Persia']
+                  },
+                  { 
+                    region: 'Islamic World', 
+                    description: 'Islamic architectural innovations',
+                    icon: '🕌',
+                    gradient: 'from-emerald-400 to-teal-400',
+                    examples: ['Cordoba', 'Isfahan', 'Delhi']
+                  },
+                  { 
+                    region: 'East Asia', 
+                    description: 'Traditional wooden and imperial architecture',
+                    icon: '🏯',
+                    gradient: 'from-red-400 to-orange-400',
+                    examples: ['Beijing', 'Kyoto', 'Angkor']
+                  },
+                  { 
+                    region: 'The Americas', 
+                    description: 'Pre-Columbian and colonial architecture',
+                    icon: '🏺',
+                    gradient: 'from-lime-400 to-green-400',
+                    examples: ['Teotihuacan', 'Cusco', 'Mexico City']
+                  }
+                ].map((region) => (
+                  <div key={region.region} 
+                       className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-slate-200/50 shadow-sm hover:shadow-md transition-all">
+                    <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${region.gradient} flex items-center justify-center mb-3 shadow-sm`}>
+                      <span className="text-white text-lg">{region.icon}</span>
+                    </div>
+                    <h4 className="font-bold text-slate-800 mb-2">{region.region}</h4>
+                    <p className="text-slate-600 text-sm mb-3">{region.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {region.examples.map((example) => (
+                        <span key={example} className="px-2 py-1 bg-slate-100 rounded-full text-xs text-slate-600">
+                          {example}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+          
+        {/* Legend */}
+          <div className="mt-4 flex flex-wrap gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span className="text-slate-600">Architectural Works</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-cyan-500 rounded-full"></div>
+              <span className="text-slate-600">Key Figures</span>
+            </div>
+          </div>
+          
+          {/* No selection message */}
+          {!selectedItem && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 text-center border border-slate-200/50 shadow-sm">
+                <p className="text-slate-600 font-medium mb-2">🗺️ Explore Geographic Context</p>
+                <p className="text-slate-500 text-sm">
+                  Click on any architectural work or key figure to see where they were located in the world
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Collapsible Controls */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <div className={`bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200/50 transition-all duration-300 ease-in-out ${
+          controlsExpanded ? 'max-w-xs' : 'max-w-fit'
+        }`}>
+          {/* Header - Always visible */}
+          <div 
+            className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50/50 rounded-t-2xl transition-colors"
+            onClick={() => setControlsExpanded(!controlsExpanded)}
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-pulse"></div>
+              <span className="font-bold text-slate-700 text-sm">
+                {controlsExpanded ? 'Controls' : 'Help'}
+              </span>
+            </div>
+            <div className={`text-slate-500 transition-transform duration-200 ${
+              controlsExpanded ? 'rotate-180' : 'rotate-0'
+            }`}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 14l5-5 5 5z"/>
+              </svg>
+            </div>
+          </div>
+          
+          {/* Collapsible Content */}
+          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            controlsExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}>
+            <div className="px-4 pb-4 border-t border-slate-100">
+              <div className="space-y-2 text-xs text-slate-600 mt-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">•</span>
+                  <span>Click macro movements to expand</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-cyan-500">•</span>
+                  <span>Click sub-movements for details</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-500">•</span>
+                  <span>Click works/figures for map links</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-purple-500">•</span>
+                  <span>Drag to pan horizontally</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-orange-500">•</span>
+                  <span>Scroll to zoom in/out</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-pink-500">•</span>
+                  <span>Hover items for details</span>
+                </div>
+              </div>
+              
+              {/* Quick tip */}
+              <div className="mt-3 pt-3 border-t border-slate-100">
+                <div className="text-xs text-slate-500 bg-slate-50 rounded-lg p-2">
+                  💡 <span className="font-medium">Pro tip:</span> Try clicking architectural works to see Google Maps links!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
