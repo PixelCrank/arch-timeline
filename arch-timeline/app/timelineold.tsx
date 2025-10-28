@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Info, Search, Filter, ZoomIn, ZoomOut, X, Image as ImageIcon } from 'lucide-react';
-import { client } from '../sanity/client';
-import { convertSanityToTimelineFormat } from '../hooks/useTimelineData';
+import { useTimelineData } from '../hooks/useTimelineData';
 
 // Image component with error handling and fallback
 const ArchImage: React.FC<{
@@ -43,170 +42,53 @@ const ArchImage: React.FC<{
 };
 
 // Types
-type Work = { title: string; location?: string; year?: string; imageUrl?: string };
-type TextRef = { title: string; author?: string; year?: string };
-type Figure = { name: string; role?: string };
+// ...existing type definitions from your old code...
 
-type SubChild = {
-  id: string;
-  name: string;
-  type: 'work' | 'figure' | 'text';
-  year?: number;
-  location?: string;
-  imageUrl?: string;
-  role?: string;
-  author?: string;
-  parent: string;
-};
-
-type ChildMovement = {
-  id: string;
-  name: string;
-  start: number;
-  end: number;
-  region: string;
-  figures?: Figure[];
-  traits?: string[];
-  works?: Work[];
-  texts?: TextRef[];
-  parent: string;
-  imageUrl?: string;
-  subchildren?: string[];
-};
-
-type MacroMovement = {
-  id: string;
-  name: string;
-  colorClass: string;
-  start: number;
-  end: number;
-  children: string[];
-  imageUrl?: string;
-};
-
-// Constants
 const INITIAL_PIXELS_PER_YEAR = 2;
 const TIME_RANGE = { start: -3000, end: 2025 };
 const YEAR_MIN = TIME_RANGE.start;
 const YEAR_MAX = TIME_RANGE.end;
 
-// Utility functions
 const fmtYear = (year: number) => {
   if (year < 0) return `${Math.abs(year)} BCE`;
   return `${year} CE`;
 };
 
 export default function ArchitectureTimeline() {
-  console.log('🚀 ArchitectureTimeline component starting...');
-  
+  const { data, loading, error } = useTimelineData();
+
   // All state hooks first
-  const [sanityData, setSanityData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
   const [scale, setScale] = useState(INITIAL_PIXELS_PER_YEAR);
   const [offsetX, setOffsetX] = useState(0);
   const [activeMacro, setActiveMacro] = useState<string | null>(null);
   const [activeChild, setActiveChild] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filterMacro, setFilterMacro] = useState<string | null>(null);
-  const [detail, setDetail] = useState<ChildMovement | null>(null);
-  
+  const [detail, setDetail] = useState<any>(null);
   const [originalScale, setOriginalScale] = useState(INITIAL_PIXELS_PER_YEAR);
   const [originalOffsetX, setOriginalOffsetX] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  
   const [hoveredMacro, setHoveredMacro] = useState<string | null>(null);
   const [hoveredChild, setHoveredChild] = useState<string | null>(null);
   const [hoveredSubchild, setHoveredSubchild] = useState<string | null>(null);
-  
   const [isPanning, setIsPanning] = useState(false);
-  
-  // All refs
   const containerRef = useRef<HTMLDivElement | null>(null);
   const panStart = useRef<{ x: number; offsetX: number } | null>(null);
-  
-  // Data fetching effect
-  useEffect(() => {
-    let isMounted = true;
-    
-    const fetchData = async () => {
-      console.log('📊 Starting fetch - sanityData exists:', !!sanityData);
-      
-      if (sanityData) {
-        console.log('⏭️ Already have data, skipping fetch');
-        return;
-      }
-      
-      try {
-        console.log('📡 Fetching macro movements...');
-        const macroMovements = await client.fetch('*[_type == "macroMovement"]');
-        console.log('✅ Macros:', macroMovements.length);
-        
-        console.log('📡 Fetching child movements...');
-        const childMovements = await client.fetch('*[_type == "childMovement"]');
-        console.log('✅ Children:', childMovements.length);
-        
-        console.log('📡 Fetching works...');
-        const works = await client.fetch('*[_type == "architecturalWork"]');
-        console.log('✅ Works:', works.length);
-        
-        console.log('📡 Fetching figures...');
-        const figures = await client.fetch('*[_type == "keyFigure"]');
-        console.log('✅ Figures:', figures.length);
-        
-        if (!isMounted) return;
-        
-        const newData = { macroMovements, childMovements, works, figures };
-        setSanityData(newData);
-        setLoading(false);
-        console.log('✅ Data loaded successfully');
-        
-      } catch (err) {
-        if (!isMounted) return;
-        console.error('❌ Fetch error:', err);
-        setError('Failed to load timeline data');
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
-  // Convert data for timeline
-  const timelineData = useMemo(() => {
-    if (sanityData && sanityData.macroMovements && sanityData.macroMovements.length > 0) {
-      try {
-        return convertSanityToTimelineFormat(sanityData);
-      } catch (err) {
-        console.error('❌ Conversion error:', err);
-        return { macros: [], children: [], subchildren: [] };
-      }
-    }
-    return { macros: [], children: [], subchildren: [] };
-  }, [sanityData]);
-
-  const { macros: MACROS, children: CHILDREN, subchildren: SUBCHILDREN } = timelineData;
+  // Data conversion for timeline
+  const timelineData = data || { macros: [], children: [], subchildren: [] };
+  const { macros: MACROS = [], children: CHILDREN = [], subchildren: SUBCHILDREN = [] } = timelineData || {};
 
   // Quick lookup objects
-  const CHILD_BY_ID: Record<string, ChildMovement> = useMemo(() => 
-    Object.fromEntries(CHILDREN.map((c) => [c.id, c])), [CHILDREN]
+  const CHILD_BY_ID: Record<string, any> = useMemo(() =>
+    Object.fromEntries((CHILDREN || []).map((c: any) => [c.id, c])), [CHILDREN]
   );
-
-  const SUBCHILD_BY_ID: Record<string, SubChild> = useMemo(() => 
-    Object.fromEntries(SUBCHILDREN.map((s) => [s.id, s])), [SUBCHILDREN]
+  const SUBCHILD_BY_ID: Record<string, any> = useMemo(() =>
+    Object.fromEntries((SUBCHILDREN || []).map((s: any) => [s.id, s])), [SUBCHILDREN]
   );
 
   // Click handlers
-  const handleMacroClick = (macro: MacroMovement) => {
-    console.log('🎯 Macro clicked:', macro.name);
-    console.log('🧒 Children:', macro.children.length);
-    console.log('🔍 Child lookup:', macro.children.map(id => ({ id, found: !!CHILD_BY_ID[id] })));
-    
+  const handleMacroClick = (macro: any) => {
     if (activeMacro === macro.id) {
       setActiveMacro(null);
       setActiveChild(null);
@@ -218,7 +100,6 @@ export default function ArchitectureTimeline() {
     }
   };
 
-  // Early returns after all hooks
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -263,13 +144,11 @@ export default function ArchitectureTimeline() {
             onChange={(e) => setSearch(e.target.value)}
             className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400/50 backdrop-blur-sm min-w-80"
           />
-          
           <div className="text-sm text-gray-300 space-x-4">
-            <span>Status: {loading ? 'Loading...' : sanityData ? 'Loaded' : 'No data'}</span>
+            <span>Status: {loading ? 'Loading...' : data ? 'Loaded' : 'No data'}</span>
             <span>Data: {MACROS.length} macros, {CHILDREN.length} children</span>
             {activeMacro && <span className="text-blue-300">Active: {activeMacro}</span>}
           </div>
-          
           {activeMacro && (
             <button
               onClick={() => {
@@ -284,7 +163,6 @@ export default function ArchitectureTimeline() {
           )}
         </div>
       </div>
-
       {/* Timeline Container */}
       <div className="pt-20 h-screen overflow-hidden">
         <div className="h-full w-full overflow-auto relative">
@@ -300,7 +178,6 @@ export default function ArchitectureTimeline() {
               {Array.from({ length: Math.floor(yearsSpan / 100) + 1 }, (_, i) => {
                 const year = YEAR_MIN + i * 100;
                 const x = yearToX(year);
-                
                 return (
                   <div
                     key={`year-${year}`}
@@ -314,15 +191,13 @@ export default function ArchitectureTimeline() {
                 );
               })}
             </div>
-
             {/* Macro Movement Bands */}
             <div className="pt-16">
-              {MACROS.map((macro, macroIndex) => {
+              {MACROS.map((macro: any, macroIndex: number) => {
                 const startX = yearToX(macro.start);
                 const endX = yearToX(macro.end);
                 const width = endX - startX;
                 const isActive = activeMacro === macro.id;
-                
                 return (
                   <motion.div
                     key={String(macro.id)}
@@ -359,21 +234,15 @@ export default function ArchitectureTimeline() {
                         </div>
                       </div>
                     </motion.div>
-
                     {/* Child Movements */}
                     <AnimatePresence>
-                      {isActive && macro.children.map((childId, index) => {
+                      {isActive && macro.children.map((childId: string, index: number) => {
                         const child = CHILD_BY_ID[childId];
-                        if (!child) {
-                          console.log(`⚠️ Child not found: ${childId}`);
-                          return null;
-                        }
-                        
+                        if (!child) return null;
                         const childStartX = yearToX(child.start);
                         const childEndX = yearToX(child.end);
                         const childWidth = childEndX - childStartX;
                         const childY = 70 + index * 40;
-                        
                         return (
                           <motion.div
                             key={String(childId)}

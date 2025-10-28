@@ -4,24 +4,19 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "populate": "tsx scripts/populateContent.ts",
-    "sanity": "sanity"
+  "populate": "tsx scripts/populateContent.ts"
   },
   "dependencies": {
-    "@sanity/client": "^7.11.2",
-    "@sanity/image-url": "^1.2.0",
-    "@sanity/vision": "^4.9.0",
     "dotenv": "^17.2.2",
     "framer-motion": "^12.23.18",
+    "googleapis": "^164.1.0",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
-    "next-sanity": "^11.1.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "sanity": "^4.9.0",
     "styled-components": "^6.1.19"
   },
   "devDependencies": {
