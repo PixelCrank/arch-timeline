@@ -57,3 +57,18 @@ export const getChronoStart = (entity?: { start?: number | null }): number => {
   if (!entity || entity.start === null || entity.start === undefined) return Number.POSITIVE_INFINITY;
   return Number.isFinite(entity.start) ? (entity.start as number) : Number.POSITIVE_INFINITY;
 };
+
+// Extract start year from various date formats
+export const extractStartYear = (dateString?: string | null): number | null => {
+  if (!dateString) return null;
+  
+  // Try to match a 4-digit year at the start
+  const match = dateString.match(/^(\d{4})/);
+  if (match) return parseInt(match[1], 10);
+  
+  // Try to match BCE dates
+  const bceMatch = dateString.match(/(\d+)\s*BCE/i);
+  if (bceMatch) return -parseInt(bceMatch[1], 10);
+  
+  return null;
+};

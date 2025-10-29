@@ -8,6 +8,7 @@ import { FigureCard } from "./FigureCard";
 import { InfoPill } from "./InfoPill";
 import { MovementDetails, type MovementPalette } from "./MovementDetails";
 import { WorkCard } from "./WorkCard";
+import { TimelineDot } from "./TimelineDot";
 import { formatMovementYears } from "@/components/timeline/utils";
 
 export function MovementCard({
@@ -43,7 +44,17 @@ export function MovementCard({
   };
 
   return (
-    <div className="group space-y-4">
+    <div className="group relative space-y-4">
+      {/* Timeline dot for movement */}
+      {movement.start && (
+        <TimelineDot
+          type="movement"
+          year={movement.start}
+          label={movement.name}
+          isActive={isActive}
+        />
+      )}
+      
       <motion.button
         type="button"
         onClick={onToggle}

@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Building, ChevronDown, Link2, MapPin, User } from "lucide-react";
 import type { TimelineBuilding } from "../../lib/timelineData";
 import { InfoPill } from "./InfoPill";
-import { splitList, parseSourceLinks, type SourceLink } from "@/components/timeline/utils";
+import { TimelineDot } from "./TimelineDot";
+import { splitList, parseSourceLinks, extractStartYear, type SourceLink } from "@/components/timeline/utils";
 
 export function WorkCard({
   work,
@@ -25,9 +26,20 @@ export function WorkCard({
   const sources: SourceLink[] = parseSourceLinks(work.sources);
 
   const palette = workPalette[paletteKey];
+  const startYear = extractStartYear(work.yearsBuilt);
 
   return (
-    <motion.article layout className="w-full">
+    <motion.article layout className="relative w-full">
+      {/* Timeline dot for work */}
+      {startYear && (
+        <TimelineDot
+          type="work"
+          year={startYear}
+          label={work.name}
+          isActive={isActive}
+        />
+      )}
+      
       <motion.button
         type="button"
         onClick={onToggle}

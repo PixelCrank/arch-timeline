@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, ChevronDown, Link2, MapPin, Users } from "lucide-react";
 import type { TimelineFigure } from "../../lib/timelineData";
 import { InfoPill } from "./InfoPill";
-import { parseSourceLinks, splitList, type SourceLink } from "@/components/timeline/utils";
+import { TimelineDot } from "./TimelineDot";
+import { parseSourceLinks, splitList, extractStartYear, type SourceLink } from "@/components/timeline/utils";
 
 export function FigureCard({
   figure,
@@ -24,9 +25,20 @@ export function FigureCard({
   const writings = splitList(figure.keyWritings);
   const majorWorks = splitList(figure.majorWorks);
   const sources: SourceLink[] = parseSourceLinks(figure.sources);
+  const birthYear = extractStartYear(figure.lifeDates);
 
   return (
-    <motion.article layout className="w-full">
+    <motion.article layout className="relative w-full">
+      {/* Timeline dot for figure */}
+      {birthYear && (
+        <TimelineDot
+          type="figure"
+          year={birthYear}
+          label={figure.name}
+          isActive={isActive}
+        />
+      )}
+      
       <motion.button
         type="button"
         onClick={onToggle}
