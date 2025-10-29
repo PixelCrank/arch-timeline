@@ -1,47 +1,86 @@
 
-// Timeline data types (matching current Google Sheets data structure)
+// Timeline data types for the Google Sheets driven architecture timeline
 
-export interface Subchild {
+export interface TimelineBuilding {
   id: string;
   name: string;
-  type: 'work' | 'figure';
-  description: string;
+  type: 'work';
+  description?: string;
+  extendedDescription?: string;
   imageUrl?: string;
-  metadata: {
-    architect?: string;
-    year?: number;
-    location?: string;
-    birthYear?: number;
-    deathYear?: number;
-  };
+  city?: string;
+  country?: string;
+  location?: string;
+  yearsBuilt?: string;
+  architects?: string;
+  patron?: string;
+  functionType?: string;
+  functionTags?: string[];
+  uniqueFeaturesText?: string;
+  uniqueFeatures?: string[];
+  materialsText?: string;
+  materials?: string[];
+  symbolismText?: string;
+  symbolism?: string[];
+  currentStatus?: string;
+  sources?: string;
+  raw?: Record<string, unknown>;
+}
+
+export interface TimelineFigure {
+  id: string;
+  name: string;
+  type: 'figure';
+  description?: string;
+  imageUrl?: string;
+  lifeDates?: string;
+  nationality?: string;
+  education?: string;
+  philosophy?: string;
+  aesthetics?: string;
+  anecdotes?: string;
+  majorWorks?: string[];
+  keyWritings?: string[];
+  influence?: string;
+  sources?: string;
+  notes?: string;
+  raw?: Record<string, unknown>;
 }
 
 export interface ChildMovement {
   id: string;
   name: string;
+  parent?: string;
+  overview?: string;
   description?: string;
-  years?: string;
   start?: number;
   end?: number;
-  startYear?: number;
-  endYear?: number;
-  position?: number;
+  startYearLabel?: string;
+  endYearLabel?: string;
+  yearsLabel?: string;
   region?: string;
-  traits?: string[];
-  works?: Subchild[];
-  figures?: Subchild[];
-  parent?: string;
-  subchildren?: Subchild[];
+  geography?: string;
+  socialPoliticalContext?: string;
+  philosophicalIdeas?: string;
+  hallmarkTraits?: string[];
+  keyTexts?: string[];
+  canonicalWorks?: string[];
+  keyFiguresList?: string[];
+  notes?: string;
+  imageUrl?: string;
+  localImagePath?: string;
+  works?: TimelineBuilding[];
+  figures?: TimelineFigure[];
 }
 
 export interface MacroMovement {
   id: string;
+  slug?: string;
   name: string;
-  description: string;
-  years: string;
-  startYear: number;
-  endYear: number;
-  color: string;
-  position: number;
-  children: ChildMovement[];
+  description?: string;
+  start?: number;
+  end?: number;
+  macroNamesList?: string[];
+  colorClass?: string;
+  children?: string[];
 }
