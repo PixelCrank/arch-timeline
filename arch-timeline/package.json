@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
-  "populate": "tsx scripts/populateContent.ts"
+    "populate": "tsx scripts/populateContent.ts"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
