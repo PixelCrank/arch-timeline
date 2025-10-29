@@ -135,36 +135,18 @@ export function MovementCard({
                   <Building className="h-4 w-4" />
                   Signature Works & Buildings
                 </h4>
-                {/* Collapsed cards in single column */}
+                {/* All cards in order - expand in place */}
                 <div className="flex flex-col gap-4">
-                  {works
-                    .filter((work) => activeWorkId !== work.name)
-                    .map((work) => (
-                      <WorkCard
-                        key={work.name}
-                        work={work}
-                        paletteKey={workPaletteKey}
-                        isActive={false}
-                        onToggle={() => handleWorkToggle(work.name)}
-                      />
-                    ))}
+                  {works.map((work) => (
+                    <WorkCard
+                      key={work.name}
+                      work={work}
+                      paletteKey={workPaletteKey}
+                      isActive={activeWorkId === work.name}
+                      onToggle={() => handleWorkToggle(work.name)}
+                    />
+                  ))}
                 </div>
-                {/* Expanded card at full width */}
-                {activeWorkId && (
-                  <div className="w-full">
-                    {works
-                      .filter((work) => work.name === activeWorkId)
-                      .map((work) => (
-                        <WorkCard
-                          key={work.name}
-                          work={work}
-                          paletteKey={workPaletteKey}
-                          isActive={true}
-                          onToggle={() => handleWorkToggle(work.name)}
-                        />
-                      ))}
-                  </div>
-                )}
               </div>
             )}
             
@@ -174,36 +156,18 @@ export function MovementCard({
                   <Users className="h-4 w-4" />
                   Key Figures
                 </h4>
-                {/* Collapsed cards in single column */}
+                {/* All cards in order - expand in place */}
                 <div className="flex flex-col gap-4">
-                  {figures
-                    .filter((figure) => activeFigureId !== figure.name)
-                    .map((figure) => (
-                      <FigureCard
-                        key={figure.name}
-                        figure={figure}
-                        paletteKey={figurePaletteKey}
-                        isActive={false}
-                        onToggle={() => handleFigureToggle(figure.name)}
-                      />
-                    ))}
+                  {figures.map((figure) => (
+                    <FigureCard
+                      key={figure.name}
+                      figure={figure}
+                      paletteKey={figurePaletteKey}
+                      isActive={activeFigureId === figure.name}
+                      onToggle={() => handleFigureToggle(figure.name)}
+                    />
+                  ))}
                 </div>
-                {/* Expanded card at full width */}
-                {activeFigureId && (
-                  <div className="w-full">
-                    {figures
-                      .filter((figure) => figure.name === activeFigureId)
-                      .map((figure) => (
-                        <FigureCard
-                          key={figure.name}
-                          figure={figure}
-                          paletteKey={figurePaletteKey}
-                          isActive={true}
-                          onToggle={() => handleFigureToggle(figure.name)}
-                        />
-                      ))}
-                  </div>
-                )}
               </div>
             )}
           </motion.div>
