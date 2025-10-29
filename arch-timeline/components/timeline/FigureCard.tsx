@@ -28,7 +28,7 @@ export function FigureCard({
   const birthYear = extractStartYear(figure.lifeDates);
 
   return (
-    <motion.article layout className="relative w-full">
+    <motion.article className="relative w-full">
       {/* Timeline year indicator on the left */}
       {birthYear && (
         <div className="absolute -left-24 top-8 hidden items-center gap-3 md:flex">
@@ -44,7 +44,6 @@ export function FigureCard({
       <motion.button
         type="button"
         onClick={onToggle}
-        layout
         whileHover={{ y: -2, scale: isActive ? 1 : 1.01 }}
         whileTap={{ scale: 0.99 }}
         className={`glass-panel w-full overflow-hidden rounded-2xl border border-white/60 bg-gradient-to-br ${palette.surface} text-left shadow-soft transition-all hover:shadow-[0_12px_40px_rgba(15,23,42,0.15)]`}
