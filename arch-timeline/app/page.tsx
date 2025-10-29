@@ -2,9 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { HeroSection } from "@/components/timeline/HeroSection";
-import { LegendSection } from "@/components/timeline/LegendSection";
 import { MacroSection } from "@/components/timeline/MacroSection";
-import { LEGEND_ITEMS, MACRO_PALETTES } from "@/components/timeline/palettes";
+import { MACRO_PALETTES } from "@/components/timeline/palettes";
 import { getChronoStart } from "@/components/timeline/utils";
 import { useTimelineData } from "../hooks/useTimelineData";
 import type { ChildMovement, MacroMovement } from "../lib/timelineData";

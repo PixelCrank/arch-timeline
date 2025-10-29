@@ -77,7 +77,7 @@ export function HeroSection({
                 <InfoPill tone="work">Signature Work</InfoPill>
               </div>
               <p className="text-sm leading-relaxed text-slate-600">
-                Built artifacts and projects that manifest the movement's core principles and aesthetics.
+                Built artifacts and projects that manifest the movement&apos;s core principles and aesthetics.
               </p>
             </div>
             <div className="flex flex-col gap-3">
@@ -88,7 +88,7 @@ export function HeroSection({
                 <InfoPill tone="figure">Key Figure</InfoPill>
               </div>
               <p className="text-sm leading-relaxed text-slate-600">
-                Architects, theorists, and designers who shaped and advanced the movement's vision.
+                Architects, theorists, and designers who shaped and advanced the movement&apos;s vision.
               </p>
             </div>
           </div>

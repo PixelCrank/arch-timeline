@@ -96,7 +96,9 @@ const buildTimelineFigure = (row: Record<string, unknown>, fallbackId: string): 
 });
 
 // Converts Google Sheets API data to the app's timeline data structure
-export function convertSheetsToTimelineFormat(sheetData: any): { macros: MacroMovement[]; children: ChildMovement[] } {
+export function convertSheetsToTimelineFormat(
+  sheetData: Record<string, Record<string, string>[]>
+): { macros: MacroMovement[]; children: ChildMovement[] } {
   if (!sheetData || !sheetData.Macros || !sheetData.Movements) {
     return { macros: [], children: [] };
   }

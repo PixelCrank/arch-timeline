@@ -26,7 +26,7 @@ export async function GET() {
 
   // Sheet/tab names based on your workbook
   const tabNames = ['Macros', 'Movements', 'Buildings', 'Figures'];
-  const data: Record<string, any[]> = {};
+  const data: Record<string, Record<string, string>[]> = {};
 
   for (const tab of tabNames) {
     const range = `${tab}!A:Z`;

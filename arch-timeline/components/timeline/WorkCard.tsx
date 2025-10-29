@@ -224,15 +224,6 @@ export function WorkCard({
   );
 }
 
-function featureBlock(label: string, values: string[]) {
-  return (
-    <div className="space-y-1">
-      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</p>
-      <p className="text-sm text-slate-700">{values.join(" • ")}</p>
-    </div>
-  );
-}
-
 const workPalette: Record<"a" | "b" | "c", { surface: string; accent: string }> = {
   a: {
     surface: "from-amber-50/95 via-white/96 to-orange-50/95",
