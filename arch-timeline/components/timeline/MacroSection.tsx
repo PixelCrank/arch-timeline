@@ -142,7 +142,7 @@ export function MacroSection({
                     {movements.length === 1 ? "" : "s"} branching from{" "}
                     <span className="font-semibold text-slate-900">{macro.name}</span>
                   </p>
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-col gap-6">
                     {movements.map((movement) => (
                       <MovementCard
                         key={movement.id}

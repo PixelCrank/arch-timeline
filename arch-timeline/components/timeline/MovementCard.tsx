@@ -122,8 +122,8 @@ export function MovementCard({
                   <Building className="h-4 w-4" />
                   Signature Works & Buildings
                 </h4>
-                {/* Collapsed cards in grid */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {/* Collapsed cards in single column */}
+                <div className="flex flex-col gap-4">
                   {works
                     .filter((work) => activeWorkId !== work.name)
                     .map((work) => (
@@ -161,8 +161,8 @@ export function MovementCard({
                   <Users className="h-4 w-4" />
                   Key Figures
                 </h4>
-                {/* Collapsed cards in grid */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {/* Collapsed cards in single column */}
+                <div className="flex flex-col gap-4">
                   {figures
                     .filter((figure) => activeFigureId !== figure.name)
                     .map((figure) => (
