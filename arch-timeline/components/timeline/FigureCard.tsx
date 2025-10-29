@@ -29,14 +29,16 @@ export function FigureCard({
 
   return (
     <motion.article layout className="relative w-full">
-      {/* Timeline dot for figure */}
+      {/* Timeline year indicator on the left */}
       {birthYear && (
-        <TimelineDot
-          type="figure"
-          year={birthYear}
-          label={figure.name}
-          isActive={isActive}
-        />
+        <div className="absolute -left-24 top-8 hidden items-center gap-3 md:flex">
+          <div className="flex flex-col items-end">
+            <div className="rounded-lg bg-gradient-to-br from-fuchsia-400 to-purple-500 px-3 py-1.5 text-xs font-bold text-white shadow-md">
+              {birthYear > 0 ? `${birthYear} CE` : `${Math.abs(birthYear)} BCE`}
+            </div>
+          </div>
+          <div className="h-0.5 w-16 bg-gradient-to-r from-fuchsia-300/60 to-transparent" />
+        </div>
       )}
       
       <motion.button

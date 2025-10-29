@@ -45,17 +45,20 @@ export function MovementCard({
 
   return (
     <div className="group relative space-y-4">
-      {/* Timeline dot for movement */}
-      {movement.start && (
-        <TimelineDot
-          type="movement"
-          year={movement.start}
-          label={movement.name}
-          isActive={isActive}
-        />
-      )}
-      
-      <motion.button
+      <div className="relative">
+        {/* Timeline year indicator on the left */}
+        {movement.start && (
+          <div className="absolute -left-24 top-8 hidden items-center gap-3 md:flex">
+            <div className="flex flex-col items-end">
+              <div className="rounded-lg bg-gradient-to-br from-emerald-400 to-green-500 px-3 py-1.5 text-xs font-bold text-white shadow-md">
+                {movement.start > 0 ? `${movement.start} CE` : `${Math.abs(movement.start)} BCE`}
+              </div>
+            </div>
+            <div className="h-0.5 w-16 bg-gradient-to-r from-emerald-300/60 to-transparent" />
+          </div>
+        )}
+        
+        <motion.button
         type="button"
         onClick={onToggle}
         layout
@@ -207,6 +210,7 @@ export function MovementCard({
           </motion.div>
         ) : null}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

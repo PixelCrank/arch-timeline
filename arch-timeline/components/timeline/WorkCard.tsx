@@ -30,14 +30,16 @@ export function WorkCard({
 
   return (
     <motion.article layout className="relative w-full">
-      {/* Timeline dot for work */}
+      {/* Timeline year indicator on the left */}
       {startYear && (
-        <TimelineDot
-          type="work"
-          year={startYear}
-          label={work.name}
-          isActive={isActive}
-        />
+        <div className="absolute -left-24 top-8 hidden items-center gap-3 md:flex">
+          <div className="flex flex-col items-end">
+            <div className="rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 px-3 py-1.5 text-xs font-bold text-white shadow-md">
+              {startYear > 0 ? `${startYear} CE` : `${Math.abs(startYear)} BCE`}
+            </div>
+          </div>
+          <div className="h-0.5 w-16 bg-gradient-to-r from-amber-300/60 to-transparent" />
+        </div>
       )}
       
       <motion.button
