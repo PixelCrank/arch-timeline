@@ -78,6 +78,7 @@ export interface MacroMovement {
   slug?: string;
   name: string;
   description?: string;
+  imageUrl?: string;
   start?: number;
   end?: number;
   macroNamesList?: string[];

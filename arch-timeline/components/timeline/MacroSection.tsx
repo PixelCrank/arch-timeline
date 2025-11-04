@@ -41,6 +41,18 @@ export function MacroSection({
   return (
     <section className="relative">
       <article className="group relative overflow-hidden rounded-[2rem] border border-white/50 bg-white/30 shadow-[0_20px_70px_rgba(15,23,42,0.15)] backdrop-blur-xl transition-all hover:shadow-[0_25px_90px_rgba(15,23,42,0.22)]">
+        {/* Background image layer */}
+        {macro.imageUrl && (
+          <div className="absolute inset-0" aria-hidden="true">
+            <img
+              src={macro.imageUrl}
+              alt=""
+              className="h-full w-full object-cover opacity-20 blur-sm"
+            />
+            <div className="absolute inset-0 bg-white/60" />
+          </div>
+        )}
+        
         <div className={`absolute inset-0 bg-gradient-to-br ${palette.surface} opacity-60`} aria-hidden="true" />
         
         <div className="relative z-10">
