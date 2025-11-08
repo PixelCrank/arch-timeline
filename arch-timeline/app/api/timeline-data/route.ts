@@ -1,6 +1,8 @@
 
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import fs from 'fs';
+import path from 'path';
 
 // Helper to map a sheet's rows to objects using the header row
 function mapSheetRows(values: string[][]) {
@@ -17,16 +19,26 @@ function mapSheetRows(values: string[][]) {
 
 export async function GET() {
   try {
-    // Parse the service account key from environment variable
-    const credentials = process.env.GOOGLE_SERVICE_ACCOUNT_KEY 
-      ? JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY)
-      : null;
-
-    if (!credentials) {
+    // Get credentials - handle both file path and JSON string
+    let credentials;
+    const credEnv = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+    
+    if (!credEnv) {
       return NextResponse.json(
         { error: 'Missing Google credentials' },
         { status: 500 }
       );
+    }
+
+    // Check if it's a file path or JSON string
+    if (credEnv.startsWith('./') || credEnv.startsWith('/')) {
+      // It's a file path
+      const filePath = path.resolve(process.cwd(), credEnv);
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      credentials = JSON.parse(fileContent);
+    } else {
+      // It's a JSON string
+      credentials = JSON.parse(credEnv);
     }
 
     const authClient = new google.auth.JWT({
