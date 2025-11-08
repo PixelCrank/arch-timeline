@@ -43,75 +43,63 @@ function HeatmapLayer({ points }: { points: [number, number, number][] }) {
   return null;
 }
 
-// Better approach: Create a map effect hook
+// Heatmap component using react-leaflet's useMap hook
 function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
+  const [heatmapReady, setHeatmapReady] = useState(false);
+
   useEffect(() => {
-    console.log('🔥 MapHeatmapEffect triggered with', points.length, 'points');
+    console.log('🔥 Setting up heatmap with', points.length, 'points');
     
-    if (typeof window === "undefined") {
-      console.log('❌ Window is undefined');
-      return;
-    }
-    
-    if (points.length === 0) {
-      console.log('❌ No points to render');
+    if (typeof window === "undefined" || points.length === 0) {
       return;
     }
 
-    // Find the map instance
-    const mapElement = document.querySelector('.leaflet-container');
-    if (!mapElement) {
-      console.log('❌ Map element not found');
-      return;
-    }
-    
-    console.log('✓ Map element found, setting up heatmap...');
-
-    const setupHeatmap = async () => {
+    const initHeatmap = async () => {
       try {
-        console.log('Step 1: Getting Leaflet object');
+        // Wait a bit for map to be fully initialized
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const mapElement = document.querySelector('.leaflet-container');
+        if (!mapElement) {
+          console.log('❌ Map element not found');
+          return;
+        }
+
         const L = (window as any).L;
         if (!L) {
-          console.log('❌ Leaflet (L) not found on window');
+          console.log('❌ Leaflet not loaded');
           return;
         }
-        console.log('✓ Leaflet found');
 
-        // Import leaflet.heat
-        console.log('Step 2: Checking for heatLayer');
+        // Import leaflet.heat if not already loaded
         if (!(L as any).heatLayer) {
-          console.log('heatLayer not found, importing leaflet.heat...');
           await import("leaflet.heat");
-          console.log('✓ leaflet.heat imported');
-        } else {
-          console.log('✓ heatLayer already exists');
         }
 
-        // Get the map instance from the DOM element with retry
-        console.log('Step 3: Getting map instance');
-        let mapInstance = (mapElement as any)._leaflet_map;
-        
-        // If not found, wait and retry up to 5 times
-        let retries = 0;
-        while (!mapInstance && retries < 5) {
-          console.log(`Map not ready yet, retry ${retries + 1}/5...`);
-          await new Promise(resolve => setTimeout(resolve, 200));
-          mapInstance = (mapElement as any)._leaflet_map;
-          retries++;
-        }
-        
+        // Get map instance
+        const mapInstance = (mapElement as any)._leaflet_map;
         if (!mapInstance) {
-          console.log('❌ Map instance not found on element after retries');
+          console.log('❌ Map instance not found');
           return;
         }
-        console.log('✓ Map instance found');
-        
-        console.log('Step 4: Creating heatLayer with options');
+
+        console.log('✅ Creating heatmap with', points.length, 'points');
+        console.log('Sample points:', points.slice(0, 3));
+
+        // Remove any existing heatmap layers
+        mapInstance.eachLayer((layer: any) => {
+          if (layer._heat) {
+            mapInstance.removeLayer(layer);
+          }
+        });
+
+        // Create heatmap layer with visible settings
         const heatLayer = (L as any).heatLayer(points, {
-          radius: 25,
-          blur: 35,
+          radius: 30,
+          blur: 40,
           maxZoom: 10,
           max: 1.0,
+          minOpacity: 0.3,
           gradient: {
             0.0: "#3b82f6", // blue
             0.3: "#8b5cf6", // violet  
@@ -121,35 +109,20 @@ function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
           },
         }).addTo(mapInstance);
 
-        console.log('✅ Heatmap layer added successfully with', points.length, 'points');
-        console.log('Sample heatmap points:', points.slice(0, 3));
+        console.log('✅ Heatmap layer added successfully');
+        setHeatmapReady(true);
 
         return () => {
           if (mapInstance && heatLayer) {
             mapInstance.removeLayer(heatLayer);
-            console.log('Heatmap layer removed');
           }
         };
       } catch (error) {
-        console.error('❌ Error setting up heatmap:', error);
-        console.log('Debug info:', {
-          hasWindow: typeof window !== 'undefined',
-          hasL: !!(window as any).L,
-          hasHeatLayer: !!((window as any).L as any)?.heatLayer,
-          mapElement: !!mapElement,
-          mapInstance: !!((mapElement as any)?._leaflet_map),
-          pointsCount: points.length
-        });
+        console.error('❌ Heatmap error:', error);
       }
     };
 
-    const timeoutId = setTimeout(() => {
-      setupHeatmap();
-    }, 100); // Small delay to ensure map is ready
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    initHeatmap();
   }, [points]);
 
   return null;
@@ -411,7 +384,7 @@ function getMarkerColor(macroId?: string): string {
 export function MapView({ buildings, movements, macros, onMarkerClick }: MapViewProps) {
   const [mounted, setMounted] = useState(false);
   const [leafletIcon, setLeafletIcon] = useState<any>(null);
-  const [showHeatmap, setShowHeatmap] = useState(true);
+  const [showHeatmap, setShowHeatmap] = useState(false);
   const [selectedMovement, setSelectedMovement] = useState<string | null>(null);
 
   useEffect(() => {
