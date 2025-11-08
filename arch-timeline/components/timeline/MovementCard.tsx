@@ -19,6 +19,7 @@ export function MovementCard({
   onToggle,
   workPaletteKey,
   figurePaletteKey,
+  allMovements = [],
 }: {
   movement: ChildMovement;
   palette: MovementPalette;
@@ -27,6 +28,7 @@ export function MovementCard({
   onToggle: () => void;
   workPaletteKey: "a" | "b" | "c";
   figurePaletteKey: "a" | "b" | "c";
+  allMovements?: ChildMovement[];
 }) {
   const years = formatMovementYears(movement);
   const works = Array.isArray(movement.works) ? (movement.works as TimelineBuilding[]) : [];
@@ -141,7 +143,14 @@ export function MovementCard({
             transition={{ duration: 0.25 }}
             className="space-y-6"
           >
-            <MovementDetails movement={movement} macroName={macroName} palette={palette} />
+            <MovementDetails
+              movement={movement}
+              macroName={macroName}
+              palette={palette}
+              works={works}
+              figures={figures}
+              allMovements={allMovements}
+            />
             
             {works.length > 0 && (
               <div className="space-y-4">

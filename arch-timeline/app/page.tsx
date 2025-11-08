@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { HeroSection } from "@/components/timeline/HeroSection";
 import { MacroSection } from "@/components/timeline/MacroSection";
 import { SearchBar } from "@/components/timeline/SearchBar";
+import { TimelineOverview } from "@/components/timeline/TimelineOverview";
 import { MACRO_PALETTES } from "@/components/timeline/palettes";
 import { getChronoStart } from "@/components/timeline/utils";
 import { useTimelineData } from "../hooks/useTimelineData";
@@ -32,6 +33,7 @@ export default function Home() {
   const [activeMovementId, setActiveMovementId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [matchingIds, setMatchingIds] = useState<Set<string>>(new Set());
+  const macroRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Search functionality
   useEffect(() => {
@@ -132,6 +134,16 @@ export default function Home() {
     setMatchingIds(new Set());
   };
 
+  const handleMinimapClick = (macroId: string) => {
+    const element = macroRefs.current.get(macroId);
+    if (element) {
+      const yOffset = -100; // Offset for fixed header
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      setActiveMacroId(macroId);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-page-surface">
@@ -164,6 +176,13 @@ export default function Home() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-page-surface">
       <HeroSection hasHighlights={Boolean(activeMacroId || activeMovementId)} onClear={clearHighlights} />
+      
+      {/* Timeline minimap navigation */}
+      <TimelineOverview
+        macros={sortedMacros}
+        activeMacroId={activeMacroId}
+        onMacroClick={handleMinimapClick}
+      />
       
       {/* Timeline with integrated dots that move with cards */}
       <main className="relative pb-24 overflow-x-hidden">
@@ -198,7 +217,13 @@ export default function Home() {
               .sort((a, b) => getChronoStart(a) - getChronoStart(b));
 
             return (
-              <div key={macro.id} className="relative">
+              <div
+                key={macro.id}
+                className="relative"
+                ref={(el) => {
+                  if (el) macroRefs.current.set(macro.id, el);
+                }}
+              >
                 {/* Timeline marker that moves with the card */}
                 <div className="absolute -left-[calc(1.5rem+96px)] top-8 hidden items-center gap-4 md:flex lg:-left-[calc(1.5rem+120px)]">
                   {/* Year label */}
@@ -233,6 +258,7 @@ export default function Home() {
                   onMovementToggle={handleMovementToggle}
                   isHighlighted={matchingIds.has(`macro-${macro.id}`)}
                   hasSearch={searchQuery.trim().length > 0}
+                  allMovements={movements}
                 />
               </div>
             );

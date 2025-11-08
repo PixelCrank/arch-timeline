@@ -27,6 +27,7 @@ export function MacroSection({
   onMovementToggle,
   isHighlighted = false,
   hasSearch = false,
+  allMovements = [],
 }: {
   macro: MacroMovement;
   order: number;
@@ -38,6 +39,7 @@ export function MacroSection({
   onMovementToggle: (movement: ChildMovement) => void;
   isHighlighted?: boolean;
   hasSearch?: boolean;
+  allMovements?: ChildMovement[];
 }) {
   const years = formatMacroYears(macro);
   const aliasList = splitList(macro.macroNamesList);
@@ -175,6 +177,7 @@ export function MacroSection({
                         figurePaletteKey={palette.figurePaletteKey}
                         isActive={activeMovementId === movement.id}
                         onToggle={() => onMovementToggle(movement)}
+                        allMovements={allMovements}
                       />
                     ))}
                   </div>

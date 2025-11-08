@@ -2,18 +2,25 @@
 
 import { motion } from "framer-motion";
 import { Calendar, Layers, MapPin } from "lucide-react";
-import type { ChildMovement } from "../../lib/timelineData";
+import type { ChildMovement, TimelineBuilding, TimelineFigure } from "../../lib/timelineData";
 import { InfoPill } from "./InfoPill";
+import { RelationshipPanel } from "./RelationshipPanel";
 import { formatMovementYears, splitList } from "@/components/timeline/utils";
 
 export function MovementDetails({
   movement,
   macroName,
   palette,
+  works = [],
+  figures = [],
+  allMovements = [],
 }: {
   movement: ChildMovement;
   macroName: string;
   palette: MovementPalette;
+  works?: TimelineBuilding[];
+  figures?: TimelineFigure[];
+  allMovements?: ChildMovement[];
 }) {
   const years = formatMovementYears(movement);
   const regions = splitList(movement.geography ?? movement.region ?? "");
@@ -22,7 +29,7 @@ export function MovementDetails({
   const ideas = splitList(movement.philosophicalIdeas);
   const canonical = splitList(movement.canonicalWorks);
   const texts = splitList(movement.keyTexts);
-  const figures = splitList(movement.keyFiguresList);
+  const figureNames = splitList(movement.keyFiguresList);
 
   return (
     <motion.section
@@ -96,13 +103,25 @@ export function MovementDetails({
         </div>
       </div>
 
+      {/* Relationship visualization */}
+      {(works.length > 0 || figures.length > 0 || allMovements.length > 0) && (
+        <div className="border-t border-white/50 bg-white/20 p-6">
+          <RelationshipPanel
+            movement={movement}
+            works={works}
+            figures={figures}
+            allMovements={allMovements}
+          />
+        </div>
+      )}
+
       {/* Bottom grid - reference materials */}
-      {(canonical.length || texts.length || figures.length) ? (
+      {(canonical.length || texts.length || figureNames.length) ? (
         <div className="border-t border-white/50 bg-white/30 p-6">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {canonical.length ? quickCard("Canonical Works", canonical) : null}
             {texts.length ? quickCard("Key Texts", texts) : null}
-            {figures.length ? quickCard("Key Figures", figures) : null}
+            {figureNames.length ? quickCard("Key Figures", figureNames) : null}
           </div>
         </div>
       ) : null}
