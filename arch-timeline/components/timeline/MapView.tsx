@@ -84,7 +84,10 @@ function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
         }
 
         console.log('✅ Creating heatmap with', points.length, 'points');
-        console.log('Sample points:', points.slice(0, 3));
+        
+        // Find max intensity for scaling
+        const maxIntensity = Math.max(...points.map(p => p[2]));
+        console.log('📈 Max intensity:', maxIntensity);
 
         // Remove any existing heatmap layers
         mapInstance.eachLayer((layer: any) => {
@@ -95,21 +98,21 @@ function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
 
         // Create heatmap layer with visible settings
         const heatLayer = (L as any).heatLayer(points, {
-          radius: 30,
-          blur: 40,
-          maxZoom: 10,
-          max: 1.0,
-          minOpacity: 0.3,
+          radius: 35,
+          blur: 45,
+          maxZoom: 17,
+          max: maxIntensity, // Use actual max intensity from data
+          minOpacity: 0.4,
           gradient: {
             0.0: "#3b82f6", // blue
-            0.3: "#8b5cf6", // violet  
+            0.25: "#8b5cf6", // violet  
             0.5: "#ec4899", // fuchsia
-            0.7: "#f59e0b", // amber
+            0.75: "#f59e0b", // amber
             1.0: "#ef4444", // red
           },
         }).addTo(mapInstance);
 
-        console.log('✅ Heatmap layer added successfully');
+        console.log('✅ Heatmap layer added successfully with max intensity', maxIntensity);
         setHeatmapReady(true);
 
         return () => {
@@ -520,8 +523,8 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
     
     // Convert to array format [lat, lng, intensity]
     const points: [number, number, number][] = Array.from(pointMap.values()).map((point) => {
-      // Normalize intensity to 0-1 range, with diminishing returns for clusters
-      return [point.lat, point.lng, Math.min(Math.log(point.intensity + 1) / Math.log(10), 1)];
+      // Use direct intensity values - leaflet.heat will normalize them
+      return [point.lat, point.lng, point.intensity];
     });
     
     const stats = {
@@ -533,15 +536,23 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       selectedMovement: selectedMovement || 'All'
     };
     
-    console.log('Heatmap data:', stats);
+    console.log('📊 Heatmap data:', stats);
     
-    // Log top 5 hottest points with their sources
+    // Log top 5 hottest points with their sources and actual intensity values
     const sorted = Array.from(pointMap.values()).sort((a, b) => b.intensity - a.intensity).slice(0, 5);
-    console.log('Top 5 clusters:', sorted.map(p => ({ 
+    console.log('🔥 Top 5 clusters:', sorted.map(p => ({ 
       lat: p.lat.toFixed(2), 
       lng: p.lng.toFixed(2), 
-      buildings: p.intensity,
-      samples: p.sources.slice(0, 3)
+      intensity: p.intensity,
+      buildings: p.sources.length,
+      samples: p.sources.slice(0, 2)
+    })));
+    
+    // Log actual point values being sent to heatmap
+    console.log('📍 Sample heatmap points:', points.slice(0, 5).map(p => ({
+      lat: p[0].toFixed(2),
+      lng: p[1].toFixed(2),
+      intensity: p[2]
     })));
     
     return points;
