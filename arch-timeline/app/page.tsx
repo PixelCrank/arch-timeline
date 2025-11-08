@@ -417,9 +417,9 @@ export default function Home() {
         </div>
 
         <div className="section-container space-y-8 pt-8 sm:space-y-12 lg:space-y-16">
-          {/* Search and Filter Controls */}
+          {/* Search, Filter, and View Controls */}
           <div className="flex flex-col gap-3">
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 items-start">
               <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
@@ -434,14 +434,12 @@ export default function Home() {
                 onClearAll={handleClearFilters}
                 activeFilterCount={activeFilterCount}
                 availableRegions={availableOptions.regions}
-              availableMaterials={availableOptions.materials}
-              availableFunctions={availableOptions.functions}
-            />
-            </div>
-            
-            {/* View Toggle */}
-            <div className="flex justify-center">
-              <div className="inline-flex rounded-lg border border-white/10 bg-slate-900/50 p-1 backdrop-blur-sm">
+                availableMaterials={availableOptions.materials}
+                availableFunctions={availableOptions.functions}
+              />
+              
+              {/* View Toggle */}
+              <div className="inline-flex shrink-0 rounded-lg border border-white/10 bg-slate-900/50 p-1 backdrop-blur-sm">
                 <button
                   onClick={() => setViewMode('timeline')}
                   className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all ${
@@ -451,7 +449,7 @@ export default function Home() {
                   }`}
                 >
                   <List className="h-4 w-4" />
-                  Timeline
+                  <span className="hidden sm:inline">Timeline</span>
                 </button>
                 <button
                   onClick={() => setViewMode('map')}
@@ -462,7 +460,7 @@ export default function Home() {
                   }`}
                 >
                   <MapIcon className="h-4 w-4" />
-                  Map
+                  <span className="hidden sm:inline">Map</span>
                 </button>
               </div>
             </div>
@@ -471,7 +469,7 @@ export default function Home() {
           {/* Conditional rendering based on view mode */}
           {viewMode === 'map' ? (
             <MapView
-              buildings={data?.buildings || []}
+              buildings={movements.flatMap(m => m.works || [])}
               movements={movements}
               macros={macros}
             />

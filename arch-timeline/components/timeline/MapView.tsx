@@ -25,55 +25,177 @@ const Popup = dynamic(
 
 // Coordinate lookup for common locations
 const LOCATION_COORDINATES: Record<string, [number, number]> = {
-  // Europe
+  // Europe - Western
   "rome": [41.9028, 12.4964],
   "italy": [41.9028, 12.4964],
+  "milan": [45.4642, 9.1900],
+  "florence": [43.7696, 11.2558],
+  "venice": [45.4408, 12.3155],
+  "naples": [40.8518, 14.2681],
   "paris": [48.8566, 2.3522],
   "france": [46.2276, 2.2137],
+  "lyon": [45.7640, 4.8357],
+  "marseille": [43.2965, 5.3698],
   "london": [51.5074, -0.1278],
   "england": [52.3555, -1.1743],
   "united kingdom": [55.3781, -3.4360],
+  "uk": [55.3781, -3.4360],
+  "britain": [52.3555, -1.1743],
+  "scotland": [56.4907, -4.2026],
+  "edinburgh": [55.9533, -3.1883],
+  "glasgow": [55.8642, -4.2518],
   "germany": [51.1657, 10.4515],
   "berlin": [52.5200, 13.4050],
+  "munich": [48.1351, 11.5820],
+  "cologne": [50.9375, 6.9603],
+  "frankfurt": [50.1109, 8.6821],
+  "hamburg": [53.5511, 9.9937],
   "spain": [40.4637, -3.7492],
   "barcelona": [41.3874, 2.1686],
   "madrid": [40.4168, -3.7038],
-  "athens": [37.9838, 23.7275],
-  "greece": [39.0742, 21.8243],
-  "vienna": [48.2082, 16.3738],
-  "austria": [47.5162, 14.5501],
+  "seville": [37.3891, -5.9845],
+  "valencia": [39.4699, -0.3763],
+  "portugal": [39.3999, -8.2245],
+  "lisbon": [38.7223, -9.1393],
+  "porto": [41.1579, -8.6291],
   "netherlands": [52.1326, 5.2913],
+  "holland": [52.1326, 5.2913],
   "amsterdam": [52.3676, 4.9041],
+  "rotterdam": [51.9244, 4.4777],
+  "belgium": [50.5039, 4.4699],
+  "brussels": [50.8503, 4.3517],
+  "bruges": [51.2093, 3.2247],
+  "antwerp": [51.2194, 4.4025],
+  "switzerland": [46.8182, 8.2275],
+  "zurich": [47.3769, 8.5417],
+  "geneva": [46.2044, 6.1432],
+  "austria": [47.5162, 14.5501],
+  "vienna": [48.2082, 16.3738],
+  "salzburg": [47.8095, 13.0550],
   
-  // Americas
+  // Europe - Eastern
+  "greece": [39.0742, 21.8243],
+  "athens": [37.9838, 23.7275],
+  "russia": [61.5240, 105.3188],
+  "moscow": [55.7558, 37.6173],
+  "st petersburg": [59.9343, 30.3351],
+  "saint petersburg": [59.9343, 30.3351],
+  "petersburg": [59.9343, 30.3351],
+  "poland": [51.9194, 19.1451],
+  "warsaw": [52.2297, 21.0122],
+  "krakow": [50.0647, 19.9450],
+  "czech republic": [49.8175, 15.4730],
+  "prague": [50.0755, 14.4378],
+  "hungary": [47.1625, 19.5033],
+  "budapest": [47.4979, 19.0402],
+  "romania": [45.9432, 24.9668],
+  "bucharest": [44.4268, 26.1025],
+  
+  // Europe - Nordic
+  "sweden": [60.1282, 18.6435],
+  "stockholm": [59.3293, 18.0686],
+  "denmark": [56.2639, 9.5018],
+  "copenhagen": [55.6761, 12.5683],
+  "norway": [60.4720, 8.4689],
+  "oslo": [59.9139, 10.7522],
+  "finland": [61.9241, 25.7482],
+  "helsinki": [60.1699, 24.9384],
+  
+  // Americas - North America
   "united states": [37.0902, -95.7129],
+  "usa": [37.0902, -95.7129],
+  "america": [37.0902, -95.7129],
   "new york": [40.7128, -74.0060],
   "chicago": [41.8781, -87.6298],
   "los angeles": [34.0522, -118.2437],
+  "san francisco": [37.7749, -122.4194],
   "washington": [38.9072, -77.0369],
-  "brazil": [-14.2350, -51.9253],
-  "brasilia": [-15.8267, -47.9218],
+  "boston": [42.3601, -71.0589],
+  "philadelphia": [39.9526, -75.1652],
+  "miami": [25.7617, -80.1918],
+  "seattle": [47.6062, -122.3321],
+  "canada": [56.1304, -106.3468],
+  "toronto": [43.6532, -79.3832],
+  "montreal": [45.5017, -73.5673],
+  "vancouver": [49.2827, -123.1207],
   "mexico": [23.6345, -102.5528],
   "mexico city": [19.4326, -99.1332],
   
-  // Asia
+  // Americas - South America
+  "brazil": [-14.2350, -51.9253],
+  "brasilia": [-15.8267, -47.9218],
+  "sao paulo": [-23.5505, -46.6333],
+  "rio de janeiro": [-22.9068, -43.1729],
+  "argentina": [-38.4161, -63.6167],
+  "buenos aires": [-34.6037, -58.3816],
+  "chile": [-35.6751, -71.5430],
+  "santiago": [-33.4489, -70.6693],
+  "peru": [-9.1900, -75.0152],
+  "lima": [-12.0464, -77.0428],
+  "colombia": [4.5709, -74.2973],
+  "bogota": [4.7110, -74.0721],
+  
+  // Asia - East
   "china": [35.8617, 104.1954],
   "beijing": [39.9042, 116.4074],
+  "shanghai": [31.2304, 121.4737],
+  "hong kong": [22.3193, 114.1694],
   "japan": [36.2048, 138.2529],
   "tokyo": [35.6762, 139.6503],
+  "kyoto": [35.0116, 135.7681],
+  "osaka": [34.6937, 135.5023],
+  "korea": [35.9078, 127.7669],
+  "south korea": [35.9078, 127.7669],
+  "seoul": [37.5665, 126.9780],
+  
+  // Asia - South & Southeast
   "india": [20.5937, 78.9629],
   "delhi": [28.7041, 77.1025],
   "mumbai": [19.0760, 72.8777],
+  "bangalore": [12.9716, 77.5946],
+  "thailand": [15.8700, 100.9925],
+  "bangkok": [13.7563, 100.5018],
+  "vietnam": [14.0583, 108.2772],
+  "hanoi": [21.0285, 105.8542],
+  "singapore": [1.3521, 103.8198],
+  "malaysia": [4.2105, 101.9758],
+  "kuala lumpur": [3.1390, 101.6869],
+  "indonesia": [-0.7893, 113.9213],
+  "jakarta": [-6.2088, 106.8456],
   
   // Middle East
   "egypt": [26.8206, 30.8025],
   "cairo": [30.0444, 31.2357],
   "turkey": [38.9637, 35.2433],
   "istanbul": [41.0082, 28.9784],
+  "ankara": [39.9334, 32.8597],
+  "iran": [32.4279, 53.6880],
+  "tehran": [35.6892, 51.3890],
+  "iraq": [33.2232, 43.6793],
+  "baghdad": [33.3152, 44.3661],
+  "israel": [31.0461, 34.8516],
+  "jerusalem": [31.7683, 35.2137],
+  "tel aviv": [32.0853, 34.7818],
+  "saudi arabia": [23.8859, 45.0792],
+  "dubai": [25.2048, 55.2708],
+  "uae": [23.4241, 53.8478],
   
-  // Others
+  // Africa
+  "south africa": [-30.5595, 22.9375],
+  "cape town": [-33.9249, 18.4241],
+  "johannesburg": [-26.2041, 28.0473],
+  "morocco": [31.7917, -7.0926],
+  "marrakech": [31.6295, -7.9811],
+  "kenya": [-0.0236, 37.9062],
+  "nairobi": [-1.2921, 36.8219],
+  
+  // Oceania
   "australia": [-25.2744, 133.7751],
   "sydney": [-33.8688, 151.2093],
+  "melbourne": [-37.8136, 144.9631],
+  "brisbane": [-27.4698, 153.0251],
+  "new zealand": [-40.9006, 174.8860],
+  "auckland": [-36.8485, 174.7633],
 };
 
 interface MapMarker {
@@ -168,10 +290,20 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       macroById[macro.id] = macro;
     });
     
+    console.log('MapView data:', {
+      buildingCount: buildings.length,
+      movementCount: movements.length,
+      macroCount: macros.length
+    });
+    
     // Process buildings
     buildings.forEach((building) => {
       const location = building.city || building.country || building.location;
       const coords = getCoordinatesFromLocation(location);
+      
+      if (!coords) {
+        console.log('No coords for building:', building.name, 'location:', location);
+      }
       
       if (coords) {
         result.push({
@@ -192,6 +324,10 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       const coords = getCoordinatesFromLocation(movement.region);
       const macro = movement.parent ? macroById[movement.parent] : undefined;
       
+      if (!coords) {
+        console.log('No coords for movement:', movement.name, 'region:', movement.region);
+      }
+      
       if (coords) {
         result.push({
           id: movement.id,
@@ -205,6 +341,8 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       }
     });
     
+    console.log('Total markers:', result.length);
+    
     return result;
   }, [buildings, movements, macros]);
 
@@ -217,7 +355,19 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
   }
 
   return (
-    <div className="h-[600px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-xl">
+    <div className="relative h-[600px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-xl">
+      {/* Debug info display */}
+      <div className="absolute top-4 right-4 z-[1000] space-y-2">
+        <div className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm">
+          <div className="text-xs font-semibold text-white">
+            {markers.length} markers
+          </div>
+          <div className="text-[10px] text-slate-300">
+            {buildings.length} buildings · {movements.length} movements
+          </div>
+        </div>
+      </div>
+      
       <MapContainer
         center={[20, 0]}
         zoom={2}
