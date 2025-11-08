@@ -23,6 +23,39 @@ const Popup = dynamic(
   { ssr: false }
 );
 
+// Heatmap layer component
+function HeatmapLayer({ points }: { points: [number, number, number][] }) {
+  const { useMap } = require("react-leaflet");
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map || points.length === 0) return;
+
+    const L = require("leaflet");
+    require("leaflet.heat");
+
+    const heatLayer = (L as any).heatLayer(points, {
+      radius: 25,
+      blur: 35,
+      maxZoom: 10,
+      max: 1.0,
+      gradient: {
+        0.0: "#3b82f6", // blue
+        0.3: "#8b5cf6", // violet  
+        0.5: "#ec4899", // fuchsia
+        0.7: "#f59e0b", // amber
+        1.0: "#ef4444", // red
+      },
+    }).addTo(map);
+
+    return () => {
+      map.removeLayer(heatLayer);
+    };
+  }, [map, points]);
+
+  return null;
+}
+
 // Coordinate lookup for common locations
 const LOCATION_COORDINATES: Record<string, [number, number]> = {
   // Europe - Western
@@ -253,6 +286,7 @@ function getMarkerColor(macroId?: string): string {
 export function MapView({ buildings, movements, macros, onMarkerClick }: MapViewProps) {
   const [mounted, setMounted] = useState(false);
   const [leafletIcon, setLeafletIcon] = useState<any>(null);
+  const [showHeatmap, setShowHeatmap] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -346,6 +380,23 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
     return result;
   }, [buildings, movements, macros]);
 
+  // Create heatmap data for movements
+  const heatmapPoints = useMemo(() => {
+    const points: [number, number, number][] = [];
+    
+    movements.forEach((movement) => {
+      const coords = getCoordinatesFromLocation(movement.region);
+      if (coords) {
+        // Intensity based on number of works
+        const intensity = movement.works ? Math.min(movement.works.length / 10, 1) : 0.3;
+        points.push([coords[0], coords[1], intensity]);
+      }
+    });
+    
+    console.log('Heatmap points:', points.length);
+    return points;
+  }, [movements]);
+
   if (!mounted) {
     return (
       <div className="flex h-[600px] w-full items-center justify-center rounded-2xl border border-white/10 bg-slate-900/50 backdrop-blur-sm">
@@ -356,11 +407,23 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
 
   return (
     <div className="relative h-[600px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-xl">
+      {/* Layer toggle */}
+      <div className="absolute top-4 left-4 z-[1000]">
+        <button
+          onClick={() => setShowHeatmap(!showHeatmap)}
+          className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm transition-all hover:bg-slate-800/90"
+        >
+          <div className="text-xs font-semibold text-white">
+            {showHeatmap ? 'Show Markers' : 'Show Heatmap'}
+          </div>
+        </button>
+      </div>
+      
       {/* Debug info display */}
       <div className="absolute top-4 right-4 z-[1000] space-y-2">
         <div className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm">
           <div className="text-xs font-semibold text-white">
-            {markers.length} markers
+            {showHeatmap ? `${heatmapPoints.length} movement areas` : `${markers.length} markers`}
           </div>
           <div className="text-[10px] text-slate-300">
             {buildings.length} buildings · {movements.length} movements
@@ -379,7 +442,11 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        {markers.map((marker) => {
+        {/* Show heatmap or markers based on toggle */}
+        {showHeatmap ? (
+          <HeatmapLayer points={heatmapPoints} />
+        ) : (
+          markers.map((marker) => {
           const icon = leafletIcon ? leafletIcon(marker.color) : undefined;
           
           return (
@@ -421,30 +488,41 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
               </Popup>
             </Marker>
           );
-        })}
+        })
+        )}
       </MapContainer>
       
       {/* Legend */}
       <div className="absolute bottom-4 left-4 z-[1000] rounded-lg border border-white/20 bg-slate-900/90 p-3 backdrop-blur-sm">
         <div className="mb-2 text-xs font-semibold text-white">Legend</div>
-        <div className="space-y-1 text-xs text-slate-300">
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-amber-500 border border-white"></div>
-            <span>Buildings</span>
+        {showHeatmap ? (
+          <div className="space-y-1 text-xs text-slate-300">
+            <div className="text-[10px] text-slate-400 mb-1">Movement Density</div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-8 rounded" style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #ef4444)' }}></div>
+              <span className="text-[10px]">Low → High</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-emerald-500 border border-white"></div>
-            <span>Ancient/Classical</span>
+        ) : (
+          <div className="space-y-1 text-xs text-slate-300">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-amber-500 border border-white"></div>
+              <span>Buildings</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-emerald-500 border border-white"></div>
+              <span>Ancient/Classical</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-fuchsia-500 border border-white"></div>
+              <span>Medieval</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-blue-500 border border-white"></div>
+              <span>Renaissance</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-fuchsia-500 border border-white"></div>
-            <span>Medieval</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-blue-500 border border-white"></div>
-            <span>Renaissance</span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
