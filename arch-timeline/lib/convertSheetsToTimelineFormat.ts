@@ -175,6 +175,7 @@ export function convertSheetsToTimelineFormat(
       end: parseYear(macro['End']),
       macroNamesList: splitList(macro['MacroNames_List']),
       colorClass: cleanString(macro['colorClass']),
+      imageUrl: pickFirst(macro, ['imageUrl', 'ImageUrl', 'Image URL']),
       children: childIds,
     };
   });
