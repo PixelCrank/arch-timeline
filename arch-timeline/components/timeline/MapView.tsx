@@ -87,11 +87,21 @@ function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
           console.log('✓ heatLayer already exists');
         }
 
-        // Get the map instance from the DOM element
+        // Get the map instance from the DOM element with retry
         console.log('Step 3: Getting map instance');
-        const mapInstance = (mapElement as any)._leaflet_map;
+        let mapInstance = (mapElement as any)._leaflet_map;
+        
+        // If not found, wait and retry up to 5 times
+        let retries = 0;
+        while (!mapInstance && retries < 5) {
+          console.log(`Map not ready yet, retry ${retries + 1}/5...`);
+          await new Promise(resolve => setTimeout(resolve, 200));
+          mapInstance = (mapElement as any)._leaflet_map;
+          retries++;
+        }
+        
         if (!mapInstance) {
-          console.log('❌ Map instance not found on element');
+          console.log('❌ Map instance not found on element after retries');
           return;
         }
         console.log('✓ Map instance found');
