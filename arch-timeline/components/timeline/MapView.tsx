@@ -22,114 +22,10 @@ const Popup = dynamic(
   () => import("react-leaflet").then((mod) => mod.Popup),
   { ssr: false }
 );
-
-// Heatmap layer component
-function HeatmapLayer({ points }: { points: [number, number, number][] }) {
-  const [map, setMap] = useState<any>(null);
-
-  useEffect(() => {
-    const setupMap = async () => {
-      if (typeof window === "undefined") return;
-      
-      const { useMap: useMapHook } = await import("react-leaflet");
-      const L = await import("leaflet");
-      await import("leaflet.heat");
-      
-      // This won't work - we need a different approach
-    };
-    setupMap();
-  }, []);
-
-  return null;
-}
-
-// Heatmap component using react-leaflet's useMap hook
-function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
-  const [heatmapReady, setHeatmapReady] = useState(false);
-
-  useEffect(() => {
-    console.log('🔥 Setting up heatmap with', points.length, 'points');
-    
-    if (typeof window === "undefined" || points.length === 0) {
-      return;
-    }
-
-    const initHeatmap = async () => {
-      try {
-        // Wait a bit for map to be fully initialized
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        const mapElement = document.querySelector('.leaflet-container');
-        if (!mapElement) {
-          console.log('❌ Map element not found');
-          return;
-        }
-
-        const L = (window as any).L;
-        if (!L) {
-          console.log('❌ Leaflet not loaded');
-          return;
-        }
-
-        // Import leaflet.heat if not already loaded
-        if (!(L as any).heatLayer) {
-          await import("leaflet.heat");
-        }
-
-        // Get map instance
-        const mapInstance = (mapElement as any)._leaflet_map;
-        if (!mapInstance) {
-          console.log('❌ Map instance not found');
-          return;
-        }
-
-        console.log('✅ Creating heatmap with', points.length, 'points');
-        
-        // Find max intensity for scaling
-        const maxIntensity = Math.max(...points.map(p => p[2]));
-        console.log('📈 Max intensity:', maxIntensity);
-
-        // Remove any existing heatmap layers
-        mapInstance.eachLayer((layer: any) => {
-          if (layer._heat) {
-            mapInstance.removeLayer(layer);
-          }
-        });
-
-        // Create heatmap layer with visible settings
-        const heatLayer = (L as any).heatLayer(points, {
-          radius: 350,
-          blur: 450,
-          maxZoom: 17,
-          max: maxIntensity, // Use actual max intensity from data
-          minOpacity: 0.5,
-          gradient: {
-            0.0: "#3b82f6", // blue
-            0.25: "#8b5cf6", // violet  
-            0.5: "#ec4899", // fuchsia
-            0.75: "#f59e0b", // amber
-            1.0: "#ef4444", // red
-          },
-        }).addTo(mapInstance);
-
-        console.log('✅ Heatmap layer added successfully with max intensity', maxIntensity);
-        setHeatmapReady(true);
-
-        return () => {
-          if (mapInstance && heatLayer) {
-            mapInstance.removeLayer(heatLayer);
-          }
-        };
-      } catch (error) {
-        console.error('❌ Heatmap error:', error);
-      }
-    };
-
-    initHeatmap();
-  }, [points]);
-
-  return null;
-}
+const HeatmapLayer = dynamic(
+  () => import("./HeatmapLayer").then((mod) => ({ default: mod.HeatmapLayer })),
+  { ssr: false }
+);
 
 // Coordinate lookup for common locations
 const LOCATION_COORDINATES: Record<string, [number, number]> = {
@@ -622,8 +518,8 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        {/* Heatmap effect */}
-        {showHeatmap && <MapHeatmapEffect points={heatmapPoints} />}
+        {/* Heatmap layer */}
+        {showHeatmap && <HeatmapLayer points={heatmapPoints} />}
         
         {/* Show markers when not in heatmap mode */}
         {!showHeatmap && (
