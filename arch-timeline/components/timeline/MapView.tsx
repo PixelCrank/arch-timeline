@@ -46,11 +46,26 @@ function HeatmapLayer({ points }: { points: [number, number, number][] }) {
 // Better approach: Create a map effect hook
 function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
   useEffect(() => {
-    if (typeof window === "undefined" || points.length === 0) return;
+    console.log('🔥 MapHeatmapEffect triggered with', points.length, 'points');
+    
+    if (typeof window === "undefined") {
+      console.log('❌ Window is undefined');
+      return;
+    }
+    
+    if (points.length === 0) {
+      console.log('❌ No points to render');
+      return;
+    }
 
     // Find the map instance
     const mapElement = document.querySelector('.leaflet-container');
-    if (!mapElement) return;
+    if (!mapElement) {
+      console.log('❌ Map element not found');
+      return;
+    }
+    
+    console.log('✓ Map element found, setting up heatmap...');
 
     const setupHeatmap = async () => {
       try {
