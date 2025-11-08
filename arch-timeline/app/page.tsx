@@ -162,11 +162,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-page-surface">
+    <div className="min-h-screen overflow-x-hidden bg-page-surface">
       <HeroSection hasHighlights={Boolean(activeMacroId || activeMovementId)} onClear={clearHighlights} />
       
       {/* Timeline with integrated dots that move with cards */}
-      <main className="relative pb-24">
+      <main className="relative pb-24 overflow-x-hidden">
         {/* Continuous vertical timeline line */}
         <div className="absolute left-[calc(50%-550px+2rem)] top-0 hidden h-full w-0.5 bg-gradient-to-b from-sky-300/50 via-emerald-300/50 to-indigo-300/50 md:block lg:left-[calc(50%-550px+3rem)]" />
         

@@ -158,13 +158,13 @@ export function MacroSection({
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="border-t border-white/40"
               >
-                <div className="space-y-6 p-5 sm:space-y-8 sm:p-8 lg:p-10">
+                <div className="overflow-x-hidden space-y-6 p-5 sm:space-y-8 sm:p-8 lg:p-10">
                   <p className="text-xs font-medium text-slate-600 sm:text-sm">
                     Explore the <span className="font-semibold text-slate-900">{movements.length}</span> child movement
                     {movements.length === 1 ? "" : "s"} branching from{" "}
                     <span className="font-semibold text-slate-900">{macro.name}</span>
                   </p>
-                  <div className="flex flex-col gap-4 sm:gap-6 md:pl-28">
+                  <div className="flex flex-col gap-4 sm:gap-6 pl-0 md:pl-28">
                     {movements.map((movement) => (
                       <MovementCard
                         key={movement.id}
