@@ -380,22 +380,43 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
     return result;
   }, [buildings, movements, macros]);
 
-  // Create heatmap data for movements
+  // Create heatmap data combining buildings and movements
   const heatmapPoints = useMemo(() => {
-    const points: [number, number, number][] = [];
+    const pointMap = new Map<string, number>();
     
+    // Add movements with base intensity
     movements.forEach((movement) => {
       const coords = getCoordinatesFromLocation(movement.region);
       if (coords) {
-        // Intensity based on number of works
-        const intensity = movement.works ? Math.min(movement.works.length / 10, 1) : 0.3;
-        points.push([coords[0], coords[1], intensity]);
+        const key = `${coords[0]},${coords[1]}`;
+        const current = pointMap.get(key) || 0;
+        // Each movement adds base intensity
+        pointMap.set(key, current + 0.5);
       }
     });
     
-    console.log('Heatmap points:', points.length);
+    // Add buildings with higher intensity
+    buildings.forEach((building) => {
+      const location = building.city || building.country || building.location;
+      const coords = getCoordinatesFromLocation(location);
+      if (coords) {
+        const key = `${coords[0]},${coords[1]}`;
+        const current = pointMap.get(key) || 0;
+        // Each building adds more intensity
+        pointMap.set(key, current + 1);
+      }
+    });
+    
+    // Convert to array format
+    const points: [number, number, number][] = Array.from(pointMap.entries()).map(([key, intensity]) => {
+      const [lat, lng] = key.split(',').map(Number);
+      // Normalize intensity to 0-1 range, with cap at 5
+      return [lat, lng, Math.min(intensity / 5, 1)];
+    });
+    
+    console.log('Heatmap points:', points.length, 'Total intensity points:', pointMap.size);
     return points;
-  }, [movements]);
+  }, [movements, buildings]);
 
   if (!mounted) {
     return (
@@ -423,10 +444,10 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       <div className="absolute top-4 right-4 z-[1000] space-y-2">
         <div className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm">
           <div className="text-xs font-semibold text-white">
-            {showHeatmap ? `${heatmapPoints.length} movement areas` : `${markers.length} markers`}
+            {showHeatmap ? `${heatmapPoints.length} locations` : `${markers.length} markers`}
           </div>
           <div className="text-[10px] text-slate-300">
-            {buildings.length} buildings · {movements.length} movements
+            {showHeatmap ? 'Density map' : `${buildings.length} buildings`}
           </div>
         </div>
       </div>
@@ -497,11 +518,12 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
         <div className="mb-2 text-xs font-semibold text-white">Legend</div>
         {showHeatmap ? (
           <div className="space-y-1 text-xs text-slate-300">
-            <div className="text-[10px] text-slate-400 mb-1">Movement Density</div>
+            <div className="text-[10px] text-slate-400 mb-1">Architecture Density</div>
             <div className="flex items-center gap-2">
               <div className="h-3 w-8 rounded" style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #ef4444)' }}></div>
               <span className="text-[10px]">Low → High</span>
             </div>
+            <div className="text-[10px] text-slate-400 mt-1">Buildings + Movements</div>
           </div>
         ) : (
           <div className="space-y-1 text-xs text-slate-300">
