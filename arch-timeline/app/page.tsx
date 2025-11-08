@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState, useEffect, useRef } from "react";
+import { Map as MapIcon, List } from "lucide-react";
 import { HeroSection } from "@/components/timeline/HeroSection";
 import { MacroSection } from "@/components/timeline/MacroSection";
 import { SearchBar } from "@/components/timeline/SearchBar";
 import { FilterPanel, type FilterOptions, type SortOption } from "@/components/timeline/FilterPanel";
 import { TimelineOverview } from "@/components/timeline/TimelineOverview";
+import { MapView } from "@/components/timeline/MapView";
 import { MACRO_PALETTES } from "@/components/timeline/palettes";
 import { getChronoStart } from "@/components/timeline/utils";
 import { useTimelineData } from "../hooks/useTimelineData";
@@ -49,6 +51,9 @@ export default function Home() {
     field: 'chronological',
     direction: 'asc',
   });
+
+  // View state (timeline or map)
+  const [viewMode, setViewMode] = useState<'timeline' | 'map'>('timeline');
 
   // Extract available filter options from data
   const availableOptions = useMemo(() => {
@@ -413,25 +418,65 @@ export default function Home() {
 
         <div className="section-container space-y-8 pt-8 sm:space-y-12 lg:space-y-16">
           {/* Search and Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              onClear={handleSearchClear}
-              matchCount={matchingIds.size}
-            />
-            <FilterPanel
-              filters={filters}
-              sort={sort}
-              onFilterChange={setFilters}
-              onSortChange={setSort}
-              onClearAll={handleClearFilters}
-              activeFilterCount={activeFilterCount}
-              availableRegions={availableOptions.regions}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onClear={handleSearchClear}
+                matchCount={matchingIds.size}
+              />
+              <FilterPanel
+                filters={filters}
+                sort={sort}
+                onFilterChange={setFilters}
+                onSortChange={setSort}
+                onClearAll={handleClearFilters}
+                activeFilterCount={activeFilterCount}
+                availableRegions={availableOptions.regions}
               availableMaterials={availableOptions.materials}
               availableFunctions={availableOptions.functions}
             />
+            </div>
+            
+            {/* View Toggle */}
+            <div className="flex justify-center">
+              <div className="inline-flex rounded-lg border border-white/10 bg-slate-900/50 p-1 backdrop-blur-sm">
+                <button
+                  onClick={() => setViewMode('timeline')}
+                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                    viewMode === 'timeline'
+                      ? 'bg-white/10 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <List className="h-4 w-4" />
+                  Timeline
+                </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                    viewMode === 'map'
+                      ? 'bg-white/10 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <MapIcon className="h-4 w-4" />
+                  Map
+                </button>
+              </div>
+            </div>
           </div>
+
+          {/* Conditional rendering based on view mode */}
+          {viewMode === 'map' ? (
+            <MapView
+              buildings={data?.buildings || []}
+              movements={movements}
+              macros={macros}
+            />
+          ) : (
+            <>
           {filteredAndSortedMacros.map((macro, index) => {
             const palette = MACRO_PALETTES[index % MACRO_PALETTES.length];
             const childIds = Array.isArray(macro.children) ? macro.children : [];
@@ -488,11 +533,13 @@ export default function Home() {
             );
           })}
 
-          {!sortedMacros.length ? (
+          {!filteredAndSortedMacros.length ? (
             <div className="glass-panel rounded-4xl border border-dashed border-white/60 bg-white/70 p-12 text-center text-slate-600">
               No timeline data found yet. Connect the Google Sheet to populate your architectural family tree.
             </div>
           ) : null}
+          </>
+          )}
         </div>
       </main>
     </div>
