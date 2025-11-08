@@ -80,21 +80,34 @@ function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
           },
         }).addTo(mapInstance);
 
-        console.log('Heatmap layer added with', points.length, 'points');
+        console.log('✅ Heatmap layer added successfully with', points.length, 'points');
+        console.log('Sample heatmap points:', points.slice(0, 3));
 
         return () => {
           if (mapInstance && heatLayer) {
             mapInstance.removeLayer(heatLayer);
+            console.log('Heatmap layer removed');
           }
         };
       } catch (error) {
-        console.error('Error setting up heatmap:', error);
+        console.error('❌ Error setting up heatmap:', error);
+        console.log('Debug info:', {
+          hasWindow: typeof window !== 'undefined',
+          hasL: !!(window as any).L,
+          hasHeatLayer: !!((window as any).L as any)?.heatLayer,
+          mapElement: !!mapElement,
+          mapInstance: !!((mapElement as any)?._leaflet_map),
+          pointsCount: points.length
+        });
       }
     };
 
-    const cleanup = setupHeatmap();
+    const timeoutId = setTimeout(() => {
+      setupHeatmap();
+    }, 100); // Small delay to ensure map is ready
+
     return () => {
-      cleanup?.then(fn => fn?.());
+      clearTimeout(timeoutId);
     };
   }, [points]);
 
@@ -513,18 +526,29 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       return [point.lat, point.lng, Math.min(point.intensity / 5, 1)];
     });
     
-    console.log('Heatmap data:', {
+    const stats = {
       totalPoints: points.length,
       movementsMatched,
       buildingsMatched,
       totalMovements: movements.length,
       totalBuildings: buildings.length,
-      matchRate: `${Math.round((movementsMatched + buildingsMatched) / (movements.length + buildings.length) * 100)}%`
-    });
+      matchRate: `${Math.round((buildingsMatched / buildings.length) * 100)}%`
+    };
+    
+    console.log('Heatmap data:', stats);
     
     // Log top 5 hottest points
     const sorted = Array.from(pointMap.values()).sort((a, b) => b.intensity - a.intensity).slice(0, 5);
-    console.log('Top 5 hotspots:', sorted.map(p => ({ intensity: p.intensity, sources: p.sources.length })));
+    console.log('Top 5 hotspots:', sorted.map(p => ({ 
+      lat: p.lat.toFixed(2), 
+      lng: p.lng.toFixed(2), 
+      intensity: p.intensity.toFixed(2), 
+      sources: p.sources.length 
+    })));
+    
+    if (points.length === 0) {
+      console.warn('No heatmap points generated! Check coordinate matching.');
+    }
     
     return points;
   }, [movements, buildings]);
