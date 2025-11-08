@@ -34,11 +34,11 @@ export function HeatmapLayer({ points }: HeatmapLayerProps) {
 
     // Create the heatmap layer
     const heatLayer = (L as any).heatLayer(points, {
-      radius: 350,
-      blur: 450,
+      radius: 50,
+      blur: 60,
       maxZoom: 17,
       max: maxIntensity,
-      minOpacity: 0.5,
+      minOpacity: 0.4,
       gradient: {
         0.0: "#3b82f6", // blue
         0.25: "#8b5cf6", // violet
