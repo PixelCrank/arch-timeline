@@ -15,17 +15,17 @@ export function HeroSection({
       <div className="absolute inset-x-0 -top-40 -z-10 h-[420px] overflow-hidden">
         <div className="hero-gradient mx-auto h-full max-w-[1100px] rounded-[60px] opacity-80 blur-3xl" />
       </div>
-      <div className="section-container space-y-10">
+      <div className="section-container space-y-6 sm:space-y-10">
         {/* Main header */}
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl space-y-6">
+        <div className="flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-3xl space-y-4 sm:space-y-6">
             <InfoPill tone="macro" icon={<Layers className="h-4 w-4" />}>
               Architecture Family Tree
             </InfoPill>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+            <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl xl:text-6xl">
               {"Tracing architecture's lineage through time"}
             </h1>
-            <p className="text-lg leading-relaxed text-slate-600">
+            <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
               A chronological journey through architectural history. Each <strong>Macro Era</strong> spawns{" "}
               <strong>Movements</strong>, which produce <strong>Signature Works</strong> and are shaped by{" "}
               <strong>Key Figures</strong>.
@@ -44,9 +44,9 @@ export function HeroSection({
         </div>
 
         {/* Visual hierarchy explanation */}
-        <div className="glass-surface rounded-3xl border border-white/50 p-8 shadow-soft backdrop-blur-lg">
-          <h2 className="mb-6 text-sm font-bold uppercase tracking-wider text-slate-700">How to Read This Timeline</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="glass-surface rounded-2xl border border-white/50 p-5 shadow-soft backdrop-blur-lg sm:rounded-3xl sm:p-8">
+          <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-700 sm:mb-6 sm:text-sm">How to Read This Timeline</h2>
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-indigo-400 shadow-md">

@@ -74,9 +74,9 @@ export function MacroSection({
             whileTap={{ scale: 0.995 }}
             className="w-full text-left"
           >
-            <div className="space-y-6 p-8 lg:p-10">
+            <div className="space-y-4 p-5 sm:space-y-6 sm:p-8 lg:p-10">
               {/* Header badges */}
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <InfoPill tone="macro" icon={<Layers className="h-3.5 w-3.5" />} size="sm">
                   Macro Era
                 </InfoPill>
@@ -96,9 +96,9 @@ export function MacroSection({
               </div>
 
               {/* Title and metadata grid */}
-              <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
-                <div className="space-y-4">
-                  <h2 className="text-3xl font-black leading-tight tracking-tight text-slate-900 lg:text-4xl">
+              <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1fr_auto]">
+                <div className="space-y-3 sm:space-y-4">
+                  <h2 className="text-2xl font-black leading-tight tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
                     {macro.name}
                   </h2>
                   {macro.description ? (
@@ -158,13 +158,13 @@ export function MacroSection({
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="border-t border-white/40"
               >
-                <div className="space-y-8 p-8 lg:p-10">
-                  <p className="text-sm font-medium text-slate-600">
+                <div className="space-y-6 p-5 sm:space-y-8 sm:p-8 lg:p-10">
+                  <p className="text-xs font-medium text-slate-600 sm:text-sm">
                     Explore the <span className="font-semibold text-slate-900">{movements.length}</span> child movement
                     {movements.length === 1 ? "" : "s"} branching from{" "}
                     <span className="font-semibold text-slate-900">{macro.name}</span>
                   </p>
-                  <div className="flex flex-col gap-6 pl-28">
+                  <div className="flex flex-col gap-4 sm:gap-6 md:pl-28">
                     {movements.map((movement) => (
                       <MovementCard
                         key={movement.id}

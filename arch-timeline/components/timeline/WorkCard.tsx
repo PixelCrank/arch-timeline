@@ -50,9 +50,9 @@ export function WorkCard({
         className={`glass-panel w-full overflow-hidden rounded-2xl border border-white/60 bg-gradient-to-br ${palette.surface} text-left shadow-soft transition-all hover:shadow-[0_12px_40px_rgba(15,23,42,0.15)]`}
       >
         {/* Collapsed header - always visible */}
-        <div className="flex items-center gap-4 p-5">
+        <div className="flex items-center gap-3 p-4 sm:gap-4 sm:p-5">
           {work.imageUrl && (
-            <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
+            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg sm:h-20 sm:w-20">
               <img
                 src={work.imageUrl}
                 alt={work.name}
@@ -61,7 +61,7 @@ export function WorkCard({
               />
             </div>
           )}
-          <div className="flex-1 space-y-3">
+          <div className="flex-1 space-y-2 sm:space-y-3">
             <div className="flex flex-wrap items-center gap-1.5">
               <InfoPill tone="work" icon={<Building className="h-3 w-3" />} size="sm">
                 Work
@@ -98,10 +98,10 @@ export function WorkCard({
             transition={{ duration: 0.3 }}
             className={`overflow-hidden rounded-b-2xl border-t-0 bg-gradient-to-br ${palette.surface}`}
           >
-            <div className="space-y-5 p-6 pt-4">
+            <div className="space-y-4 p-4 pt-3 sm:space-y-5 sm:p-6 sm:pt-4">
               {/* Hero Image */}
               {work.imageUrl && (
-                <div className="relative h-72 w-full overflow-hidden rounded-xl shadow-lg">
+                <div className="relative h-48 w-full overflow-hidden rounded-xl shadow-lg sm:h-72">
                   <img
                     src={work.imageUrl}
                     alt={work.name}
@@ -112,7 +112,7 @@ export function WorkCard({
               )}
               
               {/* Two-column layout for content */}
-              <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+              <div className="grid gap-4 sm:gap-6 lg:grid-cols-[2fr_1fr]">
                 {/* Main Content Column */}
                 <div className="space-y-4">
                   {/* Description */}

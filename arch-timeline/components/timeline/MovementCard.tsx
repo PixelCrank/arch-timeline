@@ -69,15 +69,15 @@ export function MovementCard({
         className={`glass-panel w-full overflow-hidden rounded-2xl border border-white/60 bg-gradient-to-br ${palette.cardSurface} text-left shadow-soft transition-all hover:shadow-[0_12px_40px_rgba(15,23,42,0.15)]`}
       >
         {/* Card header */}
-        <div className="space-y-4 p-5">
-          <div className="flex items-start justify-between gap-4">
+        <div className="space-y-4 p-4 sm:p-5">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
             {/* Thumbnail image */}
             {thumbnailUrl && (
               <div className="flex-shrink-0">
                 <img
                   src={thumbnailUrl}
                   alt={movement.name}
-                  className="h-20 w-20 rounded-xl object-cover shadow-md ring-2 ring-white/60"
+                  className="h-16 w-16 rounded-lg object-cover shadow-md ring-2 ring-white/60 sm:h-20 sm:w-20 sm:rounded-xl"
                 />
               </div>
             )}

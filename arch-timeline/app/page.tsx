@@ -181,7 +181,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="section-container space-y-16 pt-8">
+        <div className="section-container space-y-8 pt-8 sm:space-y-12 lg:space-y-16">
           {/* Search bar */}
           <SearchBar
             value={searchQuery}
