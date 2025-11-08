@@ -32,6 +32,9 @@ export function MovementCard({
   const works = Array.isArray(movement.works) ? (movement.works as TimelineBuilding[]) : [];
   const figures = Array.isArray(movement.figures) ? (movement.figures as TimelineFigure[]) : [];
 
+  // Get representative image: movement's image or first building's image
+  const thumbnailUrl = movement.imageUrl || (works.length > 0 ? works[0].imageUrl : undefined);
+
   const [activeWorkId, setActiveWorkId] = useState<string | null>(null);
   const [activeFigureId, setActiveFigureId] = useState<string | null>(null);
 
@@ -67,7 +70,18 @@ export function MovementCard({
       >
         {/* Card header */}
         <div className="space-y-4 p-5">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-4">
+            {/* Thumbnail image */}
+            {thumbnailUrl && (
+              <div className="flex-shrink-0">
+                <img
+                  src={thumbnailUrl}
+                  alt={movement.name}
+                  className="h-20 w-20 rounded-xl object-cover shadow-md ring-2 ring-white/60"
+                />
+              </div>
+            )}
+            
             <div className="flex-1 space-y-3">
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-1.5">
