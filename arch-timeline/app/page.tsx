@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import { HeroSection } from "@/components/timeline/HeroSection";
 import { MacroSection } from "@/components/timeline/MacroSection";
 import { SearchBar } from "@/components/timeline/SearchBar";
+import { FilterPanel, type FilterOptions, type SortOption } from "@/components/timeline/FilterPanel";
 import { TimelineOverview } from "@/components/timeline/TimelineOverview";
 import { MACRO_PALETTES } from "@/components/timeline/palettes";
 import { getChronoStart } from "@/components/timeline/utils";
@@ -34,6 +35,216 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [matchingIds, setMatchingIds] = useState<Set<string>>(new Set());
   const macroRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  
+  const [filters, setFilters] = useState<FilterOptions>({
+    regions: [],
+    timePeriods: [],
+    materials: [],
+    functionTypes: [],
+    hasBuildings: null,
+    hasFigures: null,
+  });
+  
+  const [sort, setSort] = useState<SortOption>({
+    field: 'chronological',
+    direction: 'asc',
+  });
+
+  // Extract available filter options from data
+  const availableOptions = useMemo(() => {
+    const regions = new Set<string>();
+    const materials = new Set<string>();
+    const functions = new Set<string>();
+
+    movements.forEach((movement) => {
+      // Regions
+      if (movement.geography) {
+        movement.geography.split(/[,;]/).forEach(r => regions.add(r.trim()));
+      }
+      if (movement.region) {
+        regions.add(movement.region.trim());
+      }
+
+      // Materials and functions from buildings
+      const works = Array.isArray(movement.works) ? movement.works : [];
+      works.forEach((work) => {
+        if (work.materials) {
+          const mats = Array.isArray(work.materials) ? work.materials : [];
+          mats.forEach(m => materials.add(m.trim()));
+        }
+        if (work.functionType) {
+          functions.add(work.functionType.trim());
+        }
+      });
+    });
+
+    return {
+      regions: Array.from(regions).filter(Boolean).sort(),
+      materials: Array.from(materials).filter(Boolean).sort(),
+      functions: Array.from(functions).filter(Boolean).sort(),
+    };
+  }, [movements]);
+
+  // Apply filters and sort
+  const filteredAndSortedMacros = useMemo(() => {
+    let filtered = [...sortedMacros];
+
+    // Apply filters
+    if (filters.regions.length > 0 || filters.timePeriods.length > 0 || 
+        filters.materials.length > 0 || filters.functionTypes.length > 0 ||
+        filters.hasBuildings !== null || filters.hasFigures !== null) {
+      
+      filtered = filtered.filter((macro) => {
+        const childIds = Array.isArray(macro.children) ? macro.children : [];
+        const childMovements = childIds
+          .map(id => movementById[id])
+          .filter((m): m is ChildMovement => Boolean(m));
+
+        // If no movements match, filter out this macro
+        if (childMovements.length === 0) return false;
+
+        // Check if any child movement matches filters
+        return childMovements.some((movement) => {
+          // Time period filter
+          if (filters.timePeriods.length > 0) {
+            const start = movement.start || 0;
+            const matchesPeriod = filters.timePeriods.some((period) => {
+              switch (period) {
+                case 'ancient': return start < 0;
+                case 'classical': return start >= 0 && start < 500;
+                case 'medieval': return start >= 500 && start < 1500;
+                case 'renaissance': return start >= 1400 && start < 1600;
+                case 'early-modern': return start >= 1600 && start < 1800;
+                case 'industrial': return start >= 1800 && start < 1900;
+                case 'modern': return start >= 1900 && start < 1980;
+                case 'contemporary': return start >= 1980;
+                default: return false;
+              }
+            });
+            if (!matchesPeriod) return false;
+          }
+
+          // Region filter
+          if (filters.regions.length > 0) {
+            const movementRegions = [
+              movement.geography,
+              movement.region,
+            ].filter(Boolean).join(' ').toLowerCase();
+            
+            const matchesRegion = filters.regions.some((region) =>
+              movementRegions.includes(region.toLowerCase())
+            );
+            if (!matchesRegion) return false;
+          }
+
+          // Materials filter
+          if (filters.materials.length > 0) {
+            const works = Array.isArray(movement.works) ? movement.works : [];
+            const hasMaterial = works.some((work) => {
+              const workMaterials = Array.isArray(work.materials) ? work.materials : [];
+              return filters.materials.some((mat) =>
+                workMaterials.some((wm) => wm.toLowerCase().includes(mat.toLowerCase()))
+              );
+            });
+            if (!hasMaterial) return false;
+          }
+
+          // Function type filter
+          if (filters.functionTypes.length > 0) {
+            const works = Array.isArray(movement.works) ? movement.works : [];
+            const hasFunction = works.some((work) =>
+              filters.functionTypes.some((func) =>
+                work.functionType?.toLowerCase().includes(func.toLowerCase())
+              )
+            );
+            if (!hasFunction) return false;
+          }
+
+          // Has buildings filter
+          if (filters.hasBuildings === true) {
+            const works = Array.isArray(movement.works) ? movement.works : [];
+            if (works.length === 0) return false;
+          }
+
+          // Has figures filter
+          if (filters.hasFigures === true) {
+            const figures = Array.isArray(movement.figures) ? movement.figures : [];
+            if (figures.length === 0) return false;
+          }
+
+          return true;
+        });
+      });
+    }
+
+    // Apply sorting
+    if (sort.field === 'chronological') {
+      filtered.sort((a, b) => {
+        const diff = getChronoStart(a) - getChronoStart(b);
+        return sort.direction === 'asc' ? diff : -diff;
+      });
+    } else if (sort.field === 'alphabetical') {
+      filtered.sort((a, b) => {
+        const comp = a.name.localeCompare(b.name);
+        return sort.direction === 'asc' ? comp : -comp;
+      });
+    } else if (sort.field === 'workCount') {
+      filtered.sort((a, b) => {
+        const aCount = (a.children || []).reduce((sum, childId) => {
+          const movement = movementById[childId];
+          const works = movement && Array.isArray(movement.works) ? movement.works.length : 0;
+          return sum + works;
+        }, 0);
+        const bCount = (b.children || []).reduce((sum, childId) => {
+          const movement = movementById[childId];
+          const works = movement && Array.isArray(movement.works) ? movement.works.length : 0;
+          return sum + works;
+        }, 0);
+        return sort.direction === 'desc' ? bCount - aCount : aCount - bCount;
+      });
+    } else if (sort.field === 'figureCount') {
+      filtered.sort((a, b) => {
+        const aCount = (a.children || []).reduce((sum, childId) => {
+          const movement = movementById[childId];
+          const figures = movement && Array.isArray(movement.figures) ? movement.figures.length : 0;
+          return sum + figures;
+        }, 0);
+        const bCount = (b.children || []).reduce((sum, childId) => {
+          const movement = movementById[childId];
+          const figures = movement && Array.isArray(movement.figures) ? movement.figures.length : 0;
+          return sum + figures;
+        }, 0);
+        return sort.direction === 'desc' ? bCount - aCount : aCount - bCount;
+      });
+    }
+
+    return filtered;
+  }, [sortedMacros, filters, sort, movementById]);
+
+  // Count active filters
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.regions.length > 0) count += filters.regions.length;
+    if (filters.timePeriods.length > 0) count += filters.timePeriods.length;
+    if (filters.materials.length > 0) count += filters.materials.length;
+    if (filters.functionTypes.length > 0) count += filters.functionTypes.length;
+    if (filters.hasBuildings) count += 1;
+    if (filters.hasFigures) count += 1;
+    if (sort.field !== 'chronological' || sort.direction !== 'asc') count += 1;
+    return count;
+  }, [filters, sort]);
+
+  const handleClearFilters = () => {
+    setFilters({
+      regions: [],
+      timePeriods: [],
+      materials: [],
+      functionTypes: [],
+      hasBuildings: null,
+      hasFigures: null,
+    });
+    setSort({ field: 'chronological', direction: 'asc' });
+  };
 
   // Search functionality
   useEffect(() => {
@@ -46,7 +257,7 @@ export default function Home() {
     const matches = new Set<string>();
 
     // Search through all content
-    sortedMacros.forEach((macro) => {
+    filteredAndSortedMacros.forEach((macro) => {
       // Check macro name and description
       if (macro.name.toLowerCase().includes(query) || 
           macro.description?.toLowerCase().includes(query)) {
@@ -201,14 +412,27 @@ export default function Home() {
         </div>
 
         <div className="section-container space-y-8 pt-8 sm:space-y-12 lg:space-y-16">
-          {/* Search bar */}
-          <SearchBar
-            value={searchQuery}
-            onChange={setSearchQuery}
-            onClear={handleSearchClear}
-            matchCount={matchingIds.size}
-          />
-          {sortedMacros.map((macro, index) => {
+          {/* Search and Filter Controls */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onClear={handleSearchClear}
+              matchCount={matchingIds.size}
+            />
+            <FilterPanel
+              filters={filters}
+              sort={sort}
+              onFilterChange={setFilters}
+              onSortChange={setSort}
+              onClearAll={handleClearFilters}
+              activeFilterCount={activeFilterCount}
+              availableRegions={availableOptions.regions}
+              availableMaterials={availableOptions.materials}
+              availableFunctions={availableOptions.functions}
+            />
+          </div>
+          {filteredAndSortedMacros.map((macro, index) => {
             const palette = MACRO_PALETTES[index % MACRO_PALETTES.length];
             const childIds = Array.isArray(macro.children) ? macro.children : [];
             const childrenMovements = childIds
