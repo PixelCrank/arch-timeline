@@ -49,10 +49,10 @@ export function MacroSection({
               alt=""
               className="h-full w-full object-cover opacity-20 blur-sm"
             />
-            <div className="absolute inset-0 bg-white/60" />
           </div>
         )}
         
+        {/* Gradient overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${palette.surface} opacity-60`} aria-hidden="true" />
         
         <div className="relative z-10">
