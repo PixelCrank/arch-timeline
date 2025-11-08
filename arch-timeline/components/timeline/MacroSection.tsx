@@ -25,6 +25,8 @@ export function MacroSection({
   movements,
   activeMovementId,
   onMovementToggle,
+  isHighlighted = false,
+  hasSearch = false,
 }: {
   macro: MacroMovement;
   order: number;
@@ -34,13 +36,21 @@ export function MacroSection({
   movements: ChildMovement[];
   activeMovementId: string | null;
   onMovementToggle: (movement: ChildMovement) => void;
+  isHighlighted?: boolean;
+  hasSearch?: boolean;
 }) {
   const years = formatMacroYears(macro);
   const aliasList = splitList(macro.macroNamesList);
 
+  const isFiltered = hasSearch && !isHighlighted;
+
   return (
-    <section className="relative">
-      <article className="group relative overflow-hidden rounded-[2rem] border border-white/50 bg-white/30 shadow-[0_20px_70px_rgba(15,23,42,0.15)] backdrop-blur-xl transition-all hover:shadow-[0_25px_90px_rgba(15,23,42,0.22)]">
+    <section className={`relative transition-all duration-300 ${isFiltered ? 'opacity-30 scale-[0.98]' : 'opacity-100 scale-100'}`}>
+      <article className={`group relative overflow-hidden rounded-[2rem] border backdrop-blur-xl transition-all ${
+        isHighlighted 
+          ? 'border-emerald-400 bg-emerald-50/40 shadow-[0_0_40px_rgba(16,185,129,0.3)] ring-4 ring-emerald-200/50' 
+          : 'border-white/50 bg-white/30 shadow-[0_20px_70px_rgba(15,23,42,0.15)] hover:shadow-[0_25px_90px_rgba(15,23,42,0.22)]'
+      }`}>
         {/* Background image layer */}
         {macro.imageUrl && (
           <div className="absolute inset-0" aria-hidden="true">

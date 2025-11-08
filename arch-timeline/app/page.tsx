@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { HeroSection } from "@/components/timeline/HeroSection";
 import { MacroSection } from "@/components/timeline/MacroSection";
+import { SearchBar } from "@/components/timeline/SearchBar";
 import { MACRO_PALETTES } from "@/components/timeline/palettes";
 import { getChronoStart } from "@/components/timeline/utils";
 import { useTimelineData } from "../hooks/useTimelineData";
@@ -29,6 +30,88 @@ export default function Home() {
 
   const [activeMacroId, setActiveMacroId] = useState<string | null>(null);
   const [activeMovementId, setActiveMovementId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [matchingIds, setMatchingIds] = useState<Set<string>>(new Set());
+
+  // Search functionality
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setMatchingIds(new Set());
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const matches = new Set<string>();
+
+    // Search through all content
+    sortedMacros.forEach((macro) => {
+      // Check macro name and description
+      if (macro.name.toLowerCase().includes(query) || 
+          macro.description?.toLowerCase().includes(query)) {
+        matches.add(`macro-${macro.id}`);
+      }
+
+      // Get child movements for this macro
+      const childIds = Array.isArray(macro.children) ? macro.children : [];
+      childIds.forEach((childId) => {
+        const movement = movementById[childId];
+        if (!movement) return;
+
+        // Check movement name, overview, description
+        if (movement.name.toLowerCase().includes(query) ||
+            movement.overview?.toLowerCase().includes(query) ||
+            movement.description?.toLowerCase().includes(query)) {
+          matches.add(`movement-${movement.id}`);
+          matches.add(`macro-${macro.id}`); // Also highlight parent macro
+        }
+
+        // Check buildings/works
+        const works = Array.isArray(movement.works) ? movement.works : [];
+        works.forEach((work) => {
+          if (work.name.toLowerCase().includes(query) ||
+              work.description?.toLowerCase().includes(query) ||
+              work.architects?.toLowerCase().includes(query)) {
+            matches.add(`work-${work.id}`);
+            matches.add(`movement-${movement.id}`);
+            matches.add(`macro-${macro.id}`);
+          }
+        });
+
+        // Check figures
+        const figures = Array.isArray(movement.figures) ? movement.figures : [];
+        figures.forEach((figure) => {
+          if (figure.name.toLowerCase().includes(query) ||
+              figure.description?.toLowerCase().includes(query) ||
+              figure.philosophy?.toLowerCase().includes(query)) {
+            matches.add(`figure-${figure.id}`);
+            matches.add(`movement-${movement.id}`);
+            matches.add(`macro-${macro.id}`);
+          }
+        });
+      });
+    });
+
+    setMatchingIds(matches);
+
+    // Auto-expand first matching macro and movement
+    if (matches.size > 0) {
+      const firstMacroMatch = Array.from(matches).find(id => id.startsWith('macro-'));
+      if (firstMacroMatch) {
+        const macroId = firstMacroMatch.replace('macro-', '');
+        setActiveMacroId(macroId);
+        
+        // Find first matching movement in this macro
+        const firstMovementMatch = Array.from(matches).find(id => 
+          id.startsWith('movement-') && 
+          movementById[id.replace('movement-', '')]?.parent?.toLowerCase() === 
+            macros.find(m => m.id === macroId)?.name?.toLowerCase()
+        );
+        if (firstMovementMatch) {
+          setActiveMovementId(firstMovementMatch.replace('movement-', ''));
+        }
+      }
+    }
+  }, [searchQuery, sortedMacros, movementById, macros]);
 
   const handleMacroToggle = (macro: MacroMovement) => {
     setActiveMacroId((previous) => (previous === macro.id ? null : macro.id));
@@ -42,6 +125,11 @@ export default function Home() {
   const clearHighlights = () => {
     setActiveMacroId(null);
     setActiveMovementId(null);
+  };
+
+  const handleSearchClear = () => {
+    setSearchQuery("");
+    setMatchingIds(new Set());
   };
 
   if (loading) {
@@ -93,7 +181,14 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="section-container space-y-16 pt-16">
+        <div className="section-container space-y-16 pt-8">
+          {/* Search bar */}
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onClear={handleSearchClear}
+            matchCount={matchingIds.size}
+          />
           {sortedMacros.map((macro, index) => {
             const palette = MACRO_PALETTES[index % MACRO_PALETTES.length];
             const childIds = Array.isArray(macro.children) ? macro.children : [];
@@ -136,6 +231,8 @@ export default function Home() {
                   movements={childrenMovements}
                   activeMovementId={activeMovementId}
                   onMovementToggle={handleMovementToggle}
+                  isHighlighted={matchingIds.has(`macro-${macro.id}`)}
+                  hasSearch={searchQuery.trim().length > 0}
                 />
               </div>
             );
