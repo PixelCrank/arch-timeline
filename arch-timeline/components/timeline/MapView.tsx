@@ -69,18 +69,34 @@ function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
 
     const setupHeatmap = async () => {
       try {
+        console.log('Step 1: Getting Leaflet object');
         const L = (window as any).L;
-        if (!L) return;
+        if (!L) {
+          console.log('❌ Leaflet (L) not found on window');
+          return;
+        }
+        console.log('✓ Leaflet found');
 
         // Import leaflet.heat
+        console.log('Step 2: Checking for heatLayer');
         if (!(L as any).heatLayer) {
+          console.log('heatLayer not found, importing leaflet.heat...');
           await import("leaflet.heat");
+          console.log('✓ leaflet.heat imported');
+        } else {
+          console.log('✓ heatLayer already exists');
         }
 
         // Get the map instance from the DOM element
+        console.log('Step 3: Getting map instance');
         const mapInstance = (mapElement as any)._leaflet_map;
-        if (!mapInstance) return;
-
+        if (!mapInstance) {
+          console.log('❌ Map instance not found on element');
+          return;
+        }
+        console.log('✓ Map instance found');
+        
+        console.log('Step 4: Creating heatLayer with options');
         const heatLayer = (L as any).heatLayer(points, {
           radius: 25,
           blur: 35,
