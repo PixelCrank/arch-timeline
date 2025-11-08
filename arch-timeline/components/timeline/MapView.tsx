@@ -412,6 +412,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
   const [mounted, setMounted] = useState(false);
   const [leafletIcon, setLeafletIcon] = useState<any>(null);
   const [showHeatmap, setShowHeatmap] = useState(true);
+  const [selectedMovement, setSelectedMovement] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -505,33 +506,38 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
     return result;
   }, [buildings, movements, macros]);
 
-  // Create heatmap data combining buildings and movements
+  // Create heatmap data based on buildings from selected movement (or all if none selected)
   const heatmapPoints = useMemo(() => {
     const pointMap = new Map<string, { lat: number; lng: number; intensity: number; sources: string[] }>();
     
-    let movementsMatched = 0;
+    let buildingsIncluded = 0;
     let buildingsMatched = 0;
     
-    // Add movements by inferring location from their buildings
-    movements.forEach((movement) => {
-      // If movement has buildings, use their locations
+    // Filter movements based on selection
+    const filteredMovements = selectedMovement 
+      ? movements.filter(m => m.name === selectedMovement)
+      : movements;
+    
+    // For each movement, add its buildings to the heatmap
+    filteredMovements.forEach((movement) => {
       if (movement.works && movement.works.length > 0) {
         movement.works.forEach((work) => {
+          buildingsIncluded++;
           const location = work.city || work.country || work.location;
           const coords = getCoordinatesFromLocation(location);
           if (coords) {
-            movementsMatched++;
+            buildingsMatched++;
             const key = `${coords[0]},${coords[1]}`;
             const current = pointMap.get(key);
             if (current) {
-              current.intensity += 0.3; // Lower intensity for movement influence
-              current.sources.push(`M:${movement.name}`);
+              current.intensity += 1;
+              current.sources.push(`${movement.name}: ${work.name}`);
             } else {
-              pointMap.set(key, { 
-                lat: coords[0], 
-                lng: coords[1], 
-                intensity: 0.3,
-                sources: [`M:${movement.name}`]
+              pointMap.set(key, {
+                lat: coords[0],
+                lng: coords[1],
+                intensity: 1,
+                sources: [`${movement.name}: ${work.name}`]
               });
             }
           }
@@ -539,60 +545,34 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       }
     });
     
-    // Add buildings with higher intensity
-    buildings.forEach((building) => {
-      const location = building.city || building.country || building.location;
-      const coords = getCoordinatesFromLocation(location);
-      if (coords) {
-        buildingsMatched++;
-        const key = `${coords[0]},${coords[1]}`;
-        const current = pointMap.get(key);
-        if (current) {
-          current.intensity += 1;
-          current.sources.push(`B:${building.name}`);
-        } else {
-          pointMap.set(key, {
-            lat: coords[0],
-            lng: coords[1],
-            intensity: 1,
-            sources: [`B:${building.name}`]
-          });
-        }
-      }
-    });
-    
-    // Convert to array format
+    // Convert to array format [lat, lng, intensity]
     const points: [number, number, number][] = Array.from(pointMap.values()).map((point) => {
-      // Normalize intensity to 0-1 range, with cap at 5
-      return [point.lat, point.lng, Math.min(point.intensity / 5, 1)];
+      // Normalize intensity to 0-1 range, with diminishing returns for clusters
+      return [point.lat, point.lng, Math.min(Math.log(point.intensity + 1) / Math.log(10), 1)];
     });
     
     const stats = {
       totalPoints: points.length,
-      movementsMatched,
+      buildingsIncluded,
       buildingsMatched,
-      totalMovements: movements.length,
-      totalBuildings: buildings.length,
-      matchRate: `${Math.round((buildingsMatched / buildings.length) * 100)}%`
+      movements: filteredMovements.length,
+      matchRate: `${Math.round((buildingsMatched / buildingsIncluded) * 100)}%`,
+      selectedMovement: selectedMovement || 'All'
     };
     
     console.log('Heatmap data:', stats);
     
-    // Log top 5 hottest points
+    // Log top 5 hottest points with their sources
     const sorted = Array.from(pointMap.values()).sort((a, b) => b.intensity - a.intensity).slice(0, 5);
-    console.log('Top 5 hotspots:', sorted.map(p => ({ 
+    console.log('Top 5 clusters:', sorted.map(p => ({ 
       lat: p.lat.toFixed(2), 
       lng: p.lng.toFixed(2), 
-      intensity: p.intensity.toFixed(2), 
-      sources: p.sources.length 
+      buildings: p.intensity,
+      samples: p.sources.slice(0, 3)
     })));
     
-    if (points.length === 0) {
-      console.warn('No heatmap points generated! Check coordinate matching.');
-    }
-    
     return points;
-  }, [movements, buildings]);
+  }, [movements, buildings, selectedMovement]);
 
   if (!mounted) {
     return (
@@ -605,7 +585,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
   return (
     <div className="relative h-[600px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-xl">
       {/* Layer toggle */}
-      <div className="absolute top-4 left-4 z-[1000]">
+      <div className="absolute top-4 left-4 z-[1000] space-y-2">
         <button
           onClick={() => setShowHeatmap(!showHeatmap)}
           className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm transition-all hover:bg-slate-800/90"
@@ -614,16 +594,35 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
             {showHeatmap ? 'Show Markers' : 'Show Heatmap'}
           </div>
         </button>
+        
+        {/* Movement filter dropdown - only show in heatmap mode */}
+        {showHeatmap && (
+          <select
+            value={selectedMovement || ""}
+            onChange={(e) => setSelectedMovement(e.target.value || null)}
+            className="w-full rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 text-xs text-white backdrop-blur-sm transition-all hover:bg-slate-800/90"
+          >
+            <option value="">All Movements</option>
+            {movements.map((movement) => (
+              <option key={movement.name} value={movement.name}>
+                {movement.name}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
       
-      {/* Debug info display */}
+      {/* Info display */}
       <div className="absolute top-4 right-4 z-[1000] space-y-2">
         <div className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm">
           <div className="text-xs font-semibold text-white">
             {showHeatmap ? `${heatmapPoints.length} locations` : `${markers.length} markers`}
           </div>
           <div className="text-[10px] text-slate-300">
-            {showHeatmap ? 'Density map' : `${buildings.length} buildings`}
+            {showHeatmap 
+              ? (selectedMovement ? selectedMovement : 'All movements')
+              : `${buildings.length} buildings`
+            }
           </div>
         </div>
       </div>
