@@ -25,33 +25,78 @@ const Popup = dynamic(
 
 // Heatmap layer component
 function HeatmapLayer({ points }: { points: [number, number, number][] }) {
-  const { useMap } = require("react-leaflet");
-  const map = useMap();
+  const [map, setMap] = useState<any>(null);
 
   useEffect(() => {
-    if (!map || points.length === 0) return;
-
-    const L = require("leaflet");
-    require("leaflet.heat");
-
-    const heatLayer = (L as any).heatLayer(points, {
-      radius: 25,
-      blur: 35,
-      maxZoom: 10,
-      max: 1.0,
-      gradient: {
-        0.0: "#3b82f6", // blue
-        0.3: "#8b5cf6", // violet  
-        0.5: "#ec4899", // fuchsia
-        0.7: "#f59e0b", // amber
-        1.0: "#ef4444", // red
-      },
-    }).addTo(map);
-
-    return () => {
-      map.removeLayer(heatLayer);
+    const setupMap = async () => {
+      if (typeof window === "undefined") return;
+      
+      const { useMap: useMapHook } = await import("react-leaflet");
+      const L = await import("leaflet");
+      await import("leaflet.heat");
+      
+      // This won't work - we need a different approach
     };
-  }, [map, points]);
+    setupMap();
+  }, []);
+
+  return null;
+}
+
+// Better approach: Create a map effect hook
+function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
+  useEffect(() => {
+    if (typeof window === "undefined" || points.length === 0) return;
+
+    // Find the map instance
+    const mapElement = document.querySelector('.leaflet-container');
+    if (!mapElement) return;
+
+    const setupHeatmap = async () => {
+      try {
+        const L = (window as any).L;
+        if (!L) return;
+
+        // Import leaflet.heat
+        if (!(L as any).heatLayer) {
+          await import("leaflet.heat");
+        }
+
+        // Get the map instance from the DOM element
+        const mapInstance = (mapElement as any)._leaflet_map;
+        if (!mapInstance) return;
+
+        const heatLayer = (L as any).heatLayer(points, {
+          radius: 25,
+          blur: 35,
+          maxZoom: 10,
+          max: 1.0,
+          gradient: {
+            0.0: "#3b82f6", // blue
+            0.3: "#8b5cf6", // violet  
+            0.5: "#ec4899", // fuchsia
+            0.7: "#f59e0b", // amber
+            1.0: "#ef4444", // red
+          },
+        }).addTo(mapInstance);
+
+        console.log('Heatmap layer added with', points.length, 'points');
+
+        return () => {
+          if (mapInstance && heatLayer) {
+            mapInstance.removeLayer(heatLayer);
+          }
+        };
+      } catch (error) {
+        console.error('Error setting up heatmap:', error);
+      }
+    };
+
+    const cleanup = setupHeatmap();
+    return () => {
+      cleanup?.then(fn => fn?.());
+    };
+  }, [points]);
 
   return null;
 }
@@ -382,16 +427,31 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
 
   // Create heatmap data combining buildings and movements
   const heatmapPoints = useMemo(() => {
-    const pointMap = new Map<string, number>();
+    const pointMap = new Map<string, { lat: number; lng: number; intensity: number; sources: string[] }>();
+    
+    let movementsMatched = 0;
+    let buildingsMatched = 0;
     
     // Add movements with base intensity
     movements.forEach((movement) => {
       const coords = getCoordinatesFromLocation(movement.region);
       if (coords) {
+        movementsMatched++;
         const key = `${coords[0]},${coords[1]}`;
-        const current = pointMap.get(key) || 0;
-        // Each movement adds base intensity
-        pointMap.set(key, current + 0.5);
+        const current = pointMap.get(key);
+        if (current) {
+          current.intensity += 0.5;
+          current.sources.push(`M:${movement.name}`);
+        } else {
+          pointMap.set(key, { 
+            lat: coords[0], 
+            lng: coords[1], 
+            intensity: 0.5,
+            sources: [`M:${movement.name}`]
+          });
+        }
+      } else if (movement.region) {
+        console.log('No coords for movement:', movement.name, 'region:', movement.region);
       }
     });
     
@@ -400,21 +460,42 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       const location = building.city || building.country || building.location;
       const coords = getCoordinatesFromLocation(location);
       if (coords) {
+        buildingsMatched++;
         const key = `${coords[0]},${coords[1]}`;
-        const current = pointMap.get(key) || 0;
-        // Each building adds more intensity
-        pointMap.set(key, current + 1);
+        const current = pointMap.get(key);
+        if (current) {
+          current.intensity += 1;
+          current.sources.push(`B:${building.name}`);
+        } else {
+          pointMap.set(key, {
+            lat: coords[0],
+            lng: coords[1],
+            intensity: 1,
+            sources: [`B:${building.name}`]
+          });
+        }
       }
     });
     
     // Convert to array format
-    const points: [number, number, number][] = Array.from(pointMap.entries()).map(([key, intensity]) => {
-      const [lat, lng] = key.split(',').map(Number);
+    const points: [number, number, number][] = Array.from(pointMap.values()).map((point) => {
       // Normalize intensity to 0-1 range, with cap at 5
-      return [lat, lng, Math.min(intensity / 5, 1)];
+      return [point.lat, point.lng, Math.min(point.intensity / 5, 1)];
     });
     
-    console.log('Heatmap points:', points.length, 'Total intensity points:', pointMap.size);
+    console.log('Heatmap data:', {
+      totalPoints: points.length,
+      movementsMatched,
+      buildingsMatched,
+      totalMovements: movements.length,
+      totalBuildings: buildings.length,
+      matchRate: `${Math.round((movementsMatched + buildingsMatched) / (movements.length + buildings.length) * 100)}%`
+    });
+    
+    // Log top 5 hottest points
+    const sorted = Array.from(pointMap.values()).sort((a, b) => b.intensity - a.intensity).slice(0, 5);
+    console.log('Top 5 hotspots:', sorted.map(p => ({ intensity: p.intensity, sources: p.sources.length })));
+    
     return points;
   }, [movements, buildings]);
 
@@ -463,10 +544,11 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        {/* Show heatmap or markers based on toggle */}
-        {showHeatmap ? (
-          <HeatmapLayer points={heatmapPoints} />
-        ) : (
+        {/* Heatmap effect */}
+        {showHeatmap && <MapHeatmapEffect points={heatmapPoints} />}
+        
+        {/* Show markers when not in heatmap mode */}
+        {!showHeatmap && (
           markers.map((marker) => {
           const icon = leafletIcon ? leafletIcon(marker.color) : undefined;
           
