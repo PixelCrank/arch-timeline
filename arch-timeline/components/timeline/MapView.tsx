@@ -98,11 +98,11 @@ function MapHeatmapEffect({ points }: { points: [number, number, number][] }) {
 
         // Create heatmap layer with visible settings
         const heatLayer = (L as any).heatLayer(points, {
-          radius: 35,
-          blur: 45,
+          radius: 350,
+          blur: 450,
           maxZoom: 17,
           max: maxIntensity, // Use actual max intensity from data
-          minOpacity: 0.4,
+          minOpacity: 0.5,
           gradient: {
             0.0: "#3b82f6", // blue
             0.25: "#8b5cf6", // violet  
