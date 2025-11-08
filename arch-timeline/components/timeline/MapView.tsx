@@ -178,6 +178,32 @@ const LOCATION_COORDINATES: Record<string, [number, number]> = {
   "oslo": [59.9139, 10.7522],
   "finland": [61.9241, 25.7482],
   "helsinki": [60.1699, 24.9384],
+  "tampere": [61.4978, 23.7610],
+  "utrecht": [52.0907, 5.1214],
+  "chartres": [48.4469, 1.4892],
+  "verona": [45.4384, 10.9916],
+  "luxor": [25.6872, 32.6396],
+  "deir el-bahari": [25.7389, 32.6069],
+  "agra": [27.1767, 78.0081],
+  "oakland": [37.8044, -122.2712],
+  "berkeley": [37.8715, -122.2730],
+  "grass valley": [39.2191, -121.0608],
+  "idyllwild": [33.7439, -116.7156],
+  "acapulco": [16.8531, -99.8237],
+  "mill run": [39.9065, -79.4681],
+  "madison": [43.0731, -89.4012],
+  "scottsdale": [33.4942, -111.9261],
+  "hiroshima": [34.3853, 132.4553],
+  "chestnut hill": [40.0713, -75.2068],
+  "san vito d'altivole": [45.7167, 11.9167],
+  "la jolla": [32.8328, -117.2713],
+  "kanazawa": [36.5614, 136.6562],
+  "sendai": [38.2682, 140.8694],
+  "kobe": [34.6901, 135.1955],
+  "metz": [49.1193, 6.1757],
+  "ningbo": [29.8683, 121.5440],
+  "chengdu": [30.5728, 104.0668],
+  "inujima": [34.5167, 133.9833],
   
   // Americas - North America
   "united states": [37.0902, -95.7129],
@@ -432,26 +458,30 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
     let movementsMatched = 0;
     let buildingsMatched = 0;
     
-    // Add movements with base intensity
+    // Add movements by inferring location from their buildings
     movements.forEach((movement) => {
-      const coords = getCoordinatesFromLocation(movement.region);
-      if (coords) {
-        movementsMatched++;
-        const key = `${coords[0]},${coords[1]}`;
-        const current = pointMap.get(key);
-        if (current) {
-          current.intensity += 0.5;
-          current.sources.push(`M:${movement.name}`);
-        } else {
-          pointMap.set(key, { 
-            lat: coords[0], 
-            lng: coords[1], 
-            intensity: 0.5,
-            sources: [`M:${movement.name}`]
-          });
-        }
-      } else if (movement.region) {
-        console.log('No coords for movement:', movement.name, 'region:', movement.region);
+      // If movement has buildings, use their locations
+      if (movement.works && movement.works.length > 0) {
+        movement.works.forEach((work) => {
+          const location = work.city || work.country || work.location;
+          const coords = getCoordinatesFromLocation(location);
+          if (coords) {
+            movementsMatched++;
+            const key = `${coords[0]},${coords[1]}`;
+            const current = pointMap.get(key);
+            if (current) {
+              current.intensity += 0.3; // Lower intensity for movement influence
+              current.sources.push(`M:${movement.name}`);
+            } else {
+              pointMap.set(key, { 
+                lat: coords[0], 
+                lng: coords[1], 
+                intensity: 0.3,
+                sources: [`M:${movement.name}`]
+              });
+            }
+          }
+        });
       }
     });
     
