@@ -26,6 +26,10 @@ const HeatmapLayer = dynamic(
   () => import("./HeatmapLayer").then((mod) => ({ default: mod.HeatmapLayer })),
   { ssr: false }
 );
+const ZoomControl = dynamic(
+  () => import("react-leaflet").then((mod) => mod.ZoomControl),
+  { ssr: false }
+);
 
 // Coordinate lookup for common locations
 const LOCATION_COORDINATES: Record<string, [number, number]> = {
@@ -555,6 +559,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
         minZoom={2}
         maxBounds={[[-90, -180], [90, 180]]}
         maxBoundsViscosity={1.0}
+        zoomControl={false}
         className="h-full w-full"
         style={{ background: "#1e293b" }}
       >
@@ -563,6 +568,9 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           noWrap={true}
         />
+        
+        {/* Zoom control positioned at bottom-left */}
+        <ZoomControl position="bottomleft" />
         
         {/* Heatmap layer */}
         {showHeatmap && <HeatmapLayer points={heatmapPoints} />}
