@@ -503,43 +503,46 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
 
   return (
     <div className="relative h-[600px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-xl">
-      {/* Layer toggle */}
-      <div className="absolute top-4 left-4 z-[1000] space-y-2">
-        <button
-          onClick={() => setShowHeatmap(!showHeatmap)}
-          className="rounded-lg border border-white/20 bg-slate-900/95 px-3 py-2 backdrop-blur-sm shadow-lg transition-all hover:bg-slate-800/90"
-        >
-          <div className="text-xs font-semibold text-white">
-            {showHeatmap ? 'Show Markers' : 'Show Heatmap'}
-          </div>
-        </button>
-        
-        {/* Movement filter dropdown - only show in heatmap mode */}
-        {showHeatmap && (
-          <select
-            value={selectedMovement || ""}
-            onChange={(e) => setSelectedMovement(e.target.value || null)}
-            className="w-full rounded-lg border border-white/20 bg-slate-900/95 px-3 py-2 text-xs text-white backdrop-blur-sm shadow-lg transition-all hover:bg-slate-800/90"
+      {/* Top bar with controls */}
+      <div className="absolute top-4 left-4 right-4 z-[1000] flex items-start justify-between gap-4">
+        {/* Left side - View mode toggle */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowHeatmap(!showHeatmap)}
+            className={`rounded-lg border px-4 py-2 text-sm font-semibold shadow-lg backdrop-blur-sm transition-all ${
+              showHeatmap
+                ? 'border-fuchsia-400 bg-fuchsia-500/90 text-white hover:bg-fuchsia-600/90'
+                : 'border-white/20 bg-slate-900/95 text-white hover:bg-slate-800/90'
+            }`}
           >
-            <option value="">All Movements</option>
-            {movements.map((movement) => (
-              <option key={movement.name} value={movement.name}>
-                {movement.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-      
-      {/* Info display */}
-      <div className="absolute top-4 right-4 z-[1000] space-y-2">
-        <div className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm">
-          <div className="text-xs font-semibold text-white">
+            {showHeatmap ? '🔥 Heatmap' : '📍 Markers'}
+          </button>
+          
+          {/* Movement filter dropdown - only show in heatmap mode */}
+          {showHeatmap && (
+            <select
+              value={selectedMovement || ""}
+              onChange={(e) => setSelectedMovement(e.target.value || null)}
+              className="rounded-lg border border-white/20 bg-slate-900/95 px-3 py-2 text-sm text-white backdrop-blur-sm shadow-lg transition-all hover:bg-slate-800/90"
+            >
+              <option value="">All Movements</option>
+              {movements.map((movement) => (
+                <option key={movement.name} value={movement.name}>
+                  {movement.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+        
+        {/* Right side - Info display */}
+        <div className="rounded-lg border border-white/20 bg-slate-900/95 px-4 py-2 backdrop-blur-sm shadow-lg">
+          <div className="text-sm font-semibold text-white">
             {showHeatmap ? `${heatmapPoints.length} locations` : `${markers.length} markers`}
           </div>
-          <div className="text-[10px] text-slate-300">
+          <div className="text-xs text-slate-400">
             {showHeatmap 
-              ? (selectedMovement ? selectedMovement : 'All movements')
+              ? (selectedMovement || 'All movements')
               : `${buildings.length} buildings`
             }
           </div>
@@ -612,8 +615,8 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
         )}
       </MapContainer>
       
-      {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-[1000] rounded-lg border border-white/20 bg-slate-900/95 p-3 backdrop-blur-sm shadow-lg">
+      {/* Legend - moved to right side to avoid zoom controls */}
+      <div className="absolute bottom-4 right-4 z-[1000] rounded-lg border border-white/20 bg-slate-900/95 p-3 backdrop-blur-sm shadow-lg">
         <div className="mb-2 text-xs font-semibold text-white">Legend</div>
         {showHeatmap ? (
           <div className="space-y-1 text-xs text-slate-300">
