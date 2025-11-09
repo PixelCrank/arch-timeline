@@ -322,6 +322,17 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       macroById[macro.id] = macro;
     });
     
+    // Create building ID to macro lookup
+    const buildingToMacro: Record<string, string | undefined> = {};
+    movements.forEach((movement) => {
+      const macro = movement.parent ? macroById[movement.parent] : undefined;
+      if (movement.works) {
+        movement.works.forEach((work) => {
+          buildingToMacro[work.id] = macro?.id;
+        });
+      }
+    });
+    
     console.log('MapView data:', {
       buildingCount: buildings.length,
       movementCount: movements.length,
@@ -338,15 +349,18 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       }
       
       if (coords) {
+        const macroId = buildingToMacro[building.id];
+        const macro = macroId ? macroById[macroId] : undefined;
         result.push({
           id: building.id,
           name: building.name,
           coordinates: coords,
           type: "building",
-          color: "#f59e0b", // amber for buildings
+          color: getMarkerColor(macroId),
           description: building.description,
           year: building.yearsBuilt,
           imageUrl: building.imageUrl,
+          macroEra: macro?.name,
         });
       }
     });
@@ -465,10 +479,10 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
   return (
     <div className="relative h-[600px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-xl">
       {/* Layer toggle */}
-      <div className="absolute top-4 left-4 z-10 space-y-2">
+      <div className="absolute top-4 left-4 z-[400] space-y-2">
         <button
           onClick={() => setShowHeatmap(!showHeatmap)}
-          className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm transition-all hover:bg-slate-800/90"
+          className="rounded-lg border border-white/20 bg-slate-900/95 px-3 py-2 backdrop-blur-sm shadow-lg transition-all hover:bg-slate-800/90"
         >
           <div className="text-xs font-semibold text-white">
             {showHeatmap ? 'Show Markers' : 'Show Heatmap'}
@@ -480,7 +494,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
           <select
             value={selectedMovement || ""}
             onChange={(e) => setSelectedMovement(e.target.value || null)}
-            className="w-full rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 text-xs text-white backdrop-blur-sm transition-all hover:bg-slate-800/90"
+            className="w-full rounded-lg border border-white/20 bg-slate-900/95 px-3 py-2 text-xs text-white backdrop-blur-sm shadow-lg transition-all hover:bg-slate-800/90"
           >
             <option value="">All Movements</option>
             {movements.map((movement) => (
@@ -493,7 +507,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       </div>
       
       {/* Info display */}
-      <div className="absolute top-4 right-4 z-10 space-y-2">
+      <div className="absolute top-4 right-4 z-[400] space-y-2">
         <div className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm">
           <div className="text-xs font-semibold text-white">
             {showHeatmap ? `${heatmapPoints.length} locations` : `${markers.length} markers`}
@@ -574,7 +588,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       </MapContainer>
       
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-10 rounded-lg border border-white/20 bg-slate-900/90 p-3 backdrop-blur-sm">
+      <div className="absolute bottom-4 left-4 z-[400] rounded-lg border border-white/20 bg-slate-900/95 p-3 backdrop-blur-sm shadow-lg">
         <div className="mb-2 text-xs font-semibold text-white">Legend</div>
         {showHeatmap ? (
           <div className="space-y-1 text-xs text-slate-300">
@@ -583,25 +597,25 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
               <div className="h-3 w-8 rounded" style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #ef4444)' }}></div>
               <span className="text-[10px]">Low → High</span>
             </div>
-            <div className="text-[10px] text-slate-400 mt-1">Buildings + Movements</div>
           </div>
         ) : (
-          <div className="space-y-1 text-xs text-slate-300">
+          <div className="space-y-1.5 text-xs text-slate-300">
+            <div className="text-[10px] text-slate-400 mb-1">By Era</div>
             <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-amber-500 border border-white"></div>
-              <span>Buildings</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-emerald-500 border border-white"></div>
+              <div className="h-3 w-3 rounded-full bg-emerald-500 border-2 border-white shadow"></div>
               <span>Ancient/Classical</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-fuchsia-500 border border-white"></div>
+              <div className="h-3 w-3 rounded-full bg-fuchsia-500 border-2 border-white shadow"></div>
               <span>Medieval</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-blue-500 border border-white"></div>
+              <div className="h-3 w-3 rounded-full bg-blue-500 border-2 border-white shadow"></div>
               <span>Renaissance</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-violet-500 border-2 border-white shadow"></div>
+              <span>Modern</span>
             </div>
           </div>
         )}

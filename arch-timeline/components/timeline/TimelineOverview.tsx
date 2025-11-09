@@ -33,7 +33,7 @@ export function TimelineOverview({
     <motion.div
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed top-20 left-1/2 z-40 hidden -translate-x-1/2 md:block"
+      className="fixed top-20 left-1/2 z-50 hidden -translate-x-1/2 md:block"
     >
       <div className="glass-surface overflow-visible rounded-2xl border border-white/50 p-3 shadow-xl backdrop-blur-xl">
         <div className="flex items-center gap-2">
