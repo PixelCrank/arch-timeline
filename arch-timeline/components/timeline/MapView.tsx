@@ -271,17 +271,23 @@ function getCoordinatesFromLocation(location?: string): [number, number] | null 
   return null;
 }
 
-function getMarkerColor(macroId?: string): string {
-  // This should match your MACRO_PALETTES colors
-  const colors: Record<string, string> = {
-    "ancient": "#10b981", // emerald
-    "classical": "#f59e0b", // amber
-    "medieval": "#ec4899", // fuchsia
-    "renaissance": "#3b82f6", // blue
-    "modern": "#8b5cf6", // violet
-  };
+function getMarkerColor(macroName?: string): string {
+  if (!macroName) return "#6366f1"; // default indigo
   
-  return colors[macroId || ""] || "#6366f1"; // default indigo
+  const lowerName = macroName.toLowerCase();
+  
+  // Map macro names to colors
+  if (lowerName.includes('ancient') || lowerName.includes('classical')) {
+    return "#10b981"; // emerald
+  } else if (lowerName.includes('medieval')) {
+    return "#ec4899"; // fuchsia
+  } else if (lowerName.includes('renaissance')) {
+    return "#3b82f6"; // blue
+  } else if (lowerName.includes('modern')) {
+    return "#8b5cf6"; // violet
+  }
+  
+  return "#6366f1"; // default indigo
 }
 
 export function MapView({ buildings, movements, macros, onMarkerClick }: MapViewProps) {
@@ -359,12 +365,14 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
     // Find Mortuary Temple specifically
     const mortuary = buildings.find(b => b.name.includes('Hatshepsut'));
     if (mortuary) {
+      const mortuaryMacroId = buildingToMacro[mortuary.id];
+      const mortuaryMacro = mortuaryMacroId ? macroById[mortuaryMacroId] : undefined;
       console.log('🏛️ Mortuary Temple debug:', {
         buildingId: mortuary.id,
         buildingName: mortuary.name,
-        macroId: buildingToMacro[mortuary.id],
-        macroName: buildingToMacro[mortuary.id] ? macroById[buildingToMacro[mortuary.id]!]?.name : 'NONE FOUND',
-        color: getMarkerColor(buildingToMacro[mortuary.id])
+        macroId: mortuaryMacroId,
+        macroName: mortuaryMacro?.name || 'NONE FOUND',
+        color: getMarkerColor(mortuaryMacro?.name)
       });
     }
     
@@ -385,7 +393,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
           name: building.name,
           coordinates: coords,
           type: "building",
-          color: getMarkerColor(macroId),
+          color: getMarkerColor(macro?.name),
           description: building.description,
           year: building.yearsBuilt,
           imageUrl: building.imageUrl,
@@ -409,7 +417,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
           name: movement.name,
           coordinates: coords,
           type: "movement",
-          color: getMarkerColor(macro?.id),
+          color: getMarkerColor(macro?.name),
           description: `${movement.start} - ${movement.end}`,
           macroEra: macro?.name,
         });
