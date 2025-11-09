@@ -340,19 +340,29 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       }
     });
     
-    console.log('MapView data:', {
+    console.log('🗺️ MapView data:', {
       buildingCount: buildings.length,
       movementCount: movements.length,
-      macroCount: macros.length
+      macroCount: macros.length,
+      macroNames: macros.map(m => m.name),
+      sampleMovementParents: movements.slice(0, 3).map(m => m.parent)
     });
     
-    // Debug: log sample building to macro mappings
-    const sampleBuildings = buildings.slice(0, 3);
-    console.log('Sample building macro mappings:', sampleBuildings.map(b => ({
-      building: b.name,
-      macroId: buildingToMacro[b.id],
-      macroName: buildingToMacro[b.id] ? macroById[buildingToMacro[b.id]!]?.name : 'none'
-    })));
+    // Debug: log building to macro mappings
+    const mappedCount = Object.values(buildingToMacro).filter(Boolean).length;
+    console.log(`🏗️ Building mappings: ${mappedCount}/${buildings.length} buildings mapped to macros`);
+    
+    // Find Mortuary Temple specifically
+    const mortuary = buildings.find(b => b.name.includes('Hatshepsut'));
+    if (mortuary) {
+      console.log('🏛️ Mortuary Temple debug:', {
+        buildingId: mortuary.id,
+        buildingName: mortuary.name,
+        macroId: buildingToMacro[mortuary.id],
+        macroName: buildingToMacro[mortuary.id] ? macroById[buildingToMacro[mortuary.id]!]?.name : 'NONE FOUND',
+        color: getMarkerColor(buildingToMacro[mortuary.id])
+      });
+    }
     
     // Process buildings
     buildings.forEach((building) => {
