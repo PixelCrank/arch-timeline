@@ -417,50 +417,56 @@ export default function Home() {
         </div>
 
         <div className="section-container space-y-8 pt-8 sm:space-y-12 lg:space-y-16">
-          {/* Search, Filter, and View Controls */}
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col sm:flex-row gap-3 items-start">
-              <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                onClear={handleSearchClear}
-                matchCount={matchingIds.size}
-              />
-              <FilterPanel
-                filters={filters}
-                sort={sort}
-                onFilterChange={setFilters}
-                onSortChange={setSort}
-                onClearAll={handleClearFilters}
-                activeFilterCount={activeFilterCount}
-                availableRegions={availableOptions.regions}
-                availableMaterials={availableOptions.materials}
-                availableFunctions={availableOptions.functions}
-              />
+          {/* Search, Filter, and View Controls - Redesigned */}
+          <div className="sticky top-4 z-50 space-y-3">
+            {/* Top Row: Search Bar (full width) */}
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onClear={handleSearchClear}
+              matchCount={matchingIds.size}
+            />
+            
+            {/* Bottom Row: Filter + View Toggle */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <FilterPanel
+                  filters={filters}
+                  sort={sort}
+                  onFilterChange={setFilters}
+                  onSortChange={setSort}
+                  onClearAll={handleClearFilters}
+                  activeFilterCount={activeFilterCount}
+                  availableRegions={availableOptions.regions}
+                  availableMaterials={availableOptions.materials}
+                  availableFunctions={availableOptions.functions}
+                />
+              </div>
               
-              {/* View Toggle */}
-              <div className="inline-flex shrink-0 rounded-lg border border-white/10 bg-slate-900/50 p-1 backdrop-blur-sm">
+              {/* View Toggle - Compact and Clear */}
+              <div className="flex shrink-0 rounded-xl border border-white/20 bg-white/90 backdrop-blur-sm shadow-lg overflow-hidden">
                 <button
                   onClick={() => setViewMode('timeline')}
-                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold transition-all ${
                     viewMode === 'timeline'
-                      ? 'bg-white/10 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-transparent text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   <List className="h-4 w-4" />
-                  <span className="hidden sm:inline">Timeline</span>
+                  <span>Timeline</span>
                 </button>
+                <div className="w-px bg-slate-200" />
                 <button
                   onClick={() => setViewMode('map')}
-                  className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold transition-all ${
                     viewMode === 'map'
-                      ? 'bg-white/10 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-transparent text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   <MapIcon className="h-4 w-4" />
-                  <span className="hidden sm:inline">Map</span>
+                  <span>Map</span>
                 </button>
               </div>
             </div>

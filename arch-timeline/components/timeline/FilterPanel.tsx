@@ -101,16 +101,16 @@ export function FilterPanel({
       {/* Filter button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`glass-surface flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold shadow-md transition-all hover:bg-white/80 ${
+        className={`glass-surface flex w-full items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold shadow-lg transition-all ${
           isOpen
-            ? 'border-emerald-400 bg-emerald-50/60 text-emerald-700'
-            : 'border-white/50 text-slate-700'
+            ? 'border-emerald-400 bg-emerald-50/80 text-emerald-700 shadow-emerald-200/50'
+            : 'border-white/50 text-slate-700 hover:bg-white/80 hover:shadow-xl'
         }`}
       >
         <Filter className="h-4 w-4" />
-        <span>Filters & Sort</span>
+        <span className="flex-1 text-left">Filters & Sort</span>
         {activeFilterCount > 0 && (
-          <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-xs font-bold text-white">
+          <span className="rounded-full bg-emerald-500 px-2.5 py-0.5 text-xs font-bold text-white">
             {activeFilterCount}
           </span>
         )}
