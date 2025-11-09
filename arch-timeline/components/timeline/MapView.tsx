@@ -316,16 +316,23 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
   const markers = useMemo(() => {
     const result: MapMarker[] = [];
     
-    // Create lookup for macro by movement parent
+    // Create lookup for macro by both ID and name
     const macroById: Record<string, MacroMovement> = {};
+    const macroByName: Record<string, MacroMovement> = {};
     macros.forEach((macro) => {
       macroById[macro.id] = macro;
+      macroByName[macro.name.toLowerCase()] = macro;
     });
     
     // Create building ID to macro lookup
     const buildingToMacro: Record<string, string | undefined> = {};
     movements.forEach((movement) => {
-      const macro = movement.parent ? macroById[movement.parent] : undefined;
+      // movement.parent is the macro name, not ID
+      let macro: MacroMovement | undefined;
+      if (movement.parent) {
+        macro = macroById[movement.parent] || macroByName[movement.parent.toLowerCase()];
+      }
+      
       if (movement.works) {
         movement.works.forEach((work) => {
           buildingToMacro[work.id] = macro?.id;
@@ -338,6 +345,14 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       movementCount: movements.length,
       macroCount: macros.length
     });
+    
+    // Debug: log sample building to macro mappings
+    const sampleBuildings = buildings.slice(0, 3);
+    console.log('Sample building macro mappings:', sampleBuildings.map(b => ({
+      building: b.name,
+      macroId: buildingToMacro[b.id],
+      macroName: buildingToMacro[b.id] ? macroById[buildingToMacro[b.id]!]?.name : 'none'
+    })));
     
     // Process buildings
     buildings.forEach((building) => {
