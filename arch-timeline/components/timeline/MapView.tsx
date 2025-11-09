@@ -465,7 +465,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
   return (
     <div className="relative h-[600px] w-full overflow-hidden rounded-2xl border border-white/10 shadow-xl">
       {/* Layer toggle */}
-      <div className="absolute top-4 left-4 z-[1000] space-y-2">
+      <div className="absolute top-4 left-4 z-10 space-y-2">
         <button
           onClick={() => setShowHeatmap(!showHeatmap)}
           className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm transition-all hover:bg-slate-800/90"
@@ -493,7 +493,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       </div>
       
       {/* Info display */}
-      <div className="absolute top-4 right-4 z-[1000] space-y-2">
+      <div className="absolute top-4 right-4 z-10 space-y-2">
         <div className="rounded-lg border border-white/20 bg-slate-900/90 px-3 py-2 backdrop-blur-sm">
           <div className="text-xs font-semibold text-white">
             {showHeatmap ? `${heatmapPoints.length} locations` : `${markers.length} markers`}
@@ -510,12 +510,16 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       <MapContainer
         center={[20, 0]}
         zoom={2}
+        minZoom={2}
+        maxBounds={[[-90, -180], [90, 180]]}
+        maxBoundsViscosity={1.0}
         className="h-full w-full"
         style={{ background: "#1e293b" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          noWrap={true}
         />
         
         {/* Heatmap layer */}
@@ -570,7 +574,7 @@ export function MapView({ buildings, movements, macros, onMarkerClick }: MapView
       </MapContainer>
       
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-[1000] rounded-lg border border-white/20 bg-slate-900/90 p-3 backdrop-blur-sm">
+      <div className="absolute bottom-4 left-4 z-10 rounded-lg border border-white/20 bg-slate-900/90 p-3 backdrop-blur-sm">
         <div className="mb-2 text-xs font-semibold text-white">Legend</div>
         {showHeatmap ? (
           <div className="space-y-1 text-xs text-slate-300">
