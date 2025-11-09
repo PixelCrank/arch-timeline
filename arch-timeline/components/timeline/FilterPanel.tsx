@@ -124,7 +124,7 @@ export function FilterPanel({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full left-0 z-50 mt-2 w-[600px] max-w-[90vw]"
+            className="absolute top-full left-0 z-[1100] mt-2 w-[600px] max-w-[90vw]"
           >
             <div className="glass-surface overflow-hidden rounded-2xl border border-white/50 shadow-2xl backdrop-blur-xl">
               {/* Header */}

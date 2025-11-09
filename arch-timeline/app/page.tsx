@@ -418,7 +418,7 @@ export default function Home() {
 
         <div className="section-container space-y-8 pt-8 sm:space-y-12 lg:space-y-16">
           {/* Search, Filter, and View Controls - Redesigned */}
-          <div className="sticky top-4 z-50 space-y-3">
+          <div className="sticky top-4 z-[1100] space-y-3">
             {/* Top Row: Search Bar (full width) */}
             <SearchBar
               value={searchQuery}
