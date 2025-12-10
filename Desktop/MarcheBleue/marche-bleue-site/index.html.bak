@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marche Bleue 2026 – Parc National du Banc d’Arguin • Mauritanie</title>
+  <meta name="description" content="Marche Bleue – 2e édition : du 1er au 9 février 2026, 6 jours de marche au Parc National du Banc d’Arguin en Mauritanie, mêlant randonnée côtière, art, santé mentale et environnement. Rejoignez une aventure humaine, artistique et écologique unique.">
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+  
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <!-- Top navigation -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#top" class="logo">
+        <span class="logo-mark">MB</span>
+        <span class="logo-text">Marche Bleue</span>
+      </a>
+      <nav class="main-nav">
+        <a href="#experience">L’expérience</a>
+        <a href="#itineraire">Itinéraire 2026</a>
+        <a href="#pratique">Infos pratiques</a>
+        <a href="#fondation">Fondation ÂME</a>
+        <a href="#faq">FAQ</a>
+        <a href="#impliquer" class="nav-cta">Participer</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Ouvrir le menu">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <img src="images/hero-nasa.jpg" alt="Parc National du Banc d'Arguin vue satellite" class="hero-bg" />
+      <div class="hero-bg-overlay"></div>
+      <div class="container hero-content">
+        <p class="eyebrow">Parc National du Banc d’Arguin • Mauritanie</p>
+        <h1>Marche Bleue – 2<sup>e</sup> édition</h1>
+        <p class="hero-dates">1<sup>er</sup> au 9 février 2026</p>
+        <p class="hero-subtitle">
+          Une marche collective de 6 jours le long des côtes du Parc National du Banc d’Arguin,
+          site UNESCO d’exception, pour relier <strong>art &amp; culture</strong>,
+          <strong>santé mentale &amp; bien-être</strong> et <strong>environnement &amp; société</strong>.
+        </p>
+        <div class="hero-actions">
+          <a href="#impliquer" class="btn btn-primary">Déposer ma candidature 2026</a>
+          <a href="#itineraire" class="btn btn-outline">Découvrir l’itinéraire</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="section section-light">
+      <div class="container">
+        <h2>Une expérience unique au monde</h2>
+        <p class="section-intro">
+          <strong>Marche Bleue</strong> est une initiative citoyenne, artistique et écologique portée par
+          l'Association Mauritanienne pour l'Environnement (AME) et la Fondation ÂME.
+        </p>
+        <p class="section-intro">
+          Pendant 9 jours, dont 6 jours de marche (15–20 km/jour),
+          des participants mauritaniens et internationaux traversent les
+          paysages marins, dunes et îles du Banc d'Arguin.
+        </p>
+        <p class="section-intro" style="font-size: 1.25rem; font-weight: 400; color: var(--ocean-deep);">
+          Protéger l'eau, les zones humides et la biodiversité,<br>tout en prenant soin de notre santé mentale.
+        </p>
+
+        <div class="pillars-grid">
+          <article class="pillar-card">
+            <div class="pillar-icon">🌍</div>
+            <h3>Randonnées côtières</h3>
+            <p>
+              6 jours de marche le long des lagunes, baies, plages et îles du Parc National du Banc d’Arguin,
+              à la rencontre des communautés Imraguen et des écosystèmes littoraux.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <div class="pillar-icon">🪁</div>
+            <h3>Art &amp; créativité</h3>
+            <p>
+              Cerfs-volants, ateliers d’arts plastiques, exposition de plastique recyclé,
+              valorisation de l’artisanat local et des récits poétiques du désert et de l’océan.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <div class="pillar-icon">💙</div>
+            <h3>Santé &amp; bien-être</h3>
+            <p>
+              Présence d’une équipe médicale et de cardiologues, temps de respiration,
+              cercles de parole et tables rondes autour de la santé mentale, du stress et du lien social.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <div class="pillar-icon">🌱</div>
+            <h3>Environnement</h3>
+            <p>
+              Sensibilisation à la biodiversité, à la désertification et aux enjeux climatiques du Sahel.
+              Actions concrètes de terrain et connexion avec les projets de la réserve de Tambass.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <div class="pillar-icon">⛵</div>
+            <h3>Moments symboliques</h3>
+            <p>
+              Traversées en lanche traditionnelle, déjeuner-conférence sur l’île de Tidra,
+              cérémonie d’ouverture et de clôture du cinquantenaire du Parc, plantation symbolique
+              et concert de fin de marche.
+            </p>
+          </article>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 2.5rem; align-items: start;">
+          <article class="pillar-card">
+            <h3>Objectifs 2026</h3>
+            <p style="margin-bottom: 0.8rem;">
+              • Renforcer la visibilité internationale de la Mauritanie
+            </p>
+            <p style="margin-bottom: 0.8rem;">
+              • Mobiliser citoyens et partenaires autour de l'eau et de la biodiversité
+            </p>
+            <p>
+              • Ancrer Marche Bleue comme rendez-vous annuel international
+            </p>
+          </article>
+          <article class="pillar-card">
+            <h3>Qui marche&nbsp;?</h3>
+            <p style="margin-bottom: 1rem;">
+              <strong>150 participants</strong> : 50 marcheurs internationaux et 100 marcheurs mauritaniens
+            </p>
+            <p>
+              Étudiants, sportifs, artistes, médecins, membres d'ONG et communautés locales.
+            </p>
+          </article>
+          <img src="images/aerial-pnba.jpg" alt="Vue aérienne du Parc National du Banc d'Arguin" style="width: 100%; height: 100%; min-height: 250px; object-fit: cover; border-radius: 24px; box-shadow: 0 20px 60px rgba(44, 36, 22, 0.15);" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Itinerary -->
+    <section id="itineraire" class="section section-image-split">
+      <div class="container split">
+        <div class="split-text">
+          <h2>L'itinéraire 2026</h2>
+          <p class="section-intro">
+            Une grande traversée côtière d'Iwik à Mamghar.
+          </p>
+          <p class="section-intro" style="font-size: 1.12rem;">
+            Chaque jour alterne dunes, estrans, baies et villages de pêche, avec 10 à 20 km de marche selon les étapes.
+          </p>
+
+          <!-- Summary Stats -->
+          <div class="journey-stats">
+            <div class="stat-card">
+              <i data-feather="calendar" class="stat-icon"></i>
+              <div class="stat-number">9 jours</div>
+              <div class="stat-label">1–9 février 2026</div>
+            </div>
+            <div class="stat-card">
+              <i data-feather="map" class="stat-icon"></i>
+              <div class="stat-number">6 jours</div>
+              <div class="stat-label">de marche</div>
+            </div>
+            <div class="stat-card">
+              <i data-feather="trending-up" class="stat-icon"></i>
+              <div class="stat-number">~83 km</div>
+              <div class="stat-label">au total</div>
+            </div>
+            <div class="stat-card">
+              <i data-feather="users" class="stat-icon"></i>
+              <div class="stat-number">150</div>
+              <div class="stat-label">participants</div>
+            </div>
+          </div>
+
+          <!-- Daily Itinerary -->
+          <div class="itinerary-days">
+            <!-- Arrival -->
+            <div class="day-card arrival">
+              <div class="day-header">
+                <div class="day-badge">Arrivée</div>
+                <div class="day-date">1<sup>er</sup> février 2026</div>
+              </div>
+              <div class="day-content">
+                <h4>Nouakchott → Parc National du Banc d'Arguin</h4>
+                <ul class="day-activities">
+                  <li>Accueil des participants internationaux à Nouakchott</li>
+                  <li>Départ collectif vers le Banc d'Arguin</li>
+                  <li>Installation et préparation</li>
+                  <li>Cérémonie d'ouverture avec les autorités et communautés locales</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 1 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 1</div>
+                <div class="day-route">Iwik → Tessot</div>
+                <div class="day-distance">~12 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Première marche côtière</h4>
+                <ul class="day-activities">
+                  <li>Départ d'Iwik le long de la côte</li>
+                  <li>Pause déjeuner à mi-parcours</li>
+                  <li>Arrivée à Tessot et installation du bivouac</li>
+                  <li>Présentation de la Charte écoresponsable</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 2</div>
+                <div class="day-route">Tessot → Baie de Serenni</div>
+                <div class="day-distance">~10 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Entre dunes et lagunes</h4>
+                <ul class="day-activities">
+                  <li>Marche entre dunes et lagunes</li>
+                  <li>Déjeuner sur une dune avec vue sur la baie</li>
+                  <li>Atelier artistique en fin de journée</li>
+                  <li>Bivouac face à la baie</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 3</div>
+                <div class="day-route">Baie de Serenni → Techot</div>
+                <div class="day-distance">~15 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Rythme des marées</h4>
+                <ul class="day-activities">
+                  <li>Étape rythmée par les marées</li>
+                  <li>Déjeuner sur l'estran</li>
+                  <li>Rencontre avec les pêcheurs Imraguen</li>
+                  <li>Discussion sur les ressources marines</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 4 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 4</div>
+                <div class="day-route">Techot → R'gueiba</div>
+                <div class="day-distance">~15 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Biodiversité marine et aviaire</h4>
+                <ul class="day-activities">
+                  <li>Longue plage et observation des oiseaux migrateurs</li>
+                  <li>Déjeuner en hauteur sur le haut de plage</li>
+                  <li>Temps de parole sur la santé mentale</li>
+                  <li>Soirée contemplative</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 5 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 5</div>
+                <div class="day-route">R'gueiba → Baie St-Jean → Awguej</div>
+                <div class="day-distance">~18 km</div>
+              </div>
+              <div class="day-content">
+                <h4>La grande étape</h4>
+                <ul class="day-activities">
+                  <li>Journée la plus longue de la marche</li>
+                  <li>Déjeuner à la Baie St-Jean</li>
+                  <li>Traversée de zones humides</li>
+                  <li>Soirée culturelle avec les communautés</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 6 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 6</div>
+                <div class="day-route">Awguej → Mamghar</div>
+                <div class="day-distance">~13 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Arrivée finale</h4>
+                <ul class="day-activities">
+                  <li>Dernière étape vers Mamghar</li>
+                  <li>Déjeuner festif dans les dunes</li>
+                  <li>Cérémonie de clôture</li>
+                  <li>Plantation symbolique et concert</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Return -->
+            <div class="day-card departure">
+              <div class="day-header">
+                <div class="day-badge">Retour</div>
+                <div class="day-date">8–9 février 2026</div>
+              </div>
+              <div class="day-content">
+                <h4>Mamghar → Nouakchott</h4>
+                <ul class="day-activities">
+                  <li>Retour collectif à Nouakchott</li>
+                  <li>Nuit d'hôtel selon les vols de retour</li>
+                  <li>Bilan de la marche et partages</li>
+                  <li>Préparation du rapport final</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <p class="note" style="margin-top: 2rem;">
+            L'itinéraire définitif est confirmé après repérage et selon les marées.
+            Certains tronçons incluent des traversées en lanche (pirogue traditionnelle)
+            encadrées par les guides Imraguen.
+          </p>
+        </div>
+
+        <div class="split-image">
+          <div id="journey-map"></div>
+      </div>
+    </section>
+
+    <!-- Practical info -->
+            <li>
+              <strong>Jour 2&nbsp;: Tessot → Baie de Serenni (~10 km)</strong><br>
+              Marche entre dunes et lagunes, déjeuner sur une dune avec vue sur la baie,
+              atelier artistique en fin de journée.
+            </li>
+            <li>
+              <strong>Jour 3&nbsp;: Baie de Serenni → Techot (~15 km)</strong><br>
+              Étape rythmée par les marées, déjeuner sur l’estran, rencontre avec les pêcheurs
+              et discussion sur les ressources marines.
+            </li>
+            <li>
+              <strong>Jour 4&nbsp;: Techot → R’gueiba (~15 km)</strong><br>
+              Longue plage et découverte des oiseaux migrateurs,
+              déjeuner en hauteur sur le haut de plage, temps de parole sur la santé mentale.
+            </li>
+            <li>
+              <strong>Jour 5&nbsp;: R’gueiba → Baie St-Jean → Awguej (~18 km)</strong><br>
+              Journée la plus longue, déjeuner à la Baie St-Jean, traversée de zones humides
+              et soirée culturelle avec les communautés.
+            </li>
+            <li>
+              <strong>Jour 6&nbsp;: Awguej → Mamghar (~13 km)</strong><br>
+              Dernière étape vers Mamghar, déjeuner dans les dunes avant l’arrivée,
+              cérémonie de clôture, plantation symbolique et concert.
+            </li>
+            <li>
+              <strong>8–9 février&nbsp;– Retour</strong><br>
+              Retour collectif à Nouakchott, nuit d’hôtel selon les vols de retour,
+              bilan de la marche et préparation du rapport final.
+            </li>
+          </ol>
+
+          <p class="note">
+            L’itinéraire définitif est confirmé après repérage et selon les marées.
+            Certains tronçons incluent des traversées en lanche (pirogue traditionnelle)
+            encadrées par les guides Imraguen.
+          </p>
+        </div>
+
+        <div class="split-image">
+          <div id="journey-map"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Practical info -->
+    <section id="pratique" class="section section-light">
+      <div class="container">
+        <h2>Infos pratiques 2026</h2>
+        
+        <!-- Calendar -->
+        <div class="info-card">
+          <h3><i data-feather="calendar" class="icon-inline"></i> Calendrier</h3>
+            <ul>
+              <li><strong>30–31 janvier 2026</strong> : arrivée des participants internationaux à Nouakchott, accueil à l'aéroport et nuit d'hôtel.</li>
+              <li><strong>1<sup>er</sup> février 2026</strong> : départ collectif vers le Banc d'Arguin, installation et cérémonie d'ouverture.</li>
+              <li><strong>2–7 février 2026</strong> : 6 jours de marche selon l'itinéraire Iwik → Mamghar.</li>
+              <li><strong>8–9 février 2026</strong> : retour à Nouakchott et vols retour selon compagnies.</li>
+            </ul>
+        </div>
+
+        <!-- Participants -->
+        <div class="info-card">
+          <h3><i data-feather="users" class="icon-inline"></i> Qui peut participer&nbsp;?</h3>
+            <p>
+              La Marche Bleue s'adresse à des personnes majeures, en bonne condition physique,
+              capables de marcher 15 à 20 km par jour à un rythme modéré. Aucun niveau sportif
+              de compétition n'est requis, mais une préparation minimale est recommandée.
+            </p>
+            <p>
+              Nous encourageons la diversité des profils&nbsp;: jeunes, artistes, scientifiques,
+              médecins, membres d'ONG, journalistes, athlètes, citoyen·nes engagé·es…
+            </p>
+        </div>
+
+        <!-- What's included -->
+        <div class="info-card-split">
+          <div class="info-card">
+            <h3><i data-feather="check-circle" class="icon-inline"></i> Ce qui est inclus</h3>
+            <ul>
+              <li>Transports intérieurs entre Nouakchott et le Parc (aller/retour)</li>
+              <li>Transports sur place (bus/minibus, 4x4 d'appui, embarcations)</li>
+              <li>Hébergement en bivouac, tentes, auberges et écolodges</li>
+              <li>Repas complets avec traiteurs locaux</li>
+              <li>Encadrement par l'équipe AME, guides du parc, équipe médicale</li>
+              <li>Ateliers, tables rondes, temps culturels et artistiques</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3><i data-feather="x-circle" class="icon-inline"></i> Ce qui n'est pas inclus</h3>
+            <ul>
+              <li>Billets d'avion internationaux aller/retour vers Nouakchott</li>
+              <li>Assurance voyage individuelle (obligatoire)</li>
+              <li>Équipement personnel (chaussures de marche, sac de couchage, etc.)</li>
+              <li>Dépenses personnelles et nuits supplémentaires hors programme</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Eco charter -->
+        <div class="info-card">
+          <h3><i data-feather="leaf" class="icon-inline"></i> Charte écoresponsable</h3>
+          <p>
+            Chaque participant·e s'engage à respecter la Charte écoresponsable de la Marche Bleue&nbsp;:
+          </p>
+          <ul>
+            <li>Zéro plastique à usage unique pendant la marche</li>
+            <li>Tri et collecte systématiques des déchets sur tout le parcours</li>
+            <li>Respect strict de la faune, de la flore et des sites sacrés</li>
+            <li>Contribution symbolique à la compensation carbone via des plantations à Tambass</li>
+            <li>Posture de bienveillance, d'écoute et d'entraide au sein du groupe</li>
+          </ul>
+        </div>
+
+        <!-- Visa & Health -->
+        <div class="info-card-split">
+          <div class="info-card">
+            <h3><i data-feather="briefcase" class="icon-inline"></i> Visa &amp; documents</h3>
+            <p>
+              Un passeport valide au moins 6 mois après la date de retour est obligatoire.
+              Le visa mauritanien peut être réalisé individuellement en ligne ou à l’arrivée
+              selon les dispositions en vigueur. Une fiche détaillée (procédure, liens officiels)
+              est fournie après validation de votre candidature.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h3><i data-feather="heart" class="icon-inline"></i> Santé &amp; sécurité</h3>
+            <p>
+              Une équipe médicale et des cardiologues accompagnent la marche.
+              Un plan d'urgence est coordonné avec les autorités mauritaniennes et
+              la direction du Parc. Les participants doivent signaler toute condition
+              médicale importante dans le formulaire d'inscription.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Get involved / registration -->
+    <section id="impliquer" class="section section-accent">
+      <div class="container get-involved">
+        <h2>Participer &amp; s'impliquer</h2>
+        <p class="section-intro">
+          Vous souhaitez marcher avec nous en février 2026&nbsp;?
+        </p>
+        <p class="section-intro" style="font-size: 1.12rem;">
+          Remplissez ce formulaire et l'équipe de coordination vous recontactera.
+        </p>
+
+        <form class="signup-form">
+          <div class="form-row">
+            <label>
+              Nom complet
+              <input type="text" name="name" required />
+            </label>
+            <label>
+              Email
+              <input type="email" name="email" required />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>
+              Pays / ville de résidence
+              <input type="text" name="country" />
+            </label>
+            <label>
+              Rôle souhaité
+              <select name="role">
+                <option value="walker">Marcheur / participante</option>
+                <option value="partner">Partenaire / sponsor</option>
+                <option value="artist">Artiste</option>
+                <option value="health">Médecin / santé mentale</option>
+                <option value="volunteer">Bénévole</option>
+                <option value="media">Journaliste / média</option>
+                <option value="other">Autre</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            Message / motivations
+            <textarea name="message" rows="4" placeholder="Parlez-nous brièvement de vous, de vos motivations et de ce que vous souhaitez apporter ou découvrir pendant la marche."></textarea>
+          </label>
+          <label style="font-size:0.8rem;display:flex;align-items:flex-start;gap:0.4rem;margin-top:0.5rem;">
+            <input type="checkbox" required style="width:auto;margin-top:0.2rem;">
+            <span>Je confirme avoir lu et accepter les grands principes de la Charte écoresponsable de la Marche Bleue.</span>
+          </label>
+          <button type="submit" class="btn btn-primary btn-full">Envoyer ma demande</button>
+        </form>
+
+        <p style="margin-top:1rem;font-size:0.85rem;opacity:0.85;">
+          Les informations recueillies sont utilisées uniquement par l’AME et la Fondation ÂME dans le cadre
+          de l’organisation de la Marche Bleue. Elles ne seront pas partagées avec des tiers sans votre accord.
+        </p>
+      </div>
+    </section>
+
+    <!-- Fondation section -->
+    <section id="fondation" class="section section-dark">
+      <div class="container foundation">
+        <div>
+          <h2>La Fondation ÂME &amp; l’AME</h2>
+          <p>
+            La <strong>Fondation ÂME</strong>, fondée par le cinéaste
+            <strong>Abderrahmane Sissako</strong>, porte une vision holistique du
+            développement humain et social. Elle relie trois axes majeurs&nbsp;:
+            <em>Art &amp; Culture</em>, <em>Santé mentale &amp; Bien-être</em>,
+            <em>Environnement &amp; Société</em>, pour réparer nos liens avec
+            nous-mêmes, avec les autres et avec la nature.
+          </p>
+          <p>
+            L’<strong>Association Mauritanienne pour l’Environnement (AME)</strong>
+            est son bras opérationnel en Mauritanie. Elle coordonne les projets sur le terrain
+            en lien étroit avec les communautés locales, les autorités et les partenaires techniques.
+            Ensemble, elles développent notamment la <strong>réserve de Tambass</strong>
+            comme site pilote d’agroécologie, d’économie circulaire, de santé communautaire
+            et d’écotourisme.
+          </p>
+          <p>
+            La Marche Bleue est l’initiative emblématique de cette vision&nbsp;:
+            une marche annuelle qui fait dialoguer art engagé, santé mentale et plaidoyer
+            climatique, avec l’ambition de devenir un rendez-vous international
+            incontournable à l’horizon 2030.
+          </p>
+          <a href="#impliquer" class="btn btn-outline-light">Soutenir la fondation &amp; la Marche Bleue</a>
+        </div>
+        <div class="logos">
+          <div style="width:160px;height:80px;border-radius:16px;border:1px solid rgba(148,163,184,0.5);display:flex;align-items:center;justify-content:center;font-size:0.8rem;">
+            Logo Fondation ÂME<br>(à intégrer)
+          </div>
+          <div style="width:160px;height:80px;border-radius:16px;border:1px solid rgba(148,163,184,0.5);display:flex;align-items:center;justify-content:center;font-size:0.8rem;">
+            Logos partenaires<br>(PNBA, ministères…)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="container">
+        <h2>Questions fréquentes</h2>
+        <div class="practical-grid">
+          <div>
+            <h3><i data-feather="activity" class="icon-inline"></i> Quel niveau physique est requis&nbsp;?</h3>
+            <p>
+              La marche demande une bonne condition physique générale&nbsp;:
+              15 à 20 km par jour sur terrain sableux, parfois sous la chaleur.
+              Une préparation progressive (marches régulières, renforcement des chevilles et du dos)
+              est vivement recommandée. Des pauses sont prévues et l'équipe d'appui
+              peut accompagner les personnes en difficulté ponctuelle.
+            </p>
+
+            <h3><i data-feather="message-circle" class="icon-inline"></i> Dans quelle langue se déroule la marche&nbsp;?</h3>
+            <p>
+              Les langues de travail principales sont le français, le hassaniya et l'arabe,
+              avec un appui en anglais pour les participants internationaux.
+              Les temps officiels peuvent faire l'objet de traductions.
+            </p>
+
+            <h3><i data-feather="users" class="icon-inline"></i> Puis-je venir avec ma famille ou des enfants&nbsp;?</h3>
+            <p>
+              L’édition 2026 de la Marche Bleue est prioritairement conçue pour des
+              personnes majeures. Des formats plus courts et familiaux pourront être
+              envisagés pour les éditions suivantes.
+            </p>
+          </div>
+          <div>
+            <h3><i data-feather="award" class="icon-inline"></i> Comment sont choisis les participants&nbsp;?</h3>
+            <p>
+              Les candidatures sont étudiées par l'équipe de coordination, en veillant
+              à la diversité des profils (genre, âge, origine géographique, domaines d’expertise)
+              et à la motivation. Une attention particulière est portée aux personnes
+              pouvant contribuer à la dynamique de groupe et au plaidoyer après la marche.
+            </p>
+
+            <h3><i data-feather="gift" class="icon-inline"></i> Comment puis-je soutenir sans marcher&nbsp;?</h3>
+            <p>
+              Vous pouvez devenir partenaire ou donateur de la Marche Bleue et de la
+              réserve de Tambass, relayer nos contenus, organiser des événements échos
+              (projections, marches symboliques, ateliers) ou proposer un appui média.
+              Utilisez le formulaire ci-dessus en choisissant «&nbsp;Partenaire / sponsor&nbsp;»
+              ou «&nbsp;Autre&nbsp;».
+            </p>
+
+            <h3><i data-feather="file-text" class="icon-inline"></i> Quand recevrai-je les détails pratiques complets&nbsp;?</h3>
+            <p>
+              Après validation de votre candidature, vous recevrez un <em>kit du participant</em>
+              avec la liste détaillée du matériel, les conditions de voyage, les conseils santé,
+              la procédure de visa actualisée et les contacts d’urgence.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p>© 2025–2026 Marche Bleue • Fondation ÂME &amp; Association Mauritanienne pour l’Environnement (AME)</p>
+      <div class="footer-links">
+        <a href="#top">Haut de page</a>
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simple mobile nav toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.main-nav');
+
+    navToggle.addEventListener('click', () => {
+      nav.classList.toggle('nav-open');
+    });
+
+    // Initialize Feather icons
+    feather.replace();
+  </script>
+  <script src="js/map.js"></script>
+</body>
+</html>

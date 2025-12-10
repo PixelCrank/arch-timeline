@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Marche Bleue – 2e édition : du 1er au 9 février 2026, 6 jours de marche au Parc National du Banc d’Arguin en Mauritanie, mêlant randonnée côtière, art, santé mentale et environnement. Rejoignez une aventure humaine, artistique et écologique unique.">
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=B612+Mono:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+  
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <!-- Top navigation -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#top" class="logo">
+        <span class="logo-text">Marche Bleue</span>
+      </a>
+      <nav class="main-nav">
+        <a href="#experience">L'expérience</a>
+        <a href="#galerie">Galerie</a>
+        <a href="#itineraire">Itinéraire 2026</a>
+        <a href="#pratique">Infos pratiques</a>
+        <a href="#fondation">Fondation ÂME</a>
+        <a href="#faq">FAQ</a>
+        <a href="#impliquer" class="nav-cta">Participer</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Ouvrir le menu">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <img src="images/aerial-pnba.jpg" alt="Vue aérienne des oiseaux sur les plages du Parc National du Banc d'Arguin" class="hero-bg" />
+      <div class="hero-bg-overlay"></div>
+      <div class="container hero-content">
+        <p class="eyebrow">Parc National du Banc d’Arguin • Mauritanie</p>
+        <h1>Marche Bleue – 2<sup>e</sup> édition</h1>
+        <p class="hero-dates">1<sup>er</sup> au 9 février 2026</p>
+        <p class="hero-subtitle">
+          6 jours de marche le long des côtes du Parc National du Banc d'Arguin, site UNESCO,
+          pour relier <strong>art &amp; culture</strong>, <strong>santé mentale</strong> et <strong>environnement</strong>.
+        </p>
+        <div class="hero-actions">
+          <a href="#impliquer" class="btn btn-primary">Déposer ma candidature 2026</a>
+          <a href="#itineraire" class="btn btn-outline">Découvrir l’itinéraire</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="section section-light">
+      <div class="container">
+        <h2>Une expérience unique au monde</h2>
+        
+        <p class="section-intro">
+          <strong>Marche Bleue</strong> est une initiative citoyenne, artistique et écologique portée par
+          l'Association Mauritanienne pour l'Environnement (AME) et la Fondation ÂME.
+        </p>
+        <p class="section-intro">
+          Pendant 9 jours, dont 6 jours de marche (15–20 km/jour),
+          des participants mauritaniens et internationaux traversent les
+          paysages marins, dunes et îles du Banc d'Arguin.
+        </p>
+
+        <div class="pillars-grid-balanced">
+          <article class="pillar-card">
+            <i data-feather="map" class="pillar-icon-svg"></i>
+            <h3>Randonnées côtières</h3>
+            <p>
+              6 jours de marche le long des lagunes, baies, plages et îles du Parc National du Banc d’Arguin,
+              à la rencontre des communautés Imraguen et des écosystèmes littoraux.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <i data-feather="wind" class="pillar-icon-svg"></i>
+            <h3>Art &amp; créativité</h3>
+            <p>
+              Cerfs-volants, ateliers d’arts plastiques, exposition de plastique recyclé,
+              valorisation de l’artisanat local et des récits poétiques du désert et de l’océan.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <i data-feather="heart" class="pillar-icon-svg"></i>
+            <h3>Santé &amp; bien-être</h3>
+            <p>
+              Présence d’une équipe médicale et de cardiologues, temps de respiration,
+              cercles de parole et tables rondes autour de la santé mentale, du stress et du lien social.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <i data-feather="globe" class="pillar-icon-svg"></i>
+            <h3>Environnement</h3>
+            <p>
+              Sensibilisation à la biodiversité, à la désertification et aux enjeux climatiques du Sahel.
+              Actions concrètes de terrain et connexion avec les projets de la réserve de Tambass.
+            </p>
+          </article>
+          <article class="pillar-card">
+            <i data-feather="anchor" class="pillar-icon-svg"></i>
+            <h3>Moments symboliques</h3>
+            <p>
+              Traversées en lanche traditionnelle, déjeuner-conférence sur l’île de Tidra,
+              cérémonie d’ouverture et de clôture du cinquantenaire du Parc, plantation symbolique
+              et concert de fin de marche.
+            </p>
+          </article>
+        </div>
+
+        <div class="experience-bottom-grid">
+          <div class="experience-image-wrapper">
+            <img src="images/02-enhaut-R0119830.jpg" alt="Marcheurs sur les plages du PNBA" class="experience-image" />
+            <p class="image-credit">©️ en Haut ! - www.enhaut.org</p>
+          </div>
+          <div class="experience-info-wrapper">
+            <article class="pillar-card experience-info-card">
+              <h3>Objectifs 2026</h3>
+              <ul class="experience-list">
+                <li>Renforcer la visibilité internationale de la Mauritanie</li>
+                <li>Mobiliser citoyens et partenaires autour de l'eau et de la biodiversité</li>
+                <li>Ancrer Marche Bleue comme rendez-vous annuel international</li>
+              </ul>
+            </article>
+            <article class="pillar-card experience-info-card">
+              <h3>Qui marche&nbsp;?</h3>
+              <p class="experience-participants">
+                <strong>150 participants</strong> : 50 marcheurs internationaux et 100 marcheurs mauritaniens – étudiants, sportifs, artistes, médecins, membres d'ONG et communautés locales.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Image Gallery -->
+    <section id="galerie" class="section section-dark">
+      <div class="container">
+        <h2>En images</h2>
+        <p class="section-intro">
+          Découvrez l'esprit de la Marche Bleue : paysages du Parc National du Banc d'Arguin, 
+          moments de partage et l'énergie de cette aventure collective.
+        </p>
+
+        <div class="gallery-grid">
+          <div class="gallery-item">
+            <img src="images/02-enhaut-R0119830.jpg" alt="Groupe de marcheurs sur la plage du PNBA" />
+            <div class="gallery-caption">
+              <p>Marcheurs sur les plages du Banc d'Arguin</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/03-enhaut-R0041615.jpg" alt="Paysages côtiers du PNBA" />
+            <div class="gallery-caption">
+              <p>Paysages côtiers du Parc</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/04-enhaut-R0016958.jpg" alt="Campement et vie au bivouac" />
+            <div class="gallery-caption">
+              <p>Bivouac dans le désert</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/aerial-pnba.jpg" alt="Vue aérienne du Parc National du Banc d'Arguin" />
+            <div class="gallery-caption">
+              <p>Vue aérienne du PNBA</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/08-enhaut-R0119712.jpg" alt="Rencontre avec les communautés locales" />
+            <div class="gallery-caption">
+              <p>Échanges avec les communautés Imraguen</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/09-enhaut-CapStAnne1-Modifier.jpg" alt="Cap Sainte-Anne et paysages côtiers" />
+            <div class="gallery-caption">
+              <p>Cap Sainte-Anne</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/59-enhaut-IMGP3531.jpg" alt="Activités et ateliers de la Marche Bleue" />
+            <div class="gallery-caption">
+              <p>Ateliers et moments de partage</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/67-enhaut-tafarit3-Modifier.jpg" alt="Paysages de Tafarit" />
+            <div class="gallery-caption">
+              <p>Paysages de Tafarit</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/69-enhaut-R0047806.jpg" alt="Marche dans les dunes" />
+            <div class="gallery-caption">
+              <p>Traversée des dunes côtières</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/70-enhaut-R0118930.jpg" alt="Biodiversité du PNBA" />
+            <div class="gallery-caption">
+              <p>Biodiversité du Parc</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/71-enhaut-IMGP7000-2.jpg" alt="Moments de contemplation" />
+            <div class="gallery-caption">
+              <p>Moments de contemplation</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+          
+          <div class="gallery-item">
+            <img src="images/72-enhaut-R0023479.jpg" alt="Aventure collective" />
+            <div class="gallery-caption">
+              <p>L'aventure collective</p>
+              <p class="gallery-credit">©️ en Haut ! - www.enhaut.org</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Itinerary -->
+    <section id="itineraire" class="section section-image-split">
+      <div class="container">
+          <h2>L'itinéraire 2026</h2>
+          <p class="section-intro">
+            Une grande traversée côtière d'Iwik à Mamghar.
+          </p>
+          <p class="section-intro" style="font-size: 1.12rem;">
+            Chaque jour alterne dunes, estrans, baies et villages de pêche, avec 10 à 20 km de marche selon les étapes.
+          </p>
+          
+          <div class="itinerary-image-accent">
+            <img src="images/69-enhaut-R0047806.jpg" alt="Traversée des dunes côtières" />
+            <p class="image-credit">©️ en Haut ! - www.enhaut.org</p>
+          </div>
+
+          <!-- Summary Stats -->
+          <div class="journey-stats">
+            <div class="stat-card">
+              <i data-feather="calendar" class="stat-icon"></i>
+              <div class="stat-number">9 jours</div>
+              <div class="stat-label">1–9 février 2026</div>
+            </div>
+            <div class="stat-card">
+              <i data-feather="map" class="stat-icon"></i>
+              <div class="stat-number">6 jours</div>
+              <div class="stat-label">de marche</div>
+            </div>
+            <div class="stat-card">
+              <i data-feather="trending-up" class="stat-icon"></i>
+              <div class="stat-number">~83 km</div>
+              <div class="stat-label">au total</div>
+            </div>
+            <div class="stat-card">
+              <i data-feather="users" class="stat-icon"></i>
+              <div class="stat-number">150</div>
+              <div class="stat-label">participants</div>
+            </div>
+          </div>
+
+          <!-- Daily Itinerary -->
+          <div class="itinerary-days">
+            <!-- Arrival -->
+            <div class="day-card arrival">
+              <div class="day-header">
+                <div class="day-badge">Arrivée</div>
+                <div class="day-route">Nouakchott → Parc National du Banc d'Arguin</div>
+                <div class="day-date">1<sup>er</sup> février 2026</div>
+              </div>
+              <div class="day-content">
+                <h4>Nouakchott → Parc National du Banc d'Arguin</h4>
+                <ul class="day-activities">
+                  <li>Accueil des participants internationaux à Nouakchott</li>
+                  <li>Départ collectif vers le Banc d'Arguin</li>
+                  <li>Installation et préparation</li>
+                  <li>Cérémonie d'ouverture avec les autorités et communautés locales</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 1 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 1</div>
+                <div class="day-route">Iwik → Tessot</div>
+                <div class="day-distance">~12 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Première marche côtière</h4>
+                <ul class="day-activities">
+                  <li>Départ d'Iwik le long de la côte</li>
+                  <li>Pause déjeuner à mi-parcours</li>
+                  <li>Arrivée à Tessot et installation du bivouac</li>
+                  <li>Présentation de la Charte écoresponsable</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 2</div>
+                <div class="day-route">Tessot → Baie de Serenni</div>
+                <div class="day-distance">~10 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Entre dunes et lagunes</h4>
+                <ul class="day-activities">
+                  <li>Marche entre dunes et lagunes</li>
+                  <li>Déjeuner sur une dune avec vue sur la baie</li>
+                  <li>Atelier artistique en fin de journée</li>
+                  <li>Bivouac face à la baie</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 3</div>
+                <div class="day-route">Baie de Serenni → Techot</div>
+                <div class="day-distance">~15 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Rythme des marées</h4>
+                <ul class="day-activities">
+                  <li>Étape rythmée par les marées</li>
+                  <li>Déjeuner sur l'estran</li>
+                  <li>Rencontre avec les pêcheurs Imraguen</li>
+                  <li>Discussion sur les ressources marines</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 4 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 4</div>
+                <div class="day-route">Techot → R'gueiba</div>
+                <div class="day-distance">~15 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Biodiversité marine et aviaire</h4>
+                <ul class="day-activities">
+                  <li>Longue plage et observation des oiseaux migrateurs</li>
+                  <li>Déjeuner en hauteur sur le haut de plage</li>
+                  <li>Temps de parole sur la santé mentale</li>
+                  <li>Soirée contemplative</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 5 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 5</div>
+                <div class="day-route">R'gueiba → Baie St-Jean → Awguej</div>
+                <div class="day-distance">~18 km</div>
+              </div>
+              <div class="day-content">
+                <h4>La grande étape</h4>
+                <ul class="day-activities">
+                  <li>Journée la plus longue de la marche</li>
+                  <li>Déjeuner à la Baie St-Jean</li>
+                  <li>Traversée de zones humides</li>
+                  <li>Soirée culturelle avec les communautés</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Day 6 -->
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-badge">Jour 6</div>
+                <div class="day-route">Awguej → Mamghar</div>
+                <div class="day-distance">~13 km</div>
+              </div>
+              <div class="day-content">
+                <h4>Arrivée finale</h4>
+                <ul class="day-activities">
+                  <li>Dernière étape vers Mamghar</li>
+                  <li>Déjeuner festif dans les dunes</li>
+                  <li>Cérémonie de clôture</li>
+                  <li>Plantation symbolique et concert</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Return -->
+            <div class="day-card departure">
+              <div class="day-header">
+                <div class="day-badge">Retour</div>
+                <div class="day-route">Mamghar → Nouakchott</div>
+                <div class="day-date">8–9 février 2026</div>
+              </div>
+              <div class="day-content">
+                <h4>Mamghar → Nouakchott</h4>
+                <ul class="day-activities">
+                  <li>Retour collectif à Nouakchott</li>
+                  <li>Nuit d'hôtel selon les vols de retour</li>
+                  <li>Bilan de la marche et partages</li>
+                  <li>Préparation du rapport final</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <p class="note" style="margin-top: 2rem; max-width: 100%; font-size: 0.85rem; opacity: 0.75;">
+            * L'itinéraire définitif est confirmé après repérage et selon les marées. Certains tronçons incluent des traversées en lanche (pirogue traditionnelle) encadrées par les guides Imraguen.
+          </p>
+
+        <!-- Full Width Map -->
+        <div class="journey-map-wrapper">
+          <div id="journey-map"></div>
+          <p class="map-hint"><i data-feather="mouse-pointer" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>Survolez les points pour voir les détails de chaque étape</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Practical info -->
+
+    <!-- Practical info -->
+    <section id="pratique" class="section section-light">
+      <div class="container">
+        <h2>Infos pratiques 2026</h2>
+        
+        <!-- Trip Overview Component -->
+        <div class="trip-overview-card">
+          <div class="trip-overview-grid">
+            <div class="trip-detail">
+              <div class="trip-detail-label">DATES</div>
+              <div class="trip-detail-value">1er - 9 février 2026</div>
+              <div class="trip-detail-sub">9 jours</div>
+            </div>
+            
+            <div class="trip-detail">
+              <div class="trip-detail-label">DESTINATION</div>
+              <div class="trip-detail-value">Parc National du Banc d'Arguin</div>
+              <div class="trip-detail-sub">Mauritanie</div>
+            </div>
+            
+            <div class="trip-detail">
+              <div class="trip-detail-label">GROUPE</div>
+              <div class="trip-detail-value">150 participants</div>
+              <div class="trip-detail-sub">50 internationaux + 100 mauritaniens</div>
+            </div>
+            
+            <div class="trip-detail">
+              <div class="trip-detail-label">NIVEAU</div>
+              <div class="trip-detail-value">Modéré</div>
+              <div class="trip-detail-sub">15-20 km/jour • 6 jours de marche</div>
+            </div>
+          </div>
+          
+          <div class="trip-highlights">
+            <div class="trip-highlight-label">PROFILS RECHERCHÉS</div>
+            <div class="trip-highlight-tags">
+              <span class="trip-tag">Artistes</span>
+              <span class="trip-tag">Scientifiques</span>
+              <span class="trip-tag">Médecins</span>
+              <span class="trip-tag">ONG</span>
+              <span class="trip-tag">Journalistes</span>
+              <span class="trip-tag">Athlètes</span>
+              <span class="trip-tag">Citoyens engagés</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- What's included -->
+        <div class="info-card-split">
+          <div class="info-card">
+            <h3><i data-feather="check-circle" class="icon-inline"></i> Ce qui est inclus</h3>
+            <ul>
+              <li>Transports intérieurs entre Nouakchott et le Parc (aller/retour)</li>
+              <li>Transports sur place (bus/minibus, 4x4 d'appui, embarcations)</li>
+              <li>Hébergement en bivouac, tentes, auberges et écolodges</li>
+              <li>Repas complets avec traiteurs locaux</li>
+              <li>Encadrement par l'équipe AME, guides du parc, équipe médicale</li>
+              <li>Ateliers, tables rondes, temps culturels et artistiques</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3><i data-feather="x-circle" class="icon-inline"></i> Ce qui n'est pas inclus</h3>
+            <ul>
+              <li>Billets d'avion internationaux aller/retour vers Nouakchott</li>
+              <li>Assurance voyage individuelle (obligatoire)</li>
+              <li>Équipement personnel (chaussures de marche, sac de couchage, etc.)</li>
+              <li>Dépenses personnelles et nuits supplémentaires hors programme</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Eco charter -->
+        <div class="eco-charter-section">
+          <div class="eco-charter-content">
+            <h3><i data-feather="leaf" class="icon-inline"></i> Charte écoresponsable</h3>
+            <p style="margin-bottom: 0.6rem;"><strong>Chaque participant·e s'engage à&nbsp;:</strong></p>
+            <ul>
+              <li>Zéro plastique à usage unique</li>
+              <li>Tri et collecte systématiques des déchets</li>
+              <li>Respect strict de la faune, flore et sites sacrés</li>
+              <li>Contribution à la compensation carbone (plantations à Tambass)</li>
+              <li>Posture de bienveillance, d'écoute et d'entraide</li>
+            </ul>
+          </div>
+          <div class="eco-charter-image">
+            <img src="images/67-enhaut-tafarit3-Modifier.jpg" alt="Paysages préservés du PNBA" />
+            <p class="image-credit">©️ en Haut ! - www.enhaut.org</p>
+          </div>
+        </div>
+
+        <!-- Visa & Health -->
+        <div class="info-card-split">
+          <div class="info-card">
+            <h3><i data-feather="briefcase" class="icon-inline"></i> Visa &amp; documents</h3>
+            <p style="margin-bottom: 0.6rem;"><strong>Passeport&nbsp;:</strong> Valide 6 mois après le retour <em>(obligatoire)</em></p>
+            <p style="margin-bottom: 0.6rem;"><strong>Visa mauritanien&nbsp;:</strong> En ligne ou à l'arrivée selon dispositions en vigueur</p>
+            <p style="margin-bottom: 0;">Fiche détaillée fournie après validation de candidature</p>
+          </div>
+
+          <div class="info-card">
+            <h3><i data-feather="heart" class="icon-inline"></i> Santé &amp; sécurité</h3>
+            <p style="margin-bottom: 0.6rem;"><strong>Encadrement médical&nbsp;:</strong> Équipe médicale et cardiologues présents</p>
+            <p style="margin-bottom: 0.6rem;"><strong>Plan d'urgence&nbsp;:</strong> Coordonné avec autorités et direction du Parc</p>
+            <p style="margin-bottom: 0;"><em>Signaler toute condition médicale dans le formulaire d'inscription</em></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Get involved / registration -->
+    <section id="impliquer" class="section section-accent">
+      <div class="container get-involved">
+        <h2>Participer &amp; s'impliquer</h2>
+        <p class="section-intro">
+          Vous souhaitez marcher avec nous en février 2026&nbsp;?
+        </p>
+        <p class="section-intro" style="font-size: 1.12rem;">
+          Remplissez ce formulaire et l'équipe de coordination vous recontactera.
+        </p>
+
+        <form class="signup-form">
+          <div class="form-row">
+            <label>
+              Nom complet
+              <input type="text" name="name" required />
+            </label>
+            <label>
+              Email
+              <input type="email" name="email" required />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>
+              Pays / ville de résidence
+              <input type="text" name="country" />
+            </label>
+            <label>
+              Rôle souhaité
+              <select name="role">
+                <option value="walker">Marcheur / participante</option>
+                <option value="partner">Partenaire / sponsor</option>
+                <option value="artist">Artiste</option>
+                <option value="health">Médecin / santé mentale</option>
+                <option value="volunteer">Bénévole</option>
+                <option value="media">Journaliste / média</option>
+                <option value="other">Autre</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            Message / motivations
+            <textarea name="message" rows="4" placeholder="Parlez-nous brièvement de vous, de vos motivations et de ce que vous souhaitez apporter ou découvrir pendant la marche."></textarea>
+          </label>
+          <label style="font-size:0.8rem;display:flex;align-items:flex-start;gap:0.4rem;margin-top:0.5rem;">
+            <input type="checkbox" required style="width:auto;margin-top:0.2rem;">
+            <span>Je confirme avoir lu et accepter les grands principes de la Charte écoresponsable de la Marche Bleue.</span>
+          </label>
+          <button type="submit" class="btn btn-primary btn-full">Envoyer ma demande</button>
+        </form>
+
+        <p style="margin-top:1rem;font-size:0.85rem;color:rgba(255,255,255,0.75);">
+          Les informations recueillies sont utilisées uniquement par l'AME et la Fondation ÂME dans le cadre
+          de l'organisation de la Marche Bleue. Elles ne seront pas partagées avec des tiers sans votre accord.
+        </p>
+      </div>
+    </section>
+
+    <!-- Fondation section -->
+    <section id="fondation" class="section section-dark">
+      <div class="container foundation">
+        <h2>La Fondation ÂME &amp; l'AME</h2>
+        <div class="logos">
+          <div style="width:160px;height:80px;border-radius:16px;border:1px solid rgba(148,163,184,0.5);display:flex;align-items:center;justify-content:center;font-size:0.8rem;">
+            Logo Fondation ÂME<br>(à intégrer)
+          </div>
+          <div style="width:160px;height:80px;border-radius:16px;border:1px solid rgba(148,163,184,0.5);display:flex;align-items:center;justify-content:center;font-size:0.8rem;">
+            Logos partenaires<br>(PNBA, ministères…)
+          </div>
+        </div>
+        <p>
+          La <strong>Fondation ÂME</strong>, fondée par le cinéaste
+            <strong>Abderrahmane Sissako</strong>, porte une vision holistique du
+            développement humain et social. Elle relie trois axes majeurs&nbsp;:
+            <em>Art &amp; Culture</em>, <em>Santé mentale &amp; Bien-être</em>,
+            <em>Environnement &amp; Société</em>, pour réparer nos liens avec
+            nous-mêmes, avec les autres et avec la nature.
+          </p>
+          <p>
+            L’<strong>Association Mauritanienne pour l’Environnement (AME)</strong>
+            est son bras opérationnel en Mauritanie. Elle coordonne les projets sur le terrain
+            en lien étroit avec les communautés locales, les autorités et les partenaires techniques.
+            Ensemble, elles développent notamment la <strong>réserve de Tambass</strong>
+            comme site pilote d’agroécologie, d’économie circulaire, de santé communautaire
+            et d’écotourisme.
+          </p>
+          <p>
+            La Marche Bleue est l’initiative emblématique de cette vision&nbsp;:
+            une marche annuelle qui fait dialoguer art engagé, santé mentale et plaidoyer
+            climatique, avec l’ambition de devenir un rendez-vous international
+            incontournable à l’horizon 2030.
+          </p>
+        <a href="#impliquer" class="btn btn-outline-light">Soutenir la fondation &amp; la Marche Bleue</a>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="container">
+        <h2>Questions fréquentes</h2>
+        <div class="faq-container">
+            <h3><i data-feather="activity" class="icon-inline"></i> Quel niveau physique est requis&nbsp;?</h3>
+            <p>
+              La marche demande une bonne condition physique générale&nbsp;:
+              15 à 20 km par jour sur terrain sableux, parfois sous la chaleur.
+              Une préparation progressive (marches régulières, renforcement des chevilles et du dos)
+              est vivement recommandée. Des pauses sont prévues et l'équipe d'appui
+              peut accompagner les personnes en difficulté ponctuelle.
+            </p>
+            
+            <h3><i data-feather="message-circle" class="icon-inline"></i> Dans quelle langue se déroule la marche&nbsp;?</h3>
+            <p>
+              Les langues de travail principales sont le français, le hassaniya et l'arabe,
+              avec un appui en anglais pour les participants internationaux.
+              Les temps officiels peuvent faire l'objet de traductions.
+            </p>
+
+            <h3><i data-feather="users" class="icon-inline"></i> Puis-je venir avec ma famille ou des enfants&nbsp;?</h3>
+            <p>
+              L’édition 2026 de la Marche Bleue est prioritairement conçue pour des
+              personnes majeures. Des formats plus courts et familiaux pourront être
+              envisagés pour les éditions suivantes.
+            </p>
+            
+            <h3><i data-feather="award" class="icon-inline"></i> Comment sont choisis les participants&nbsp;?</h3>
+            <p>
+              Les candidatures sont étudiées par l'équipe de coordination, en veillant
+              à la diversité des profils (genre, âge, origine géographique, domaines d’expertise)
+              et à la motivation. Une attention particulière est portée aux personnes
+              pouvant contribuer à la dynamique de groupe et au plaidoyer après la marche.
+            </p>
+
+            <h3><i data-feather="gift" class="icon-inline"></i> Comment puis-je soutenir sans marcher&nbsp;?</h3>
+            <p>
+              Vous pouvez devenir partenaire ou donateur de la Marche Bleue et de la
+              réserve de Tambass, relayer nos contenus, organiser des événements échos
+              (projections, marches symboliques, ateliers) ou proposer un appui média.
+              Utilisez le formulaire ci-dessus en choisissant «&nbsp;Partenaire / sponsor&nbsp;»
+              ou «&nbsp;Autre&nbsp;».
+            </p>
+
+            <h3><i data-feather="file-text" class="icon-inline"></i> Quand recevrai-je les détails pratiques complets&nbsp;?</h3>
+            <p>
+              Après validation de votre candidature, vous recevrez un <em>kit du participant</em>
+              avec la liste détaillée du matériel, les conditions de voyage, les conseils santé,
+              la procédure de visa actualisée et les contacts d'urgence.
+            </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Simple mobile nav toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.main-nav');
+
+    navToggle.addEventListener('click', () => {
+      nav.classList.toggle('nav-open');
+    });
+
+    // Scroll progress indicator
+    const progressBar = document.createElement('div');
+    progressBar.className = 'scroll-progress';
+    document.body.appendChild(progressBar);
+
+    window.addEventListener('scroll', () => {
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (window.scrollY / windowHeight) * 100;
+      progressBar.style.width = scrolled + '%';
+    });
+
+    // Scroll animations with Intersection Observer
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements for animation
+    document.querySelectorAll('.pillar-card, .day-card, .info-card, .stat-card, h2, .section-intro').forEach(el => {
+      el.classList.add('animate-on-scroll');
+      observer.observe(el);
+    });
+
+    // Animated counters for stats
+    const animateCounter = (element, target, duration = 2000) => {
+      const start = 0;
+      const increment = target / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          element.textContent = target;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 16);
+    };
+
+    // Observe stat cards for counter animation
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.animated) {
+          entry.target.dataset.animated = 'true';
+          const numberEl = entry.target.querySelector('.stat-number');
+          const text = numberEl.textContent;
+          const number = parseInt(text.match(/\d+/));
+          if (number) {
+            const prefix = text.match(/~/) ? '~' : '';
+            const suffix = text.replace(/[~\d]/g, '');
+            numberEl.textContent = '0';
+            setTimeout(() => {
+              let current = 0;
+              const duration = 1500;
+              const increment = number / (duration / 16);
+              const timer = setInterval(() => {
+                current += increment;
+                if (current >= number) {
+                  numberEl.textContent = prefix + number + suffix;
+                  clearInterval(timer);
+                } else {
+                  numberEl.textContent = prefix + Math.floor(current) + suffix;
+                }
+              }, 16);
+            }, 200);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-card').forEach(card => {
+      statObserver.observe(card);
+    });
+
+    // Collapsible Day Cards
+    const dayCards = document.querySelectorAll('.day-card');
+    dayCards.forEach((card, index) => {
+      const header = card.querySelector('.day-header');
+      const content = card.querySelector('.day-content');
+      
+      if (header && content) {
+        // Make header clickable
+        header.style.cursor = 'pointer';
+        header.setAttribute('role', 'button');
+        header.setAttribute('aria-expanded', 'false');
+        
+        // Add expand icon
+        const icon = document.createElement('span');
+        icon.className = 'day-expand-icon';
+        icon.innerHTML = '+';
+        header.appendChild(icon);
+        
+        // Initially collapse all content
+        content.style.maxHeight = '0';
+        content.style.overflow = 'hidden';
+        content.style.transition = 'max-height 0.4s ease, padding 0.4s ease';
+        content.style.paddingTop = '0';
+        content.style.paddingBottom = '0';
+        
+        // Click handler
+        header.addEventListener('click', () => {
+          const isExpanded = card.classList.contains('expanded');
+          
+          // Close all other cards
+          dayCards.forEach(otherCard => {
+            if (otherCard !== card) {
+              otherCard.classList.remove('expanded');
+              const otherContent = otherCard.querySelector('.day-content');
+              const otherHeader = otherCard.querySelector('.day-header');
+              const otherIcon = otherCard.querySelector('.day-expand-icon');
+              if (otherContent) {
+                otherContent.style.maxHeight = '0';
+                otherContent.style.paddingTop = '0';
+                otherContent.style.paddingBottom = '0';
+              }
+              if (otherHeader) otherHeader.setAttribute('aria-expanded', 'false');
+              if (otherIcon) otherIcon.innerHTML = '+';
+            }
+          });
+          
+          // Toggle current card
+          if (!isExpanded) {
+            card.classList.add('expanded');
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.paddingTop = '2rem';
+            content.style.paddingBottom = '2rem';
+            header.setAttribute('aria-expanded', 'true');
+            icon.innerHTML = '−';
+          } else {
+            card.classList.remove('expanded');
+            content.style.maxHeight = '0';
+            content.style.paddingTop = '0';
+            content.style.paddingBottom = '0';
+            header.setAttribute('aria-expanded', 'false');
+            icon.innerHTML = '+';
+          }
+        });
+      }
+    });
+
+    // FAQ Accordion functionality
+    const faqItems = document.querySelectorAll('#faq h3');
+    faqItems.forEach((item, index) => {
+      const content = item.nextElementSibling;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'faq-item';
+      
+      const button = document.createElement('button');
+      button.className = 'faq-question';
+      button.innerHTML = item.innerHTML;
+      button.setAttribute('aria-expanded', 'false');
+      
+      const answer = document.createElement('div');
+      answer.className = 'faq-answer';
+      answer.style.maxHeight = '0';
+      answer.appendChild(content.cloneNode(true));
+      
+      wrapper.appendChild(button);
+      wrapper.appendChild(answer);
+      item.parentNode.replaceChild(wrapper, item);
+      content.remove();
+      
+      button.addEventListener('click', () => {
+        const isOpen = button.getAttribute('aria-expanded') === 'true';
+        
+        // Close all other items
+        document.querySelectorAll('.faq-question').forEach(btn => {
+          if (btn !== button) {
+            btn.setAttribute('aria-expanded', 'false');
+            btn.nextElementSibling.style.maxHeight = '0';
+          }
+        });
+        
+        // Toggle current item
+        button.setAttribute('aria-expanded', !isOpen);
+        if (!isOpen) {
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        } else {
+          answer.style.maxHeight = '0';
+        }
+      });
+    });
+
+    // Form validation with real-time feedback
+    const form = document.querySelector('.signup-form');
+    const inputs = form.querySelectorAll('input[required], textarea[required]');
+    
+    inputs.forEach(input => {
+      const wrapper = input.parentElement;
+      
+      input.addEventListener('blur', () => {
+        if (input.value.trim() === '') {
+          wrapper.classList.add('error');
+        } else {
+          wrapper.classList.remove('error');
+          wrapper.classList.add('success');
+        }
+      });
+      
+      input.addEventListener('input', () => {
+        if (input.value.trim() !== '') {
+          wrapper.classList.remove('error');
+        }
+      });
+    });
+    
+    // Email validation
+    const emailInput = form.querySelector('input[type="email"]');
+    if (emailInput) {
+      emailInput.addEventListener('blur', () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const wrapper = emailInput.parentElement;
+        if (!emailRegex.test(emailInput.value)) {
+          wrapper.classList.add('error');
+        } else {
+          wrapper.classList.remove('error');
+          wrapper.classList.add('success');
+        }
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let isValid = true;
+      
+      inputs.forEach(input => {
+        if (input.value.trim() === '') {
+          input.parentElement.classList.add('error');
+          isValid = false;
+        }
+      });
+      
+      if (isValid) {
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.className = 'form-success';
+        successMsg.textContent = 'Merci ! Votre candidature a été envoyée avec succès.';
+        form.appendChild(successMsg);
+        
+        setTimeout(() => {
+          successMsg.style.opacity = '0';
+          setTimeout(() => successMsg.remove(), 300);
+        }, 5000);
+        
+        form.reset();
+      }
+    });
+
+    // Initialize Feather icons
+    feather.replace();
+  </script>
+  <script src="js/map.js"></script>
+</body>
+</html>
