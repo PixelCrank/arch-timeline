@@ -74,6 +74,29 @@ a {
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
+.section-with-bg {
+  position: relative;
+  background-image: url('../images/aerial-pnba.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.section-with-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  z-index: 0;
+}
+
+.section-with-bg .container {
+  position: relative;
+  z-index: 1;
+}
+
 .section-accent {
   background: linear-gradient(135deg, var(--ocean-deep) 0%, rgba(26, 58, 82, 0.95) 100%);
   color: var(--text-light);
@@ -90,6 +113,42 @@ a {
   bottom: 0;
   background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
   pointer-events: none;
+  z-index: 1;
+}
+
+.section-accent .container {
+  position: relative;
+  z-index: 2;
+}
+
+.section-birds-bg {
+  background: url('../images/02-enhaut-R0119830.jpg') center/cover fixed !important;
+}
+
+.section-birds-bg::before {
+  background: rgba(44, 36, 22, 0.1) !important;
+}
+
+.section-participation-bg {
+  background: url('../images/18-enhaut-R0040400.jpg') center/cover fixed !important;
+}
+
+.section-participation-bg::before {
+  background: rgba(44, 36, 22, 0.2) !important;
+}
+
+.section-faq-bg {
+  background: url('../images/05-enhaut-R0051470-Version-2.jpg') center/cover fixed !important;
+}
+
+.section-faq-bg::before {
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+.section-faq-bg h2,
+.section-faq-bg .section-intro {
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .section-accent h2 {
@@ -439,6 +498,22 @@ h4 {
   font-weight: 600;
   margin: 0 0 0.5rem;
   letter-spacing: -0.005em;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ocean);
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.section-dark .section-subtitle {
+  color: var(--sand-light);
+  opacity: 0.85;
 }
 
 .section-intro {
