@@ -142,7 +142,7 @@ a {
 }
 
 .section-faq-bg::before {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(44, 36, 22, 0.1) !important;
 }
 
 .section-faq-bg h2,
@@ -2693,24 +2693,27 @@ a:not(.btn) {
 }
 
 .faq-card {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.72);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-radius: 24px;
-  overflow: hidden;
-  border: 0.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 28px;
+  border: 0.5px solid rgba(255, 255, 255, 0.7);
   box-shadow: 
-    0 1px 0 0 rgba(255, 255, 255, 0.8) inset,
-    0 8px 24px rgba(44, 36, 22, 0.06);
-  transition: all 0.3s ease;
+    0 1px 0 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 20px rgba(44, 36, 22, 0.06);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
 .faq-card:hover {
-  transform: translateY(-2px);
   box-shadow: 
     0 1px 0 0 rgba(255, 255, 255, 0.9) inset,
-    0 12px 32px rgba(44, 36, 22, 0.1);
+    0 12px 30px rgba(44, 36, 22, 0.1);
+}
+
+.faq-card.expanded {
+  border-color: rgba(45, 95, 122, 0.3);
 }
 
 .faq-question {
@@ -3018,5 +3021,13 @@ a:not(.btn) {
 
   .lightbox-next {
     right: 1rem;
+  }
+
+  /* Fix background images on mobile - fixed attachment doesn't work on mobile */
+  .section-with-bg,
+  .section-birds-bg,
+  .section-participation-bg,
+  .section-faq-bg {
+    background-attachment: scroll !important;
   }
 }
