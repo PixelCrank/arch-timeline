@@ -5,52 +5,52 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY3JhbmsyIiwiYSI6ImNtaXp3bW05eDAyd2ozZ3M5OTVzN
 // Accurate GPS coordinates from GeoJSON data
 const waypoints = [
   {
+    name: 'Cap Tagarit',
+    coordinates: [-16.2248, 20.1675], // Cap Tagarit - Starting point (20.1675° N, 16.2248° W)
+    day: 'Départ',
+    description: 'Cap rocheux spectaculaire au cœur du Banc d’Arguin. Connu pour ses falaises plongeant dans l’eau et ses paysages désertiques. Point de départ de notre traversée.'
+  },
+  {
     name: 'Iwik',
     coordinates: [-16.3308, 19.8494], // Iwik (Iouik) - Coastal village
-    day: 'Départ',
-    description: 'Village de départ - Première marche le long de la côte'
+    day: 1,
+    description: '~15 km - Village emblématique Imraguen. Traversées en lanche traditionnelle avec la possibilité de croiser des dauphins et des oiseaux migrateurs.'
   },
   {
     name: 'Tessot',
     coordinates: [-16.2749, 19.7401], // Campement Tessot - Coastal village/camp
-    day: 1,
-    description: '~12 km - Installation du bivouac'
+    day: 2,
+    description: '~15 km - Marche le long des lagunes et plages. Installation du bivouac en bord de mer.'
   },
   {
     name: 'Baie de Serenni',
     coordinates: [-16.3469, 19.6792], // Baie de Serenni - Bay/peninsula area
-    day: 2,
-    description: '~10 km - Marche entre dunes et lagunes'
+    day: 3,
+    description: '~15 km - Marche entre dunes et lagunes. Observation de la biodiversité marine exceptionnelle du parc.'
   },
   {
     name: 'Techot',
     coordinates: [-16.4108, 19.5397], // Techot (Teichott) - Coastal village
-    day: 3,
-    description: '~15 km - Étape rythmée par les marées'
+    day: 4,
+    description: '~15 km - Étape rythmée par les marées. Rencontre avec les communautés de pêcheurs Imraguen.'
   },
   {
     name: "R'gueiba",
     coordinates: [-16.4660, 19.4163], // R'gueiba (Rgueiba) - Coastal village
-    day: 4,
-    description: '~15 km - Découverte des oiseaux migrateurs'
-  },
-  {
-    name: 'Baie St-Jean',
-    coordinates: [-16.3667, 19.4500], // Baie St-Jean - Bay
     day: 5,
-    description: '~18 km - Journée la plus longue'
+    description: '~15 km - Zone privilégiée pour l’observation des oiseaux migrateurs et de la faune marine.'
   },
   {
     name: 'Awguej',
     coordinates: [-16.4171, 19.3892], // Awguej - Coastal village/bay area
-    day: 5,
-    description: 'Traversée de zones humides'
+    day: 6,
+    description: '~15 km - Célèbre pour sa biodiversité exceptionnelle. Traversée de zones humides riches en vie marine et aviaire.'
   },
   {
     name: 'Mamghar',
     coordinates: [-16.5167, 19.3667], // Mamghar (El Mamghar/Nouamghar) - Coastal village
-    day: 6,
-    description: '~13 km - Dernière étape, cérémonie de clôture'
+    day: 7,
+    description: '~15 km - Dernière étape de notre traversée côtière. Cérémonie de clôture célébrant les 50 ans du PNBA.'
   }
 ];
 
