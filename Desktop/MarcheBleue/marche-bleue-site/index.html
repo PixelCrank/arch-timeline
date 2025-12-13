@@ -604,21 +604,21 @@
           Clôture des inscriptions : 15 janvier 2026
         </p>
 
-        <form class="signup-form">
+        <form class="signup-form" id="signup-form">
           <div class="form-row">
             <label>
               Nom complet
-              <input type="text" name="name" required />
+              <input type="text" name="name" id="name" required />
             </label>
             <label>
               Email
-              <input type="email" name="email" required />
+              <input type="email" name="email" id="email" required />
             </label>
           </div>
           <div class="form-row">
             <label>
               Numéro WhatsApp (avec indicatif pays)
-              <input type="tel" name="whatsapp" placeholder="+222 XX XX XX XX" />
+              <input type="tel" name="whatsapp" id="whatsapp" placeholder="+222 XX XX XX XX" />
             </label>
             <label style="opacity: 0; pointer-events: none;">
               <!-- Spacer -->
@@ -628,11 +628,11 @@
           <div class="form-row">
             <label>
               Pays / ville de résidence
-              <input type="text" name="country" />
+              <input type="text" name="country" id="country" />
             </label>
             <label>
               Rôle souhaité
-              <select name="role">
+              <select name="role" id="role">
                 <option value="walker">Marcheur / participante</option>
                 <option value="partner">Partenaire / sponsor</option>
                 <option value="artist">Artiste</option>
@@ -645,10 +645,10 @@
           </div>
           <label>
             Message / motivations
-            <textarea name="message" rows="4" placeholder="Parlez-nous brièvement de vous, de vos motivations et de ce que vous souhaitez apporter ou découvrir pendant la marche."></textarea>
+            <textarea name="message" id="message" rows="4" placeholder="Parlez-nous brièvement de vous, de vos motivations et de ce que vous souhaitez apporter ou découvrir pendant la marche."></textarea>
           </label>
           <label style="font-size:0.8rem;display:flex;align-items:flex-start;gap:0.4rem;margin-top:0.5rem;">
-            <input type="checkbox" required style="width:auto;margin-top:0.2rem;">
+            <input type="checkbox" id="charter" required style="width:auto;margin-top:0.2rem;">
             <span>Je confirme avoir lu et accepter les grands principes de la Charte écoresponsable de la Marche Bleue.</span>
           </label>
           <button type="submit" class="btn btn-primary btn-full">Envoyer ma demande</button>
@@ -954,6 +954,52 @@
         showNextImage();
       }
     });
+
+    // Form submission handler
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+      signupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const whatsapp = document.getElementById('whatsapp').value;
+        const country = document.getElementById('country').value;
+        const role = document.getElementById('role').value;
+        const message = document.getElementById('message').value;
+        
+        // Get role text instead of value
+        const roleText = document.getElementById('role').options[document.getElementById('role').selectedIndex].text;
+        
+        // Compose email
+        const subject = encodeURIComponent('Demande de participation - Marche Bleue 2026');
+        const body = encodeURIComponent(
+          `Nouvelle demande de participation à la Marche Bleue 2026:\n\n` +
+          `Nom: ${name}\n` +
+          `Email: ${email}\n` +
+          `WhatsApp: ${whatsapp}\n` +
+          `Pays/Ville: ${country}\n` +
+          `Rôle souhaité: ${roleText}\n\n` +
+          `Message/Motivations:\n${message}\n\n` +
+          `---\n` +
+          `Envoyé via le formulaire du site Marche Bleue`
+        );
+        
+        // Open email client
+        window.location.href = `mailto:Kessentall@gmail.com?subject=${subject}&body=${body}`;
+        
+        // Show confirmation message
+        const button = signupForm.querySelector('button[type="submit"]');
+        const originalText = button.textContent;
+        button.textContent = '✓ Email envoyé! Vérifiez votre client email';
+        button.style.backgroundColor = '#2d7a4f';
+        
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.backgroundColor = '';
+        }, 5000);
+      });
+    }
 
     // Initialize Feather icons
     feather.replace();
