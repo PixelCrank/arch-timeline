@@ -886,6 +886,33 @@
       updateHero();
     }
 
+    // Section Background Parallax for Mobile
+    if (isMobile) {
+      const parallaxSections = document.querySelectorAll('.section-faq-bg, .section-participation-bg, .section-birds-bg');
+      let parallaxTicking = false;
+
+      function updateSectionParallax() {
+        parallaxSections.forEach(section => {
+          const rect = section.getBoundingClientRect();
+          const scrolled = window.pageYOffset;
+          
+          // Only apply parallax when section is in view
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            const yPos = -(scrolled - section.offsetTop) * 0.3;
+            section.style.backgroundPosition = `center ${yPos}px`;
+          }
+        });
+        parallaxTicking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!parallaxTicking) {
+          requestAnimationFrame(updateSectionParallax);
+          parallaxTicking = true;
+        }
+      }, { passive: true });
+    }
+
     // Gallery Lightbox with Navigation
     const galleryImages = document.querySelectorAll('.gallery-item img');
     const lightbox = document.getElementById('lightbox');

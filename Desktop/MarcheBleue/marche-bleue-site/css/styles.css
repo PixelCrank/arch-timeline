@@ -134,7 +134,7 @@ a {
 }
 
 .section-participation-bg::before {
-  background: rgba(44, 36, 22, 0.2) !important;
+  background: rgba(44, 36, 22, 0.3) !important;
 }
 
 .section-faq-bg {
@@ -142,7 +142,7 @@ a {
 }
 
 .section-faq-bg::before {
-  background: rgba(44, 36, 22, 0.1) !important;
+  background: rgba(44, 36, 22, 0.2) !important;
 }
 
 .section-faq-bg h2,
@@ -1513,16 +1513,25 @@ h4 {
 }
 
 .foundation .logos .partner-logo {
-  height: 140px;
+  height: 100px;
+  width: auto;
+  max-width: 180px;
   object-fit: contain;
-  opacity: 0.95;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
 .foundation .logos .partner-logo:hover {
-  opacity: 1;
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .foundation .logos > div {
