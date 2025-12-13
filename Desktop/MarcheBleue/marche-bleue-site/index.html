@@ -691,21 +691,11 @@
           <a href="#impliquer" class="btn btn-outline-light">Soutenir la fondation &amp; la Marche Bleue</a>
         </div>
         <div class="logos">
-          <div style="width:160px;height:80px;border-radius:16px;background:white;display:flex;align-items:center;justify-content:center;padding:1rem;">
-            <img src="images/logos/fondation_ame.png" alt="Fondation ÂME" style="max-width:100%;max-height:100%;object-fit:contain;">
-          </div>
-          <div style="width:160px;height:80px;border-radius:16px;background:white;display:flex;align-items:center;justify-content:center;padding:1rem;">
-            <img src="images/logos/PNBA_BANC_DARGUIN.png" alt="PNBA Banc d'Arguin" style="max-width:100%;max-height:100%;object-fit:contain;">
-          </div>
-          <div style="width:160px;height:80px;border-radius:16px;background:white;display:flex;align-items:center;justify-content:center;padding:1rem;">
-            <img src="images/logos/Logo Fondation Montagu.png" alt="Fondation Montagu" style="max-width:100%;max-height:100%;object-fit:contain;">
-          </div>
-          <div style="width:160px;height:80px;border-radius:16px;background:white;display:flex;align-items:center;justify-content:center;padding:1rem;">
-            <img src="images/logos/National_Seal_of_Mauritania.png" alt="République Islamique de Mauritanie" style="max-width:100%;max-height:100%;object-fit:contain;">
-          </div>
-          <div style="width:160px;height:80px;border-radius:16px;background:white;display:flex;align-items:center;justify-content:center;padding:1rem;">
-            <img src="images/logos/AME.png" alt="AME" style="max-width:100%;max-height:100%;object-fit:contain;">
-          </div>
+          <img src="images/logos/fondation_ame.png" alt="Fondation ÂME" class="partner-logo">
+          <img src="images/logos/PNBA_BANC_DARGUIN.png" alt="PNBA Banc d'Arguin" class="partner-logo">
+          <img src="images/logos/Logo Fondation Montagu.png" alt="Fondation Montagu" class="partner-logo">
+          <img src="images/logos/National_Seal_of_Mauritania.png" alt="République Islamique de Mauritanie" class="partner-logo">
+          <img src="images/logos/AME.png" alt="AME" class="partner-logo">
         </div>
       </div>
     </section>
@@ -850,13 +840,14 @@
       });
     });
 
-    // Hero Parallax Effect & Animation Trigger - Staged Experience
+    // Hero Parallax Effect & Animation Trigger - Works on all devices
     const heroSection = document.querySelector('.hero-v2');
     const heroBg = document.querySelector('.hero-v2-bg');
     const heroInner = document.querySelector('.hero-v2-inner');
     let ticking = false;
     let heroAnimated = false;
     let parallaxEnabled = false;
+    const isMobile = window.innerWidth <= 768;
     
     if (heroSection && heroBg) {
       function updateHero() {
@@ -868,16 +859,16 @@
           heroAnimated = true;
           if (heroInner) heroInner.classList.add('animate-in');
           
-          // Stage 2: Enable parallax after text animation completes (1.5s)
+          // Stage 2: Enable parallax after text animation completes
           setTimeout(() => {
             parallaxEnabled = true;
-          }, 1500);
+          }, isMobile ? 800 : 1500);
         }
         
-        // Apply parallax throughout, but only after initial scroll
+        // Apply parallax throughout - stronger on mobile for visibility
         if (scrolled < heroHeight) {
-          // Smoother, subtler parallax (0.4 = 40% speed)
-          const parallaxAmount = parallaxEnabled ? scrolled * 0.4 : 0;
+          const parallaxSpeed = isMobile ? 0.5 : 0.4;
+          const parallaxAmount = parallaxEnabled ? scrolled * parallaxSpeed : 0;
           heroBg.style.transform = `translate3d(0, ${parallaxAmount}px, 0)`;
         }
         
@@ -889,7 +880,7 @@
           requestAnimationFrame(updateHero);
           ticking = true;
         }
-      });
+      }, { passive: true });
       
       // Check on load
       updateHero();

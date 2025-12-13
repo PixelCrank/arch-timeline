@@ -1504,9 +1504,23 @@ h4 {
 
 .foundation .logos {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
   justify-content: flex-start;
-  margin-top: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.foundation .logos .partner-logo {
+  height: 200px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.foundation .logos .partner-logo:hover {
+  opacity: 1;
 }
 
 .foundation .logos > div {
@@ -3066,6 +3080,16 @@ a:not(.btn) {
 
   .lightbox-next {
     right: 1rem;
+  }
+
+  /* Partner Logos Mobile */
+  .foundation .logos {
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .foundation .logos .partner-logo {
+    height: 120px;
   }
 
   /* Fix background images on mobile - fixed attachment doesn't work on mobile */
