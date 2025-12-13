@@ -1504,18 +1504,20 @@ h4 {
 
 .foundation .logos {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   justify-content: flex-start;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-top: 2rem;
+  overflow-x: auto;
 }
 
 .foundation .logos .partner-logo {
-  height: 200px;
+  height: 140px;
   object-fit: contain;
   opacity: 0.95;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .foundation .logos .partner-logo:hover {
