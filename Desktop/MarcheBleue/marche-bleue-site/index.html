@@ -841,20 +841,35 @@
       });
     });
 
-    // Hero Parallax Effect - Smooth with requestAnimationFrame
+    // Hero Parallax Effect & Animation Trigger - Staged Experience
     const heroSection = document.querySelector('.hero-v2');
     const heroBg = document.querySelector('.hero-v2-bg');
+    const heroInner = document.querySelector('.hero-v2-inner');
     let ticking = false;
+    let heroAnimated = false;
+    let parallaxEnabled = false;
     
     if (heroSection && heroBg) {
-      function updateParallax() {
+      function updateHero() {
         const scrolled = window.pageYOffset;
         const heroHeight = heroSection.offsetHeight;
         
-        // Only apply parallax while hero is in view
+        // Stage 1: Trigger text animation on first scroll
+        if (!heroAnimated && scrolled > 5) {
+          heroAnimated = true;
+          if (heroInner) heroInner.classList.add('animate-in');
+          
+          // Stage 2: Enable parallax after text animation completes (1.5s)
+          setTimeout(() => {
+            parallaxEnabled = true;
+          }, 1500);
+        }
+        
+        // Apply parallax throughout, but only after initial scroll
         if (scrolled < heroHeight) {
-          // Parallax: background scrolls at 50% speed
-          heroBg.style.transform = `translate3d(0, ${scrolled * 0.5}px, 0)`;
+          // Smoother, subtler parallax (0.4 = 40% speed)
+          const parallaxAmount = parallaxEnabled ? scrolled * 0.4 : 0;
+          heroBg.style.transform = `translate3d(0, ${parallaxAmount}px, 0)`;
         }
         
         ticking = false;
@@ -862,10 +877,13 @@
       
       window.addEventListener('scroll', () => {
         if (!ticking) {
-          requestAnimationFrame(updateParallax);
+          requestAnimationFrame(updateHero);
           ticking = true;
         }
       });
+      
+      // Check on load
+      updateHero();
     }
 
     // Gallery Lightbox with Navigation

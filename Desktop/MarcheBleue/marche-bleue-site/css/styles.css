@@ -2232,6 +2232,7 @@ a:not(.btn) {
   opacity: 1;
   will-change: transform;
   transform: translate3d(0, 0, 0);
+  transition: transform 0.1s linear;
 }
 
 .hero-v2::after {
@@ -2255,20 +2256,42 @@ a:not(.btn) {
   color: white;
 }
 
-.hero-v2-inner {
+/* Hero Animation - Scroll-Triggered Staggered Fade-In */
+.hero-v2-inner > * {
   opacity: 0;
-  animation: heroFadeIn 1.2s ease-out 0.3s forwards;
+  transform: translateY(35px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes heroFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.hero-v2-inner.animate-in .hero-edition-badge {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+
+.hero-v2-inner.animate-in .hero-v2-logo {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.25s;
+}
+
+.hero-v2-inner.animate-in .hero-divider {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.45s;
+}
+
+.hero-v2-inner.animate-in .hero-v2-dates {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.6s;
+}
+
+.hero-v2-inner.animate-in .hero-v2-location {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.75s;
 }
 
 .hero-edition-badge {
@@ -2347,13 +2370,18 @@ a:not(.btn) {
   .anniversary-badge {
     top: 1rem;
     right: 1rem;
+    left: auto;
   }
   
   .badge-circle {
     width: 85px;
     height: 85px;
+    min-width: 85px;
+    min-height: 85px;
+    aspect-ratio: 1;
     border-width: 2px;
     padding: 0.4rem;
+    flex-shrink: 0;
   }
   
   .badge-circle::before {
@@ -2429,15 +2457,32 @@ a:not(.btn) {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  opacity: 0;
+  animation: badgeFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+@keyframes badgeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .badge-circle {
   width: 105px;
   height: 105px;
+  min-width: 105px;
+  min-height: 105px;
+  aspect-ratio: 1;
   border-radius: 50%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.95) 100%);
   backdrop-filter: blur(12px);
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   align-items: center;
   justify-content: center;
