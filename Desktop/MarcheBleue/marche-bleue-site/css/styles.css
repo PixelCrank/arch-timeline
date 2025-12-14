@@ -3103,18 +3103,18 @@ a:not(.btn) {
 
   /* Partner Logos Mobile */
   .foundation .logos {
+    flex-wrap: wrap;
     gap: 1rem;
-    justify-content: flex-start;
-    padding-bottom: 1rem;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    justify-content: center;
+    overflow-x: visible;
+    padding-bottom: 0;
   }
 
   .foundation .logos .partner-logo {
-    height: 100px;
-    max-width: 150px;
+    height: 90px;
+    max-width: 140px;
+    flex: 0 0 auto;
+    width: calc(50% - 0.5rem);
   }
 
   /* Fix background images on mobile - fixed attachment doesn't work on mobile */
