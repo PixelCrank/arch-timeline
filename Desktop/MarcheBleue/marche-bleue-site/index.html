@@ -914,17 +914,13 @@
       
       currentImageIndex = index;
       const img = galleryImages[index];
-      const caption = img.parentElement.querySelector('.gallery-caption p:first-child');
       const credit = img.parentElement.querySelector('.gallery-credit');
       
       lightboxImg.src = img.src;
       lightboxImg.alt = img.alt;
       
-      if (caption) {
-        lightboxCaption.innerHTML = caption.innerHTML;
-        if (credit) {
-          lightboxCaption.innerHTML += '<br><span style="font-size: 0.85rem; opacity: 0.8;">' + credit.innerHTML + '</span>';
-        }
+      if (credit) {
+        lightboxCaption.innerHTML = '<span style="font-size: 0.9rem; opacity: 0.9;">' + credit.innerHTML + '</span>';
       } else {
         lightboxCaption.innerHTML = '';
       }
