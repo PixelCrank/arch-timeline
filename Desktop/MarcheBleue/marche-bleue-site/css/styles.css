@@ -1509,15 +1509,20 @@ h4 {
   align-items: center;
   flex-wrap: nowrap;
   margin-top: 2rem;
+  padding-top: 0.5rem;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scrollbar-width: thin;
 }
 
 .foundation .logos .partner-logo {
-  height: 100px;
+  height: 140px;
   width: auto;
-  max-width: 180px;
+  max-width: 220px;
   object-fit: contain;
-  padding: 1.5rem;
+  padding: 1rem;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1526,12 +1531,14 @@ h4 {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   flex-shrink: 0;
+  opacity: 0.65;
 }
 
 .foundation .logos .partner-logo:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  opacity: 1;
 }
 
 .foundation .logos > div {
@@ -3095,12 +3102,14 @@ a:not(.btn) {
 
   /* Partner Logos Mobile */
   .foundation .logos {
-    gap: 1.5rem;
-    justify-content: center;
+    gap: 1rem;
+    justify-content: flex-start;
+    padding-bottom: 0.5rem;
   }
 
   .foundation .logos .partner-logo {
-    height: 120px;
+    height: 110px;
+    max-width: 160px;
   }
 
   /* Fix background images on mobile - fixed attachment doesn't work on mobile */
