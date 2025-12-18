@@ -40,6 +40,8 @@
   "gallery": {
     "title": "In Pictures",
     "intro": "From golden dunes to turquoise lagoons, from Imraguen villages to bivouacs under the stars: relive the highlights of the first edition and immerse yourself in the exceptional landscapes of the Banc d'Arguin National Park, UNESCO World Heritage site.",
+    "lightbox_prev": "Previous image",
+    "lightbox_next": "Next image",
     "alt_walkers": "Walkers on the beaches of Banc d'Arguin",
     "alt_aerial": "Aerial view of Banc d'Arguin National Park",
     "alt_group": "Group of walkers in action",
@@ -159,12 +161,12 @@
     "visa_title": "Visa & Documents",
     "visa_text": "Passports must have a minimum validity of six months for the visa. For all confirmed registrants, a group visa application procedure will be organized. Required documents will be requested by email after your application is validated.",
     "health_title": "Health & Safety",
-    "health_text": "A medical team and cardiologists accompany the march. An emergency plan is coordinated with Mauritanian authorities and the Park administration. Participants must report any significant medical conditions in the registration form."
+    "health_p1": "A medical team and cardiologists accompany the march. An emergency plan is coordinated with Mauritanian authorities and the Park management. Participants must report any significant medical conditions in the registration form."
   },
   "participate": {
     "title": "Participate & Get Involved",
-    "intro1": "Would you like to walk with us in February 2026?",
-    "intro2": "Fill out this form and the coordination team will contact you.",
+    "intro_p1": "Would you like to walk with us in February 2026?",
+    "intro_p2": "Fill out this form and the coordination team will contact you.",
     "deadline": "Registration closes: January 15, 2026",
     "form_name": "Full name",
     "form_email": "Email",
@@ -181,9 +183,9 @@
     "form_role_other": "Other",
     "form_message": "Message / motivations",
     "form_message_placeholder": "Tell us briefly about yourself, your motivations, and what you hope to contribute or discover during the march.",
-    "form_charter": "I confirm that I have read and accept the main principles of the Blue March Eco-responsible Charter.",
+    "form_charter_text": "I confirm that I have read and accept the main principles of the Blue March Eco-responsible Charter.",
     "form_submit": "Submit my application",
-    "privacy": "The information collected is used only by AME and the ÂME Foundation for organizing the Blue March. It will not be shared with third parties without your consent."
+    "privacy_text": "The information collected is used only by AME and the ÂME Foundation for organizing the Blue March. It will not be shared with third parties without your consent."
   },
   "foundation": {
     "title": "The ÂME Foundation & AME",
@@ -224,5 +226,8 @@
     "waypoint_rgueiba": "~15 km - Prime area for observing migratory birds and marine wildlife.",
     "waypoint_awguej": "~15 km - Famous for its exceptional biodiversity. Crossing wetlands rich in marine and avian life.",
     "waypoint_mamghar": "~15 km - Final stage of our coastal crossing. Closing ceremony celebrating 50 years of PNBA."
+  },
+  "footer": {
+    "credit": "Website by <a href='https://crankstudio.io' target='_blank' rel='noopener'>Crank Studio</a>"
   }
 }

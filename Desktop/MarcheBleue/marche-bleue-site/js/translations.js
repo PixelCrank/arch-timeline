@@ -133,6 +133,12 @@ const TranslationSystem = {
       element.setAttribute('alt', this.t(key));
     });
     
+    // Translate placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+      const key = element.getAttribute('data-i18n-placeholder');
+      element.setAttribute('placeholder', this.t(key));
+    });
+    
     // Re-initialize feather icons if present
     if (typeof feather !== 'undefined') {
       feather.replace();
@@ -186,6 +192,14 @@ const TranslationSystem = {
         option.classList.remove('active');
       }
     });
+    
+    // Update button text to show current language
+    const langButton = document.querySelector('.lang-button');
+    if (langButton) {
+      const currentLangData = this.languages[lang];
+      langButton.querySelector('.lang-flag').textContent = currentLangData.flag;
+      langButton.querySelector('.lang-name').textContent = currentLangData.name;
+    }
     
     // Update map if it exists
     if (typeof updateMapLanguage === 'function') {

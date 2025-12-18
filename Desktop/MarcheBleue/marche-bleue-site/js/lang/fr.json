@@ -40,6 +40,8 @@
   "gallery": {
     "title": "En images",
     "intro": "Des dunes dorées aux lagunes turquoise, des villages Imraguen aux bivouacs sous les étoiles : revivez les moments forts de la première édition et plongez dans les paysages exceptionnels du Parc National du Banc d'Arguin, patrimoine mondial de l'UNESCO.",
+    "lightbox_prev": "Image précédente",
+    "lightbox_next": "Image suivante",
     "alt_walkers": "Marcheurs sur les plages du Banc d'Arguin",
     "alt_aerial": "Vue aérienne du Parc National du Banc d'Arguin",
     "alt_group": "Groupe de marcheurs en action",
@@ -159,12 +161,12 @@
     "visa_title": "Visa & documents",
     "visa_text": "Les passeports doivent avoir une validité de six mois minimum pour le visa. Pour tous les inscrits confirmés, une procédure de demande de visa de groupe sera organisée. Les pièces à fournir vous seront demandées par mail après validation de votre candidature.",
     "health_title": "Santé & sécurité",
-    "health_text": "Une équipe médicale et des cardiologues accompagnent la marche. Un plan d'urgence est coordonné avec les autorités mauritaniennes et la direction du Parc. Les participants doivent signaler toute condition médicale importante dans le formulaire d'inscription."
+    "health_p1": "Une équipe médicale et des cardiologues accompagnent la marche. Un plan d'urgence est coordonné avec les autorités mauritaniennes et la direction du Parc. Les participants doivent signaler toute condition médicale importante dans le formulaire d'inscription."
   },
   "participate": {
     "title": "Participer & s'impliquer",
-    "intro1": "Vous souhaitez marcher avec nous en février 2026 ?",
-    "intro2": "Remplissez ce formulaire et l'équipe de coordination vous recontactera.",
+    "intro_p1": "Vous souhaitez marcher avec nous en février 2026 ?",
+    "intro_p2": "Remplissez ce formulaire et l'équipe de coordination vous recontactera.",
     "deadline": "Clôture des inscriptions : 15 janvier 2026",
     "form_name": "Nom complet",
     "form_email": "Email",
@@ -181,9 +183,9 @@
     "form_role_other": "Autre",
     "form_message": "Message / motivations",
     "form_message_placeholder": "Parlez-nous brièvement de vous, de vos motivations et de ce que vous souhaitez apporter ou découvrir pendant la marche.",
-    "form_charter": "Je confirme avoir lu et accepter les grands principes de la Charte écoresponsable de la Marche Bleue.",
+    "form_charter_text": "Je confirme avoir lu et accepter les grands principes de la Charte écoresponsable de la Marche Bleue.",
     "form_submit": "Envoyer ma demande",
-    "privacy": "Les informations recueillies sont utilisées uniquement par l'AME et la Fondation ÂME dans le cadre de l'organisation de la Marche Bleue. Elles ne seront pas partagées avec des tiers sans votre accord."
+    "privacy_text": "Les informations recueillies sont utilisées uniquement par l'AME et la Fondation ÂME dans le cadre de l'organisation de la Marche Bleue. Elles ne seront pas partagées avec des tiers sans votre accord."
   },
   "foundation": {
     "title": "La Fondation ÂME & l'AME",
@@ -224,5 +226,8 @@
     "waypoint_rgueiba": "~15 km - Zone privilégiée pour l'observation des oiseaux migrateurs et de la faune marine.",
     "waypoint_awguej": "~15 km - Célèbre pour sa biodiversité exceptionnelle. Traversée de zones humides riches en vie marine et aviaire.",
     "waypoint_mamghar": "~15 km - Dernière étape de notre traversée côtière. Cérémonie de clôture célébrant les 50 ans du PNBA."
+  },
+  "footer": {
+    "credit": "Site web par <a href='https://crankstudio.io' target='_blank' rel='noopener'>Crank Studio</a>"
   }
 }

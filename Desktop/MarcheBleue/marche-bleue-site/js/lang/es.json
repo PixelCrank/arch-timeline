@@ -40,6 +40,8 @@
   "gallery": {
     "title": "En Imágenes",
     "intro": "De las dunas doradas a las lagunas turquesas, de los pueblos Imraguen a los campamentos bajo las estrellas: revive los momentos destacados de la primera edición y sumérgete en los paisajes excepcionales del Parque Nacional del Banco de Arguin, patrimonio mundial de la UNESCO.",
+    "lightbox_prev": "Imagen anterior",
+    "lightbox_next": "Imagen siguiente",
     "alt_walkers": "Caminantes en las playas del Banco de Arguin",
     "alt_aerial": "Vista aérea del Parque Nacional del Banco de Arguin",
     "alt_group": "Grupo de caminantes en acción",
@@ -159,12 +161,12 @@
     "visa_title": "Visa y Documentos",
     "visa_text": "Los pasaportes deben tener una validez mínima de seis meses para la visa. Para todos los inscritos confirmados, se organizará un procedimiento de solicitud de visa de grupo. Los documentos requeridos se solicitarán por correo electrónico después de validar su solicitud.",
     "health_title": "Salud y Seguridad",
-    "health_text": "Un equipo médico y cardiólogos acompañan la marcha. Se coordina un plan de emergencia con las autoridades mauritanas y la dirección del Parque. Los participantes deben informar de cualquier condición médica importante en el formulario de inscripción."
+    "health_p1": "Un equipo médico y cardiólogos acompañan la marcha. Se coordina un plan de emergencia con las autoridades mauritanas y la dirección del Parque. Los participantes deben informar de cualquier condición médica importante en el formulario de inscripción."
   },
   "participate": {
     "title": "Participar e Involucrarse",
-    "intro1": "¿Te gustaría caminar con nosotros en febrero de 2026?",
-    "intro2": "Completa este formulario y el equipo de coordinación te contactará.",
+    "intro_p1": "¿Te gustaría caminar con nosotros en febrero de 2026?",
+    "intro_p2": "Completa este formulario y el equipo de coordinación te contactará.",
     "deadline": "Cierre de inscripciones: 15 de enero de 2026",
     "form_name": "Nombre completo",
     "form_email": "Correo electrónico",
@@ -181,9 +183,9 @@
     "form_role_other": "Otro",
     "form_message": "Mensaje / motivaciones",
     "form_message_placeholder": "Cuéntanos brevemente sobre ti, tus motivaciones y lo que esperas aportar o descubrir durante la marcha.",
-    "form_charter": "Confirmo que he leído y acepto los principios principales de la Carta Ecorresponsable de la Marcha Azul.",
+    "form_charter_text": "Confirmo que he leído y acepto los principios principales de la Carta Ecorresponsable de la Marcha Azul.",
     "form_submit": "Enviar mi solicitud",
-    "privacy": "La información recopilada es utilizada únicamente por AME y la Fundación ÂME para organizar la Marcha Azul. No será compartida con terceros sin su consentimiento."
+    "privacy_text": "La información recopilada es utilizada únicamente por AME y la Fundación ÂME en el marco de la organización de la Marcha Azul. No será compartida con terceros sin tu consentimiento."
   },
   "foundation": {
     "title": "La Fundación ÂME y AME",
@@ -223,6 +225,7 @@
     "waypoint_techot": "~15 km - Etapa marcada por las mareas. Encuentro con las comunidades de pescadores Imraguen.",
     "waypoint_rgueiba": "~15 km - Zona privilegiada para la observación de aves migratorias y fauna marina.",
     "waypoint_awguej": "~15 km - Famoso por su biodiversidad excepcional. Cruce de humedales ricos en vida marina y aviar.",
-    "waypoint_mamghar": "~15 km - Última etapa de nuestra travesía costera. Ceremonia de clausura celebrando los 50 años del PNBA."
-  }
+    "waypoint_mamghar": "~15 km - Última etapa de nuestra travesía costera. Ceremonia de clausura celebrando los 50 años del PNBA."  },
+  "footer": {
+    "credit": "Sitio web por <a href='https://crankstudio.io' target='_blank' rel='noopener'>Crank Studio</a>"  }
 }
