@@ -23,7 +23,7 @@
     "badge_pnba": "PNBA"
   },
   "experience": {
-    "title": "Une expérience unique au monde",
+    "title": "Une expérience unique",
     "intro1": "<strong>La Marche Bleue</strong> est une initiative citoyenne, artistique et écologique portée par la Fondation ÂME et l'Association Mauritanienne pour l'Environnement (AME). Une marche collective le long des côtes d'un parc classé patrimoine mondial de l'UNESCO, pour relier art & culture, santé mentale et environnement.",
     "intro2": "Protéger l'océan, les zones humides et la biodiversité,<br>tout en prenant soin de notre santé mentale.",
     "pillar1_title": "Randonnées côtières",
@@ -35,7 +35,7 @@
     "pillar4_title": "Environnement",
     "pillar4_desc": "Sensibilisation à la biodiversité, à la désertification et aux enjeux climatiques du Sahel. Actions concrètes de terrain et connexion avec les projets de la réserve de Tambass.",
     "pillar5_title": "Moments symboliques",
-    "pillar5_desc": "Traversées en lanche traditionnelle, course traditionnelle de lanches Imraguen, déjeuner-conférence sur l'île de Tidra, cérémonies d'ouverture et de clôture célébrant le <strong>cinquantenaire du Parc (1976-2026)</strong>, plantation symbolique et concert de fin de marche."
+    "pillar5_desc": "Traversées en lanche traditionnelle, course traditionnelle de lanches Imraguen, déjeuner-conférence, cérémonies d'ouverture et de clôture célébrant le <strong>cinquantenaire du Parc (1976-2026)</strong>, plantation symbolique et soirée de musique traditionnelle de fin de marche."
   },
   "gallery": {
     "title": "En images",
@@ -119,7 +119,7 @@
     "day6_activity1": "Dernière étape vers Mamghar",
     "day6_activity2": "Déjeuner festif dans les dunes",
     "day6_activity3": "Cérémonie de clôture",
-    "day6_activity4": "Plantation symbolique et concert",
+    "day6_activity4": "Plantation symbolique et soirée de musique traditionnelle",
     "return_badge": "Retour",
     "return_date": "8 février 2026",
     "return_title": "Mamghar → Nouakchott",
@@ -189,7 +189,7 @@
   },
   "foundation": {
     "title": "La Fondation ÂME & l'AME",
-    "p1": "La <strong>Fondation ÂME</strong>, fondée par le cinéaste <strong>Abderrahmane Sissako</strong>, porte une vision holistique du développement humain et social. Elle relie trois axes majeurs : <em>Art & Culture</em>, <em>Santé mentale & Bien-être</em>, <em>Environnement & Société</em>, pour réparer nos liens avec nous-mêmes, avec les autres et avec la nature.",
+    "p1": "La <strong>Fondation ÂME</strong>, fondation de droit suisse créée par le cinéaste <strong>Abderrahmane Sissako</strong>, porte une vision holistique du développement humain et social. Elle articule trois axes indissociables : <em>Art & Culture</em>, <em>Santé Mentale & Bien-être</em>, <em>Environnement & Société</em>, afin de contribuer à la réparation et au renforcement de nos liens essentiels - avec nous-mêmes, avec les autres et avec la nature.",
     "p2": "L'<strong>Association Mauritanienne pour l'Environnement (AME)</strong> est son bras opérationnel en Mauritanie. Elle coordonne les projets sur le terrain en lien étroit avec les communautés locales, les autorités et les partenaires techniques. Ensemble, elles développent notamment la <strong>réserve de Tambass</strong> comme site pilote d'agroécologie, d'économie circulaire, de santé communautaire et d'écotourisme.",
     "p3": "La Marche Bleue est l'initiative emblématique de cette vision : une marche annuelle qui fait dialoguer art engagé, santé mentale et plaidoyer climatique, avec l'ambition de devenir un rendez-vous international incontournable à l'horizon 2030.",
     "button": "Soutenir la fondation & la Marche Bleue"

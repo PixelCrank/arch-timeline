@@ -23,7 +23,7 @@
     "badge_pnba": "PNBA"
   },
   "experience": {
-    "title": "Una Experiencia Única en el Mundo",
+    "title": "Una Experiencia Única",
     "intro1": "<strong>La Marcha Azul</strong> es una iniciativa ciudadana, artística y ecológica liderada por la Fundación ÂME y la Asociación Mauritana para el Medio Ambiente (AME). Una marcha colectiva a lo largo de las costas de un parque clasificado como patrimonio mundial de la UNESCO, para conectar arte y cultura, salud mental y medio ambiente.",
     "intro2": "Proteger el océano, los humedales y la biodiversidad,<br>mientras cuidamos nuestra salud mental.",
     "pillar1_title": "Caminatas Costeras",
@@ -35,7 +35,7 @@
     "pillar4_title": "Medio Ambiente",
     "pillar4_desc": "Sensibilización sobre biodiversidad, desertificación y desafíos climáticos del Sahel. Acciones concretas de campo y conexión con los proyectos de la reserva de Tambass.",
     "pillar5_title": "Momentos Simbólicos",
-    "pillar5_desc": "Travesías en lancha tradicional, carrera tradicional de lanchas Imraguen, almuerzo-conferencia en la isla de Tidra, ceremonias de apertura y cierre celebrando el <strong>cincuentenario del Parque (1976-2026)</strong>, plantación simbólica y concierto de fin de marcha."
+    "pillar5_desc": "Travesías en lancha tradicional, carrera tradicional de lanchas Imraguen, almuerzo-conferencia, ceremonias de apertura y cierre celebrando el <strong>cincuentenario del Parque (1976-2026)</strong>, plantación simbólica y velada de música tradicional."
   },
   "gallery": {
     "title": "En Imágenes",
@@ -119,7 +119,7 @@
     "day6_activity1": "Última etapa hacia Mamghar",
     "day6_activity2": "Almuerzo festivo en las dunas",
     "day6_activity3": "Ceremonia de clausura",
-    "day6_activity4": "Plantación simbólica y concierto",
+    "day6_activity4": "Plantación simbólica y velada de música tradicional",
     "return_badge": "Regreso",
     "return_date": "8 de febrero de 2026",
     "return_title": "Mamghar → Nouakchott",
@@ -189,7 +189,7 @@
   },
   "foundation": {
     "title": "La Fundación ÂME y AME",
-    "p1": "La <strong>Fundación ÂME</strong>, fundada por el cineasta <strong>Abderrahmane Sissako</strong>, lleva una visión holística del desarrollo humano y social. Conecta tres ejes principales: <em>Arte y Cultura</em>, <em>Salud Mental y Bienestar</em>, <em>Medio Ambiente y Sociedad</em>, para reparar nuestros vínculos con nosotros mismos, con los demás y con la naturaleza.",
+    "p1": "La <strong>Fundación ÂME</strong>, fundación de derecho suizo creada por el cineasta <strong>Abderrahmane Sissako</strong>, lleva una visión holística del desarrollo humano y social. Articula tres ejes indisociables: <em>Arte y Cultura</em>, <em>Salud Mental y Bienestar</em>, <em>Medio Ambiente y Sociedad</em>, para contribuir a la reparación y el fortalecimiento de nuestras conexiones esenciales - con nosotros mismos, con los demás y con la naturaleza.",
     "p2": "La <strong>Asociación Mauritana para el Medio Ambiente (AME)</strong> es su brazo operativo en Mauritania. Coordina proyectos sobre el terreno en estrecho vínculo con las comunidades locales, las autoridades y los socios técnicos. Juntas, desarrollan la <strong>reserva de Tambass</strong> como sitio piloto de agroecología, economía circular, salud comunitaria y ecoturismo.",
     "p3": "La Marcha Azul es la iniciativa emblemática de esta visión: una marcha anual que reúne arte comprometido, salud mental y defensa climática, con la ambición de convertirse en un encuentro internacional imprescindible para 2030.",
     "button": "Apoyar la fundación y la Marcha Azul"
