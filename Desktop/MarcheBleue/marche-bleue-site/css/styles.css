@@ -3109,3 +3109,224 @@ a:not(.btn) {
     background-attachment: scroll !important;
   }
 }
+
+/* ============================================ */
+/* LANGUAGE SWITCHER */
+/* ============================================ */
+
+#language-switcher {
+  position: relative;
+  display: inline-block;
+}
+
+.lang-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(59, 155, 217, 0.08);
+  border: 1px solid rgba(59, 155, 217, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--ocean-deep);
+  transition: all 0.2s ease;
+}
+
+.lang-button:hover {
+  background: rgba(59, 155, 217, 0.12);
+  border-color: rgba(59, 155, 217, 0.3);
+}
+
+.lang-flag {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.lang-name {
+  font-weight: 500;
+}
+
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 160px;
+  background: white;
+  border: 1px solid rgba(26, 58, 82, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+#language-switcher.open .lang-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.lang-option:hover {
+  background: rgba(59, 155, 217, 0.08);
+}
+
+.lang-option.active {
+  background: rgba(59, 155, 217, 0.12);
+  font-weight: 600;
+  color: var(--ocean-deep);
+}
+
+.lang-option .lang-flag {
+  font-size: 1.3rem;
+}
+
+/* ============================================ */
+/* RTL (Right-to-Left) SUPPORT FOR ARABIC */
+/* ============================================ */
+
+body.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Navigation RTL */
+body.rtl .nav-container {
+  grid-template-columns: auto 1fr 200px;
+}
+
+body.rtl .main-nav {
+  text-align: left;
+}
+
+body.rtl .logo {
+  justify-content: flex-end;
+}
+
+/* Buttons RTL */
+body.rtl .btn {
+  text-align: center;
+}
+
+/* Lists RTL */
+body.rtl ul,
+body.rtl ol {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+/* Icons RTL - flip chevrons and arrows */
+body.rtl .lightbox-prev,
+body.rtl .lightbox-next,
+body.rtl [data-feather="chevron-left"],
+body.rtl [data-feather="chevron-right"],
+body.rtl [data-feather="arrow-left"],
+body.rtl [data-feather="arrow-right"] {
+  transform: scaleX(-1);
+}
+
+/* Grid layouts RTL */
+body.rtl .pillars-grid,
+body.rtl .journey-stats,
+body.rtl .info-card-split,
+body.rtl .video-grid,
+body.rtl .gallery-grid {
+  direction: rtl;
+}
+
+/* Form labels RTL */
+body.rtl label {
+  text-align: right;
+}
+
+body.rtl input,
+body.rtl textarea,
+body.rtl select {
+  text-align: right;
+}
+
+/* Language switcher RTL */
+body.rtl #language-switcher .lang-dropdown {
+  right: auto;
+  left: 0;
+}
+
+/* Map markers RTL */
+body.rtl .journey-marker,
+body.rtl .journey-popup {
+  direction: rtl;
+  text-align: right;
+}
+
+/* FAQ Cards RTL */
+body.rtl .faq-question {
+  text-align: right;
+}
+
+/* Hero RTL */
+body.rtl .hero-v2-location {
+  direction: rtl;
+}
+
+/* Stats RTL */
+body.rtl .stat-card {
+  text-align: center;
+}
+
+/* Foundation section RTL */
+body.rtl .foundation {
+  direction: rtl;
+}
+
+/* Image credits RTL */
+body.rtl .image-credit,
+body.rtl .gallery-credit {
+  text-align: left; /* Keep credits left-aligned even in RTL */
+}
+
+/* Day cards RTL */
+body.rtl .day-header {
+  direction: rtl;
+  text-align: right;
+}
+
+body.rtl .day-activities {
+  text-align: right;
+}
+
+/* Mobile nav RTL */
+@media (max-width: 768px) {
+  body.rtl .nav-toggle {
+    right: auto;
+    left: 1rem;
+  }
+  
+  body.rtl .main-nav {
+    right: auto;
+    left: 0;
+  }
+  
+  body.rtl .nav-container {
+    grid-template-columns: 1fr auto;
+  }
+}

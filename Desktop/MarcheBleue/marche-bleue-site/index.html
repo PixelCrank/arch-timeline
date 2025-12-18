@@ -25,18 +25,19 @@
   <header class="site-header">
     <div class="container nav-container">
       <a href="#top" class="logo">
-        <span class="logo-text">La Marche Bleue</span>
+        <span class="logo-text" data-i18n="nav.logo">La Marche Bleue</span>
       </a>
       <nav class="main-nav">
-        <a href="#experience">L'expérience</a>
-        <a href="#galerie">Galerie</a>
-        <a href="#itineraire">Itinéraire 2026</a>
-        <a href="#pratique">Infos pratiques</a>
-        <a href="#fondation">Fondation ÂME</a>
+        <a href="#experience" data-i18n="nav.experience">L'expérience</a>
+        <a href="#galerie" data-i18n="nav.gallery">Galerie</a>
+        <a href="#itineraire" data-i18n="nav.itinerary">Itinéraire 2026</a>
+        <a href="#pratique" data-i18n="nav.practical">Infos pratiques</a>
+        <a href="#fondation" data-i18n="nav.foundation">Fondation ÂME</a>
         <a href="#faq">FAQ</a>
-        <a href="#impliquer" class="nav-cta">Participer</a>
+        <a href="#impliquer" class="nav-cta" data-i18n="nav.participate">Participer</a>
       </nav>
-      <button class="nav-toggle" aria-label="Ouvrir le menu">
+      <div id="language-switcher"></div>
+      <button class="nav-toggle" data-i18n-aria="nav.menu" aria-label="Ouvrir le menu">
         ☰
       </button>
     </div>
@@ -51,23 +52,23 @@
       <div class="anniversary-badge">
         <div class="badge-circle">
           <div class="badge-year">50</div>
-          <div class="badge-text">ANS</div>
-          <div class="badge-org">PNBA</div>
+          <div class="badge-text" data-i18n="hero.badge_years">ANS</div>
+          <div class="badge-org" data-i18n="hero.badge_pnba">PNBA</div>
           <div class="badge-years">1976-2026</div>
         </div>
       </div>
       
       <div class="hero-v2-content">
         <div class="hero-v2-inner">
-          <div class="hero-edition-badge">2<sup>e</sup> édition</div>
+          <div class="hero-edition-badge" data-i18n="hero.edition" data-i18n-html="true">2<sup>e</sup> édition</div>
           
-          <h1 class="hero-v2-logo">La Marche Bleue</h1>
+          <h1 class="hero-v2-logo" data-i18n="hero.title">La Marche Bleue</h1>
           
           <div class="hero-divider"></div>
           
-          <p class="hero-v2-dates">1–8 février 2026</p>
+          <p class="hero-v2-dates" data-i18n="hero.dates">1–8 février 2026</p>
           
-          <p class="hero-v2-location">
+          <p class="hero-v2-location" data-i18n="hero.location">
             <i data-feather="map-pin" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;"></i>
             Parc National du Banc d'Arguin • Mauritanie
           </p>
@@ -78,14 +79,14 @@
     <!-- Experience -->
     <section id="experience" class="section section-light">
       <div class="container">
-        <h2>Une expérience unique au monde</h2>
-        <p class="section-intro">
+        <h2 data-i18n="experience.title">Une expérience unique au monde</h2>
+        <p class="section-intro" data-i18n="experience.intro1" data-i18n-html="true">
           <strong>La Marche Bleue</strong> est une initiative citoyenne, artistique et écologique portée par
           la Fondation ÂME et l'Association Mauritanienne pour l'Environnement (AME). 
           Une marche collective le long des côtes d'un parc classé patrimoine mondial de l'UNESCO, 
           pour relier art & culture, santé mentale et environnement.
         </p>
-        <p class="section-intro" style="font-size: 1.25rem; font-weight: 400; color: var(--ocean-deep);">
+        <p class="section-intro" style="font-size: 1.25rem; font-weight: 400; color: var(--ocean-deep);" data-i18n="experience.intro2" data-i18n-html="true">
           Protéger l'océan, les zones humides et la biodiversité,<br>tout en prenant soin de notre santé mentale.
         </p>
 
@@ -1013,7 +1014,7 @@
         );
         
         // Open email client
-        window.location.href = `mailto:Kessentall@gmail.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:contact@marchebleue.org?subject=${subject}&body=${body}`;
         
         // Show confirmation message
         const button = signupForm.querySelector('button[type="submit"]');
@@ -1031,6 +1032,7 @@
     // Initialize Feather icons
     feather.replace();
   </script>
+  <script src="js/translations.js"></script>
   <script src="js/map.js"></script>
 </body>
 </html>

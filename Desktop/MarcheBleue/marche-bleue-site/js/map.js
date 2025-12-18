@@ -1,56 +1,70 @@
 // Mapbox access token - Replace with your own token from mapbox.com
 // Sign up at https://account.mapbox.com/auth/signup/ for a free token
 mapboxgl.accessToken = 'pk.eyJ1IjoiY3JhbmsyIiwiYSI6ImNtaXp3bW05eDAyd2ozZ3M5OTVzNDU4MzQifQ.A4_Gjl_Qtret-QJ1yqHQ8Q';
+
+// Get translation function
+function getMapTranslation(key) {
+  if (window.TranslationSystem) {
+    return window.TranslationSystem.t(key);
+  }
+  // Fallback to French
+  const fallbacks = {
+    'map.departure': 'Départ',
+    'map.day': 'Jour'
+  };
+  return fallbacks[key] || key;
+}
+
 // Journey waypoints - Coastal locations in PNBA along the peninsula
 // Accurate GPS coordinates from GeoJSON data
 const waypoints = [
   {
     name: 'Cap Tagarit',
-    coordinates: [-16.2248, 20.1675], // Cap Tagarit - Starting point (20.1675° N, 16.2248° W)
+    coordinates: [-16.2248, 20.1675],
     day: 'Départ',
-    description: 'Cap rocheux spectaculaire au cœur du Banc d’Arguin. Connu pour ses falaises plongeant dans l’eau et ses paysages désertiques. Point de départ de notre traversée.'
+    descriptionKey: 'map.waypoint_cap_tagarit'
   },
   {
     name: 'Iwik',
-    coordinates: [-16.3308, 19.8494], // Iwik (Iouik) - Coastal village
+    coordinates: [-16.3308, 19.8494],
     day: 1,
-    description: '~15 km - Village emblématique Imraguen. Traversées en lanche traditionnelle avec la possibilité de croiser des dauphins et des oiseaux migrateurs.'
+    descriptionKey: 'map.waypoint_iwik'
   },
   {
     name: 'Tessot',
-    coordinates: [-16.2749, 19.7401], // Campement Tessot - Coastal village/camp
+    coordinates: [-16.2749, 19.7401],
     day: 2,
-    description: '~15 km - Marche le long des lagunes et plages. Installation du bivouac en bord de mer.'
+    descriptionKey: 'map.waypoint_tessot'
   },
   {
     name: 'Baie de Serenni',
-    coordinates: [-16.3469, 19.6792], // Baie de Serenni - Bay/peninsula area
+    coordinates: [-16.3469, 19.6792],
     day: 3,
-    description: '~15 km - Marche entre dunes et lagunes. Observation de la biodiversité marine exceptionnelle du parc.'
+    descriptionKey: 'map.waypoint_serenni'
   },
   {
     name: 'Techot',
-    coordinates: [-16.4108, 19.5397], // Techot (Teichott) - Coastal village
+    coordinates: [-16.4108, 19.5397],
     day: 4,
-    description: '~15 km - Étape rythmée par les marées. Rencontre avec les communautés de pêcheurs Imraguen.'
+    descriptionKey: 'map.waypoint_techot'
   },
   {
     name: "R'gueiba",
-    coordinates: [-16.4660, 19.4163], // R'gueiba (Rgueiba) - Coastal village
+    coordinates: [-16.4660, 19.4163],
     day: 5,
-    description: '~15 km - Zone privilégiée pour l’observation des oiseaux migrateurs et de la faune marine.'
+    descriptionKey: 'map.waypoint_rgueiba'
   },
   {
     name: 'Awguej',
-    coordinates: [-16.4171, 19.3892], // Awguej - Coastal village/bay area
+    coordinates: [-16.4171, 19.3892],
     day: 6,
-    description: '~15 km - Célèbre pour sa biodiversité exceptionnelle. Traversée de zones humides riches en vie marine et aviaire.'
+    descriptionKey: 'map.waypoint_awguej'
   },
   {
     name: 'Mamghar',
-    coordinates: [-16.5167, 19.3667], // Mamghar (El Mamghar/Nouamghar) - Coastal village
+    coordinates: [-16.5167, 19.3667],
     day: 7,
-    description: '~15 km - Dernière étape de notre traversée côtière. Cérémonie de clôture célébrant les 50 ans du PNBA.'
+    descriptionKey: 'map.waypoint_mamghar'
   }
 ];
 
@@ -169,15 +183,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const displayDay = waypoint.day === 'Départ' ? 'D' : waypoint.day;
       el.innerHTML = `<div class="marker-inner">${displayDay}</div>`;
       
-      // Create popup
+      // Create popup with translation support
+      const dayLabel = waypoint.day === 'Départ' 
+        ? getMapTranslation('map.departure')
+        : `${getMapTranslation('map.day')} ${waypoint.day}`;
+      const description = getMapTranslation(waypoint.descriptionKey);
+      
       const popup = new mapboxgl.Popup({
         offset: 25,
         closeButton: false,
         className: 'journey-popup'
       }).setHTML(`
         <div class="popup-content">
-          <h4>${waypoint.day === 'Départ' ? 'Départ' : 'Jour ' + waypoint.day}: ${waypoint.name}</h4>
-          <p>${waypoint.description}</p>
+          <h4>${dayLabel}: ${waypoint.name}</h4>
+          <p>${description}</p>
         </div>
       `);
 
@@ -203,3 +222,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+// Function to update map language (called by translation system)
+function updateMapLanguage(lang) {
+  // Re-create all popups with new language
+  document.querySelectorAll('.mapboxgl-marker').forEach((markerEl, index) => {
+    const waypoint = waypoints[index];
+    if (!waypoint) return;
+    
+    const dayLabel = waypoint.day === 'Départ' 
+      ? getMapTranslation('map.departure')
+      : `${getMapTranslation('map.day')} ${waypoint.day}`;
+    const description = getMapTranslation(waypoint.descriptionKey);
+    
+    // Update the popup attached to this marker
+    const marker = markerEl._marker;
+    if (marker && marker.getPopup()) {
+      marker.getPopup().setHTML(`
+        <div class="popup-content">
+          <h4>${dayLabel}: ${waypoint.name}</h4>
+          <p>${description}</p>
+        </div>
+      `);
+    }
+  });
+}
