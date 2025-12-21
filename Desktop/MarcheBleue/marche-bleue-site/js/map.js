@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const mapContainer = document.getElementById('journey-map');
   if (!mapContainer) return;
 
+  // Store markers for language updates
+  window.journeyMarkers = [];
+
   // Initialize the map
   const map = new mapboxgl.Map({
     container: 'journey-map',
@@ -201,10 +204,13 @@ document.addEventListener('DOMContentLoaded', function() {
       `);
 
       // Add marker to map
-      new mapboxgl.Marker(el)
+      const marker = new mapboxgl.Marker(el)
         .setLngLat(waypoint.coordinates)
         .setPopup(popup)
         .addTo(map);
+
+      // Store marker with waypoint data for language updates
+      window.journeyMarkers.push({ marker, waypoint });
 
       // Show popup on hover
       el.addEventListener('mouseenter', () => popup.addTo(map));
@@ -225,20 +231,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to update map language (called by translation system)
 function updateMapLanguage(lang) {
+  // Check if markers are initialized
+  if (!window.journeyMarkers || window.journeyMarkers.length === 0) {
+    return;
+  }
+  
   // Re-create all popups with new language
-  document.querySelectorAll('.mapboxgl-marker').forEach((markerEl, index) => {
-    const waypoint = waypoints[index];
-    if (!waypoint) return;
-    
+  window.journeyMarkers.forEach(({ marker, waypoint }) => {
     const dayLabel = waypoint.day === 'Départ' 
       ? getMapTranslation('map.departure')
       : `${getMapTranslation('map.day')} ${waypoint.day}`;
     const description = getMapTranslation(waypoint.descriptionKey);
     
     // Update the popup attached to this marker
-    const marker = markerEl._marker;
-    if (marker && marker.getPopup()) {
-      marker.getPopup().setHTML(`
+    const popup = marker.getPopup();
+    if (popup) {
+      popup.setHTML(`
         <div class="popup-content">
           <h4>${dayLabel}: ${waypoint.name}</h4>
           <p>${description}</p>
