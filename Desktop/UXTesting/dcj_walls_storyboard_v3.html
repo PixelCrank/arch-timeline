@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DCJ Walls — Network Exploration Storyboard v3</title>
+<style>
+  :root{
+    --bg:#0b0d10;
+    --line:#243041;
+    --text:#e8edf3;
+    --muted:#9aa7b5;
+    --paper:#ffffff;
+    --grid:#eef2f6;
+    
+    --q:#2f5d4b;
+    --gm:#3f87c6;
+    --vip:#4b2a7a;
+    --existing:#efddcf;
+    --existingDark:#c7771d;
+    
+    --objectQ:#6a1b3a;
+    --objectGM:#b8d3ea;
+    --objectVIP:#c8bfdc;
+    --objectExisting:#f5e5d7;
+    
+    --highlight:#ff2bd6;
+    --arc:#a9b3bf;
+  }
+  
+  *{box-sizing:border-box}
+  
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    background:linear-gradient(180deg, #07090c, var(--bg));
+    color:var(--text);
+    min-height:100vh;
+  }
+  
+  header{
+    position:sticky; top:0; z-index:10;
+    background:rgba(11,13,16,.92);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:12px 16px;
+    display:flex; align-items:center; justify-content:space-between; 
+    gap:12px; flex-wrap:wrap;
+  }
+  
+  h1{margin:0; font-size:15px; font-weight:650; letter-spacing:.2px}
+  .sub{margin-top:4px; font-size:12px; color:var(--muted)}
+  .left{display:flex; flex-direction:column; gap:2px}
+  
+  .controls{
+    display:flex; gap:10px; align-items:center; 
+    flex-wrap:wrap; justify-content:flex-end;
+  }
+  
+  button, input[type="range"]{
+    background:#101722;
+    color:var(--text);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:12px;
+    cursor:pointer;
+    font-family: inherit;
+  }
+  button.primary{background:#192231}
+  button:hover{border-color:#3b4a63}
+  input[type="range"]{padding:10px 8px; width:260px}
+  
+  .wrap{
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 16px;
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap:16px;
+    align-items:start;
+  }
+  @media (max-width: 1200px){ .wrap{grid-template-columns:1fr} }
+  
+  .card{
+    background:linear-gradient(180deg, rgba(18,22,28,.95), rgba(12,16,22,.95));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px;
+    box-shadow: 0 14px 34px rgba(0,0,0,.35);
+  }
+  
+  .kicker{
+    font-size:11px; 
+    color:var(--muted); 
+    text-transform:uppercase; 
+    letter-spacing:.12em;
+    margin-bottom:6px;
+  }
+  .title{font-size:15px; font-weight:650; margin:0 0 10px}
+  .small{font-size:13px; color:var(--muted); line-height:1.5}
+  
+  .pillRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  .pill{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.03);
+    padding:7px 10px;
+    border-radius:999px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .pill b{color:var(--text)}
+  
+  .stage{
+    background: radial-gradient(1200px 600px at 50% 30%, rgba(255,255,255,.04), transparent 60%), #0a0d12;
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow: 0 14px 34px rgba(0,0,0,.35);
+    overflow:hidden;
+    position:relative;
+    min-height: 680px;
+    display:flex;
+    flex-direction:column;
+  }
+  
+  .stageInner{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    position:relative;
+  }
+  
+  svg{
+    width:100%; 
+    height:auto; 
+    display:block;
+    max-width:100%;
+  }
+  
+  /* SVG styling */
+  .grid line{stroke:var(--grid); stroke-width:0.5}
+  
+  .cluster{
+    transition: opacity 350ms ease;
+    cursor:pointer;
+  }
+  .cluster rect{stroke:rgba(0,0,0,.08); stroke-width:1}
+  .cluster text{
+    pointer-events:none;
+  }
+  
+  .objectBar{
+    transition: opacity 350ms ease;
+  }
+  
+  .arc{
+    fill:none;
+    stroke:var(--arc);
+    stroke-width:2.5;
+    transition: opacity 350ms ease, stroke 350ms ease, stroke-width 350ms ease;
+  }
+  .arc.active{
+    stroke:var(--highlight);
+    stroke-width:3.5;
+  }
+  .arc.dimmed{
+    stroke:var(--arc);
+    stroke-width:2;
+    opacity:0.3;
+  }
+  .arc.option{
+    stroke:rgba(169,179,191,.6);
+    stroke-width:2.5;
+    stroke-dasharray:6,4;
+  }
+  
+  .connectionLine{
+    fill:none;
+    stroke:rgba(169,179,191,.12);
+    stroke-width:1;
+    stroke-dasharray:3,3;
+    transition: opacity 350ms ease, stroke 350ms ease;
+  }
+  .connectionLine.active{
+    stroke:rgba(255,43,214,.4);
+    stroke-width:2;
+    stroke-dasharray:none;
+  }
+  
+  .highlight{
+    fill:none;
+    stroke:var(--highlight);
+    stroke-width:4;
+    filter: drop-shadow(0 6px 12px rgba(255,43,214,.4));
+    transition: all 550ms cubic-bezier(.2,.9,.2,1);
+  }
+  
+  .highlightFill{
+    fill: rgba(255,43,214,.12);
+    transition: all 550ms cubic-bezier(.2,.9,.2,1);
+  }
+  
+  .caption{
+    background: rgba(0,0,0,.55);
+    border-top:1px solid rgba(255,255,255,.15);
+    backdrop-filter: blur(12px);
+    padding:16px 20px;
+    color:rgba(255,255,255,.95);
+  }
+  .capK{
+    font-size:11px; 
+    color:rgba(255,255,255,.65); 
+    letter-spacing:.14em; 
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .capT{font-size:15px; font-weight:650; margin-bottom:6px}
+  .capB{font-size:13px; color:rgba(255,255,255,.85); line-height:1.5}
+  
+  .legend{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.1);
+  }
+  .legendItem{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    color:rgba(255,255,255,.7);
+  }
+  .legendBox{
+    width:16px;
+    height:16px;
+    border-radius:3px;
+    border:1px solid rgba(0,0,0,.2);
+  }
+  
+  .objectCount{
+    font-size:9px;
+    fill:rgba(255,255,255,.5);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="left">
+    <h1>DCJ Walls — Network Exploration Storyboard v3</h1>
+    <div class="sub">13-beat flow matching storyboard diagram layout</div>
+  </div>
+  <div class="controls">
+    <button id="play" class="primary">Play</button>
+    <button id="pause">Pause</button>
+    <button id="step">Step</button>
+    <button id="restart">Restart</button>
+    <input id="scrub" type="range" min="0" max="1000" value="0" />
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="card">
+    <div class="kicker">Developer Handoff Spec</div>
+    <div class="title">Interaction Flow</div>
+    <div class="small">
+      This storyboard demonstrates the <b>13-beat interaction model</b> where 
+      only <b>fully opaque elements (opacity=1)</b> are interactive. 
+      Layout matches the storyboard image: WALL bar at top, single horizontal row of clusters, object bars at bottom.
+    </div>
+    
+    <div class="pillRow">
+      <div class="pill">Beat: <b id="pillBeat">1</b> / <b id="pillTotal">13</b></div>
+      <div class="pill">Mode: <b id="pillMode">Autoplay</b></div>
+    </div>
+    
+    <div class="legend">
+      <div class="legendItem">
+        <div class="legendBox" style="background:var(--q)"></div>
+        <span>Q (8 obj)</span>
+      </div>
+      <div class="legendItem">
+        <div class="legendBox" style="background:var(--gm)"></div>
+        <span>GM (4-8 obj)</span>
+      </div>
+      <div class="legendItem">
+        <div class="legendBox" style="background:var(--vip)"></div>
+        <span>VIP (4-8 obj)</span>
+      </div>
+      <div class="legendItem">
+        <div class="legendBox" style="background:var(--existing)"></div>
+        <span>Station (4-8 obj)</span>
+      </div>
+    </div>
+  </section>
+  
+  <section class="stage">
+    <div class="stageInner">
+      <svg viewBox="0 0 1400 600" aria-label="Network exploration diagram">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                  refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="var(--arc)" opacity="0.6"/>
+          </marker>
+        </defs>
+        
+        <!-- WALL Bar -->
+        <rect x="0" y="0" width="1400" height="35" fill="#000000"/>
+        <text x="700" y="22" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="11" letter-spacing="0.2em" font-weight="400">WALL</text>
+        
+        <!-- Clusters - Single Horizontal Row -->
+        <g id="clusterQ" class="cluster">
+          <rect x="30" y="55" width="50" height="70" rx="5" fill="var(--q)"/>
+          <text x="55" y="85" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="14" font-weight="700">Q</text>
+          <text x="55" y="115" text-anchor="middle" class="objectCount">8</text>
+        </g>
+        
+        <g id="clusterGM1" class="cluster">
+          <rect x="100" y="55" width="60" height="70" rx="5" fill="var(--gm)"/>
+          <text x="130" y="85" text-anchor="middle" font-size="12" font-weight="600">GM</text>
+          <text x="130" y="115" text-anchor="middle" class="objectCount">6</text>
+        </g>
+        
+        <g id="clusterGM2" class="cluster">
+          <rect x="170" y="55" width="60" height="70" rx="5" fill="#7baad4"/>
+          <text x="200" y="85" text-anchor="middle" font-size="12" font-weight="600">GM</text>
+          <text x="200" y="115" text-anchor="middle" class="objectCount">5</text>
+        </g>
+        
+        <g id="clusterVIP1" class="cluster">
+          <rect x="240" y="55" width="60" height="70" rx="5" fill="var(--vip)"/>
+          <text x="270" y="85" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="12" font-weight="600">VIP</text>
+          <text x="270" y="115" text-anchor="middle" class="objectCount">5</text>
+        </g>
+        
+        <g id="clusterVIP2" class="cluster">
+          <rect x="310" y="55" width="60" height="70" rx="5" fill="#7d5ba0"/>
+          <text x="340" y="85" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="12" font-weight="600">VIP</text>
+          <text x="340" y="115" text-anchor="middle" class="objectCount">4</text>
+        </g>
+        
+        <g id="clusterQ2" class="cluster">
+          <rect x="380" y="55" width="50" height="70" rx="5" fill="#3d6b57"/>
+          <text x="405" y="85" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="14" font-weight="700">Q2</text>
+          <text x="405" y="115" text-anchor="middle" class="objectCount">8</text>
+        </g>
+        
+        <!-- Station Clusters (many) -->
+        <g id="orangeGroup">
+          <g id="clusterO1" class="cluster"><rect x="460" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="480" y="115" text-anchor="middle" class="objectCount">6</text></g>
+          <g id="clusterO2" class="cluster"><rect x="510" y="55" width="40" height="70" rx="4" fill="var(--existingDark)"/><text x="530" y="115" text-anchor="middle" class="objectCount" fill="rgba(255,255,255,.5)">5</text></g>
+          <g id="clusterO3" class="cluster"><rect x="560" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="580" y="115" text-anchor="middle" class="objectCount">4</text></g>
+          <g id="clusterO4" class="cluster"><rect x="610" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="630" y="115" text-anchor="middle" class="objectCount">7</text></g>
+          <g id="clusterO5" class="cluster"><rect x="660" y="55" width="40" height="70" rx="4" fill="var(--existingDark)"/><text x="680" y="115" text-anchor="middle" class="objectCount" fill="rgba(255,255,255,.5)">6</text></g>
+          <g id="clusterO6" class="cluster"><rect x="710" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="730" y="115" text-anchor="middle" class="objectCount">5</text></g>
+          <g id="clusterO7" class="cluster"><rect x="760" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="780" y="115" text-anchor="middle" class="objectCount">4</text></g>
+          <g id="clusterO8" class="cluster"><rect x="810" y="55" width="40" height="70" rx="4" fill="var(--existingDark)"/><text x="830" y="115" text-anchor="middle" class="objectCount" fill="rgba(255,255,255,.5)">6</text></g>
+          <g id="clusterO9" class="cluster"><rect x="860" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="880" y="115" text-anchor="middle" class="objectCount">5</text></g>
+          <g id="clusterO10" class="cluster"><rect x="910" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="930" y="115" text-anchor="middle" class="objectCount">7</text></g>
+          <g id="clusterO11" class="cluster"><rect x="960" y="55" width="40" height="70" rx="4" fill="var(--existingDark)"/><text x="980" y="115" text-anchor="middle" class="objectCount" fill="rgba(255,255,255,.5)">4</text></g>
+          <g id="clusterO12" class="cluster"><rect x="1010" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="1030" y="115" text-anchor="middle" class="objectCount">6</text></g>
+          <g id="clusterO13" class="cluster"><rect x="1060" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="1080" y="115" text-anchor="middle" class="objectCount">5</text></g>
+          <g id="clusterO14" class="cluster"><rect x="1110" y="55" width="40" height="70" rx="4" fill="var(--existingDark)"/><text x="1130" y="115" text-anchor="middle" class="objectCount" fill="rgba(255,255,255,.5)">7</text></g>
+          <g id="clusterO15" class="cluster"><rect x="1160" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="1180" y="115" text-anchor="middle" class="objectCount">4</text></g>
+          <g id="clusterO16" class="cluster"><rect x="1210" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="1230" y="115" text-anchor="middle" class="objectCount">6</text></g>
+          <g id="clusterO17" class="cluster"><rect x="1260" y="55" width="40" height="70" rx="4" fill="var(--existingDark)"/><text x="1280" y="115" text-anchor="middle" class="objectCount" fill="rgba(255,255,255,.5)">5</text></g>
+          <g id="clusterO18" class="cluster"><rect x="1310" y="55" width="40" height="70" rx="4" fill="var(--existing)"/><text x="1330" y="115" text-anchor="middle" class="objectCount">6</text></g>
+        </g>
+        
+        <!-- Object Bars (Bottom) -->
+        <g id="objectBars">
+          <!-- Q objects (8 bars) -->
+          <rect class="objectBar" data-group="q" x="32" y="470" width="7" height="110" fill="var(--objectQ)"/>
+          <rect class="objectBar" data-group="q" x="42" y="470" width="7" height="110" fill="var(--objectQ)"/>
+          <rect class="objectBar" data-group="q" x="52" y="470" width="7" height="110" fill="var(--objectQ)"/>
+          <rect class="objectBar" data-group="q" x="62" y="470" width="7" height="110" fill="var(--objectQ)"/>
+          <rect class="objectBar" data-group="q" x="72" y="470" width="7" height="110" fill="var(--objectQ)"/>
+          
+          <!-- GM objects -->
+          <rect class="objectBar" data-group="gm" x="105" y="470" width="7" height="110" fill="var(--objectGM)"/>
+          <rect class="objectBar" data-group="gm" x="115" y="470" width="7" height="110" fill="var(--objectGM)"/>
+          <rect class="objectBar" data-group="gm" x="125" y="470" width="7" height="110" fill="var(--objectGM)"/>
+          <rect class="objectBar" data-group="gm" x="135" y="470" width="7" height="110" fill="var(--objectGM)"/>
+          <rect class="objectBar" data-group="gm" x="145" y="470" width="7" height="110" fill="var(--objectGM)"/>
+          <rect class="objectBar" data-group="gm" x="155" y="470" width="7" height="110" fill="var(--objectGM)"/>
+          
+          <!-- VIP objects -->
+          <rect class="objectBar" data-group="vip" x="245" y="470" width="7" height="110" fill="var(--objectVIP)"/>
+          <rect class="objectBar" data-group="vip" x="255" y="470" width="7" height="110" fill="var(--objectVIP)"/>
+          <rect class="objectBar" data-group="vip" x="265" y="470" width="7" height="110" fill="var(--objectVIP)"/>
+          <rect class="objectBar" data-group="vip" x="275" y="470" width="7" height="110" fill="var(--objectVIP)"/>
+          <rect class="objectBar" data-group="vip" x="285" y="470" width="7" height="110" fill="var(--objectVIP)"/>
+          
+          <!-- Station/existing objects (many thin bars) -->
+          <rect class="objectBar" data-group="existing" x="465" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="473" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="481" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="489" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="497" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="515" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="523" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="531" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="565" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="573" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="581" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="589" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="820" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="828" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="836" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="1025" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="1033" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+          <rect class="objectBar" data-group="existing" x="1041" y="470" width="5" height="110" fill="var(--objectExisting)"/>
+        </g>
+        
+        <!-- Connection Lines (subtle network) -->
+        <g id="connections" opacity="1">
+          <!-- Q to objects -->
+          <path class="connectionLine" d="M 55 125 L 35 470"/>
+          <path class="connectionLine" d="M 55 125 L 45 470"/>
+          <path class="connectionLine" d="M 55 125 L 55 470"/>
+          <path class="connectionLine" d="M 55 125 L 65 470"/>
+          <path class="connectionLine" d="M 55 125 L 75 470"/>
+          
+          <!-- From objects to themes -->
+          <path class="connectionLine" data-hop="1" d="M 52 470 Q 250 260 480 125"/>
+          <path class="connectionLine" data-hop="1alt" d="M 52 470 Q 90 260 130 125"/>
+          
+          <!-- Theme to theme -->
+          <path class="connectionLine" data-hop="2" d="M 481 470 Q 620 280 580 125"/>
+          <path class="connectionLine" data-hop="3" d="M 481 470 Q 760 240 830 125"/>
+          
+          <!-- Station clusters to objects -->
+          <path class="connectionLine" data-theme="clusterO1" d="M 480 125 L 467 470"/>
+          <path class="connectionLine" data-theme="clusterO1" d="M 480 125 L 475 470"/>
+          <path class="connectionLine" data-theme="clusterO1" d="M 480 125 L 483 470"/>
+          <path class="connectionLine" data-theme="clusterO1" d="M 480 125 L 491 470"/>
+          <path class="connectionLine" data-theme="clusterO1" d="M 480 125 L 499 470"/>
+          
+          <path class="connectionLine" data-theme="clusterO3" d="M 580 125 L 567 470"/>
+          <path class="connectionLine" data-theme="clusterO3" d="M 580 125 L 575 470"/>
+          <path class="connectionLine" data-theme="clusterO3" d="M 580 125 L 583 470"/>
+          <path class="connectionLine" data-theme="clusterO3" d="M 580 125 L 591 470"/>
+          <path class="connectionLine" data-theme="clusterO3" data-deadend="true" d="M 580 125 L 1041 470"/>
+        </g>
+        
+        <!-- Arcs (active connections) -->
+        <g id="arcs">
+          <path id="arc1" class="arc" d="M 52 470 Q 250 260 480 125" opacity="0" marker-end="url(#arrowhead)"/>
+          <path id="arc1alt" class="arc" d="M 52 470 Q 90 260 130 125" opacity="0" marker-end="url(#arrowhead)"/>
+          <path id="arc2" class="arc" d="M 481 470 Q 620 280 580 125" opacity="0" marker-end="url(#arrowhead)"/>
+          <path id="arc3" class="arc" d="M 481 470 Q 760 240 830 125" opacity="0" marker-end="url(#arrowhead)"/>
+          <path id="arc4" class="arc" d="M 836 470 Q 550 320 405 125" opacity="0" marker-end="url(#arrowhead)"/>
+        </g>
+        
+        <!-- Highlight overlay -->
+        <rect id="highlightFill" class="highlightFill" x="0" y="0" width="10" height="10" rx="5" opacity="0"/>
+        <rect id="highlight" class="highlight" x="0" y="0" width="10" height="10" rx="5" opacity="0"/>
+      </svg>
+    </div>
+    
+    <div class="caption">
+      <div class="capK" id="capK">Beat 1 of 13</div>
+      <div class="capT" id="capT">Overview / Entry</div>
+      <div class="capB" id="capB">Q and in-view GM/VIP clusters are fully opaque (opacity=1) and interactive. Station clusters (from other DCJ locations) are visible but dimmed.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Beat definitions
+const beats = [
+  {
+    id: 1,
+    title: "Beat 1: Overview / Entry",
+    body: "Q and in-view GM/VIP clusters are fully opaque (opacity=1) and interactive. Station clusters (from other DCJ locations) are visible but dimmed.",
+    interactive: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2"],
+    dimmed: ["orangeGroup", "objectBars"],
+    highlight: { el: "clusterQ", bounds: [30, 55, 50, 70] },
+    arcs: []
+  },
+  {
+    id: 2,
+    title: "Beat 2: Enter via Question",
+    body: "User taps Question (Q) → reveals the question's predefined set of 8 object bars at the bottom.",
+    interactive: ["clusterQ"],
+    dimmed: ["clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2", "orangeGroup"],
+    highlight: { el: null, bounds: [30, 468, 60, 114] },
+    showObjects: ["q"],
+    arcs: []
+  },
+  {
+    id: 3,
+    title: "Beat 3: Explore Objects",
+    body: "Object bars are now interactive (opacity=1). User can hover/tap objects to see their theme connections.",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2", "orangeGroup"],
+    highlight: { el: null, bounds: [50, 468, 11, 114] },
+    showObjects: ["q"],
+    arcs: []
+  },
+  {
+    id: 4,
+    title: "Beat 4: Contribute (Optional)",
+    body: "From Question View, user can tap Contribute button to add objects/themes via modal, then return to Question View.",
+    interactive: ["clusterQ"],
+    dimmed: ["clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2", "orangeGroup"],
+    highlight: { el: "clusterQ", bounds: [30, 55, 50, 70] },
+    showObjects: ["q"],
+    arcs: []
+  },
+  {
+    id: 5,
+    title: "Beat 5: Select object with multiple paths",
+    body: "User taps an object that has connections to multiple themes. Two possible paths appear: one to a Station theme cluster, one to a GM curated cluster. This is network exploration.",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterVIP1", "clusterVIP2", "orangeGroup"],
+    highlight: { el: null, bounds: [50, 468, 11, 114] },
+    showObjects: ["q"],
+    arcs: ["arc1", "arc1alt"],
+    multipleOptions: true
+  },
+  {
+    id: 6,
+    title: "Beat 6: Object → Theme hop (chosen path)",
+    body: "User chooses the Station cluster path. Arc animates to the selected theme, the unchosen GM path dims. Context swaps to show theme's 4-8 objects.",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2"],
+    highlight: { el: "clusterO1", bounds: [460, 55, 40, 70] },
+    showObjects: ["existing"],
+    arcs: ["arc1"],
+    activeConnections: ["1"],
+    dimArcs: ["arc1alt"],
+    themeConnections: ["clusterO1"]
+  },
+  {
+    id: 7,
+    title: "Beat 7: Explore theme objects",
+    body: "Now in Theme View, user can explore the objects within this theme. User taps/selects an object that has connections to other themes (including potentially the one it came from).",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2"],
+    highlight: { el: null, bounds: [479, 468, 9, 114] },
+    showObjects: ["existing"],
+    arcs: []
+  },
+  {
+    id: 8,
+    title: "Beat 8: Multiple theme options revealed",
+    body: "The selected object is linked to multiple themes (0-5 possible). Multiple arc paths appear, showing all possible theme destinations the user could hop to.",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2"],
+    highlight: { el: null, bounds: [479, 468, 9, 114] },
+    showObjects: ["existing"],
+    arcs: ["arc2", "arc3"],
+    multipleOptions: true
+  },
+  {
+    id: 9,
+    title: "Beat 9: Choose one theme path",
+    body: "User chooses one theme from the options. The selected path is highlighted while other options dim, showing the chosen direction for the journey.",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2", "clusterO1"],
+    highlight: { el: null, bounds: [479, 468, 9, 114] },
+    showObjects: ["existing"],
+    arcs: ["arc2"],
+    activeConnections: ["2"],
+    dimArcs: ["arc3"]
+  },
+  {
+    id: 10,
+    title: "Beat 10: Object → Theme hop",
+    body: "Arc completes the hop to the chosen theme cluster. Object set swaps to show the new theme's objects. The connection lines from cluster to objects are visible.",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2", "clusterO1"],
+    highlight: { el: "clusterO3", bounds: [560, 55, 40, 70] },
+    showObjects: ["existing"],
+    arcs: ["arc2"],
+    activeConnections: ["2"],
+    themeConnections: ["clusterO3"]
+  },
+  {
+    id: 11,
+    title: "Beat 11: Select object - shows path from theme",
+    body: "User selects an object within this theme. The path from the theme cluster to this specific object is highlighted. This object has 0 theme links (dead-end), so no outgoing paths exist.",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2", "clusterO1"],
+    highlight: { el: null, bounds: [1037, 468, 9, 114] },
+    showObjects: ["existing"],
+    arcs: [],
+    themeConnections: ["clusterO3"],
+    highlightDeadend: true
+  },
+  {
+    id: 12,
+    title: "Beat 12: Dead-end case",
+    body: "User selects an object with 0 theme links → Dead-end UI appears showing 'No further connections' with exit options (Back, Search new question).",
+    interactive: [],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2"],
+    highlight: { el: null, bounds: [1039, 468, 9, 114] },
+    showObjects: ["existing"],
+    arcs: []
+  },
+  {
+    id: 13,
+    title: "Beat 13: Search new question",
+    body: "User opens Search overlay → selects a new question (Q2) → arc shows the journey to the new question context which will reveal that question's object set.",
+    interactive: ["clusterQ2"],
+    dimmed: ["clusterQ", "clusterGM1", "clusterGM2", "clusterVIP1", "clusterVIP2", "clusterO1", "clusterO3"],
+    highlight: { el: "clusterQ2", bounds: [380, 55, 50, 70] },
+    showObjects: ["existing"],
+    arcs: ["arc4"],
+    activeConnections: []
+  }
+];
+
+// State
+let currentBeat = 0;
+let playing = true;
+let beatTimer = 0;
+const beatDuration = 3500;
+let lastTime = performance.now();
+
+// Elements
+const playBtn = document.getElementById("play");
+const pauseBtn = document.getElementById("pause");
+const stepBtn = document.getElementById("step");
+const restartBtn = document.getElementById("restart");
+const scrub = document.getElementById("scrub");
+const pillBeat = document.getElementById("pillBeat");
+const pillTotal = document.getElementById("pillTotal");
+const pillMode = document.getElementById("pillMode");
+const capK = document.getElementById("capK");
+const capT = document.getElementById("capT");
+const capB = document.getElementById("capB");
+const highlight = document.getElementById("highlight");
+const highlightFill = document.getElementById("highlightFill");
+
+pillTotal.textContent = beats.length;
+
+// Apply beat
+function applyBeat(beatIndex) {
+  currentBeat = beatIndex;
+  const beat = beats[beatIndex];
+  
+  // Update caption
+  capK.textContent = `Beat ${beat.id} of ${beats.length}`;
+  capT.textContent = beat.title;
+  capB.textContent = beat.body;
+  pillBeat.textContent = beat.id;
+  
+  // Reset all elements to dimmed
+  const allClusters = document.querySelectorAll('.cluster');
+  allClusters.forEach(el => {
+    el.style.opacity = '0.25';
+    el.style.pointerEvents = 'none';
+  });
+  
+  const allBars = document.querySelectorAll('.objectBar');
+  allBars.forEach(el => {
+    el.style.opacity = '0.25';
+    el.style.pointerEvents = 'none';
+  });
+  
+  // Set interactive elements
+  beat.interactive.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.opacity = '1';
+      el.style.pointerEvents = 'auto';
+    }
+  });
+  
+  // Apply dimmed opacity
+  beat.dimmed.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.opacity = '0.25';
+      el.style.pointerEvents = 'none';
+    }
+  });
+  
+  // Show specific object groups
+  if (beat.showObjects) {
+    beat.showObjects.forEach(group => {
+      const bars = document.querySelectorAll(`[data-group="${group}"]`);
+      bars.forEach(bar => {
+        bar.style.opacity = '1';
+        bar.style.pointerEvents = 'auto';
+      });
+    });
+  }
+  
+  // Handle arcs
+  const allArcs = document.querySelectorAll('.arc');
+  allArcs.forEach(arc => {
+    arc.style.opacity = '0';
+    arc.classList.remove('active', 'dimmed', 'option');
+  });
+  
+  if (beat.multipleOptions) {
+    beat.arcs.forEach(arcId => {
+      const arc = document.getElementById(arcId);
+      if (arc) {
+        arc.style.opacity = '0.75';
+        arc.classList.add('option');
+      }
+    });
+  } else {
+    beat.arcs.forEach(arcId => {
+      const arc = document.getElementById(arcId);
+      if (arc) {
+        arc.style.opacity = '0.85';
+        arc.classList.add('active');
+      }
+    });
+  }
+  
+  if (beat.dimArcs) {
+    beat.dimArcs.forEach(arcId => {
+      const arc = document.getElementById(arcId);
+      if (arc) {
+        arc.style.opacity = '0.25';
+        arc.classList.add('dimmed');
+      }
+    });
+  }
+  
+  // Handle connection lines
+  const allConnections = document.querySelectorAll('.connectionLine');
+  allConnections.forEach(conn => conn.classList.remove('active'));
+  
+  if (beat.activeConnections) {
+    beat.activeConnections.forEach(hopId => {
+      const conn = document.querySelector(`[data-hop="${hopId}"]`);
+      if (conn) conn.classList.add('active');
+    });
+  }
+  
+  // Show theme-to-object connections
+  if (beat.themeConnections) {
+    beat.themeConnections.forEach(themeId => {
+      const themeConns = document.querySelectorAll(`[data-theme="${themeId}"]`);
+      themeConns.forEach(conn => {
+        conn.style.opacity = '1';
+        conn.style.strokeDasharray = '3,3';
+      });
+    });
+  }
+  
+  // Highlight dead-end connection if specified
+  if (beat.highlightDeadend) {
+    const deadendConn = document.querySelector('[data-deadend="true"]');
+    if (deadendConn) {
+      deadendConn.classList.add('active');
+      deadendConn.style.opacity = '1';
+    }
+  }
+  
+  // Update highlight
+  if (beat.highlight && beat.highlight.bounds) {
+    const [x, y, w, h] = beat.highlight.bounds;
+    const pad = 6;
+    
+    highlight.setAttribute('x', x - pad);
+    highlight.setAttribute('y', y - pad);
+    highlight.setAttribute('width', w + pad * 2);
+    highlight.setAttribute('height', h + pad * 2);
+    highlight.style.opacity = '1';
+    
+    highlightFill.setAttribute('x', x - pad);
+    highlightFill.setAttribute('y', y - pad);
+    highlightFill.setAttribute('width', w + pad * 2);
+    highlightFill.setAttribute('height', h + pad * 2);
+    highlightFill.style.opacity = '1';
+  } else {
+    highlight.style.opacity = '0';
+    highlightFill.style.opacity = '0';
+  }
+  
+  scrub.value = Math.round((beatIndex / (beats.length - 1)) * 1000);
+}
+
+// Animation loop
+function animate(now) {
+  const dt = now - lastTime;
+  lastTime = now;
+  
+  if (playing) {
+    beatTimer += dt;
+    if (beatTimer >= beatDuration) {
+      beatTimer = 0;
+      const nextBeat = (currentBeat + 1) % beats.length;
+      applyBeat(nextBeat);
+    }
+  }
+  
+  requestAnimationFrame(animate);
+}
+
+// Controls
+playBtn.addEventListener('click', () => {
+  playing = true;
+  pillMode.textContent = 'Autoplay';
+});
+
+pauseBtn.addEventListener('click', () => {
+  playing = false;
+  pillMode.textContent = 'Paused';
+});
+
+stepBtn.addEventListener('click', () => {
+  playing = false;
+  pillMode.textContent = 'Stepping';
+  beatTimer = 0;
+  const nextBeat = (currentBeat + 1) % beats.length;
+  applyBeat(nextBeat);
+});
+
+restartBtn.addEventListener('click', () => {
+  playing = false;
+  pillMode.textContent = 'Restarted';
+  beatTimer = 0;
+  applyBeat(0);
+});
+
+scrub.addEventListener('input', (e) => {
+  playing = false;
+  pillMode.textContent = 'Scrub';
+  const val = Number(e.target.value) / 1000;
+  const beatIndex = Math.round(val * (beats.length - 1));
+  beatTimer = 0;
+  applyBeat(beatIndex);
+});
+
+// Initialize
+applyBeat(0);
+requestAnimationFrame(animate);
+</script>
+
+</body>
+</html>
