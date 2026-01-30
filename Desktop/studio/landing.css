@@ -902,46 +902,43 @@ section {
     background: var(--color-white);
 }
 
-.testimonial {
-    max-width: 800px;
-    margin: 0 auto var(--space-2xl);
-    padding: var(--space-xl);
-    background: var(--color-gray-100);
-    border-radius: var(--radius-xl);
-    border-left: 4px solid var(--color-primary);
-}
-
-.testimonial p {
-    font-size: 1.25rem;
-    line-height: 1.6;
-    color: var(--color-gray-900);
-    margin-bottom: var(--space-md);
-}
-
-.testimonial cite {
-    color: var(--color-gray-600);
-    font-style: normal;
-    font-size: 0.9375rem;
+/* Clients Section */
+.clients {
+    background: var(--color-white);
 }
 
 .clients-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: var(--space-lg);
-    text-align: center;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-xl);
+    align-items: center;
 }
 
 .client-logo {
     padding: var(--space-md);
-    color: var(--color-gray-700);
-    font-weight: var(--font-weight-medium);
-    font-size: 0.9375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-base);
+    opacity: 0.6;
+}
+
+.client-logo img {
+    max-width: 100%;
+    height: auto;
+    max-height: 60px;
+    width: auto;
+    filter: grayscale(100%) brightness(0);
     transition: all var(--transition-base);
 }
 
 .client-logo:hover {
-    color: var(--color-black);
-    transform: scale(1.05);
+    opacity: 1;
+    transform: translateY(-4px);
+}
+
+.client-logo:hover img {
+    filter: grayscale(0%) brightness(1);
 }
 
 /* About Section */
