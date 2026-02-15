@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raindrops on Glass</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            background-color: #ebebeb;
+            background-image: url('106357af19826a25e54599cdb28faae9.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        body { 
+            margin: 0; 
+            background-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            color: #2a2a2a;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        #raindrop-canvas,
+        #steam-canvas {
+            opacity: 1;
+        }
+        
+        #raindrop-canvas {
+            display: block; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        #steam-canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 40px 200px 40px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            margin-bottom: 3rem;
+        }
+        
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            margin-top: 5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+        
+        .intro {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+        
+        .location {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 5rem;
+        }
+        
+        .divider {
+            margin: 4rem 0;
+            opacity: 0.3;
+        }
+        
+        ul {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        
+        ul li {
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        ul li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
+        
+        .collaborators {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: #2a2a2a;
+            text-decoration: none;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        
+        a:hover {
+            opacity: 0.6;
+        }
+        
+        em {
+            font-style: italic;
+            font-weight: 300;
+        }
+        
+        body {
+            cursor: none;
+        }
+        
+        .cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            pointer-events: none;
+            z-index: 9999;
+            will-change: transform;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.4s ease, width 0.3s ease, height 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+        
+        .cursor.visible {
+            opacity: 1;
+        }
+        
+        .cursor.hover {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                cursor: auto;
+            }
+            
+            .cursor {
+                display: none !important;
+            }
+            
+            .content {
+                padding: 80px 24px 150px 24px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="raindrop-canvas"></canvas>
+    <canvas id="steam-canvas"></canvas>
+    
+    <div class="cursor"></div>
+    
+    <div class="content">
+        <h1>CRANK STUDIO</h1>
+        
+        <p class="intro">Crank Studio is a strategic design practice working across culture, museums, and long-term innovation.</p>
+        
+        <p>We design digital and spatial experiences that feel natural to use, intuitive to navigate, and meaningful to inhabit. Our work focuses on the point where technology meets the body — where interaction becomes instinctive and systems feel alive rather than operated.</p>
+        
+        <p class="location">Paris · Worldwide</p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>What We Do</h2>
+        
+        <p>We design experiences people can enter without effort and remember without instruction.</p>
+        
+        <p>Our work spans immersive environments, intelligent interfaces, narrative systems, and interactive spaces. We collaborate with institutions, research groups, and organizations building tools, environments, and experiences meant to last.</p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>Approach</h2>
+        
+        <p>We begin with people, not technology.</p>
+        
+        <p>Every project starts by understanding how someone moves, perceives, and interprets a space or system. From there we shape interactions that feel immediate rather than learned, clear rather than explained, and responsive rather than mechanical.</p>
+        
+        <p>We work at the intersection of:</p>
+        <ul>
+            <li>embodied interaction</li>
+            <li>spatial computing</li>
+            <li>storytelling</li>
+            <li>human-centered systems</li>
+            <li>research-driven design</li>
+        </ul>
+        
+        <p>The result is work that feels intuitive from the first moment.</p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>Selected Collaborators</h2>
+        
+        <p class="collaborators">Audemars Piguet · Google · MIT · National Geographic · LazyBrain · La Biennale di Venezia · Dreamscape</p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>Selected Work</h2>
+        
+        <p>We have developed immersive experiences, platforms, and interactive systems ranging from museum environments and XR installations to research tools and narrative interfaces.</p>
+        
+        <p>Recent collaborations include:</p>
+        
+        <p>– immersive cultural experiences and digital environments for institutions and exhibitions<br>
+        – intelligent interface systems for emerging platforms<br>
+        – spatial and mixed-reality projects for storytelling, education, and care<br>
+        – experimental prototypes exploring perception, interaction, and cognition</p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>Current Focus</h2>
+        
+        <p>Our current work explores three long-term questions:</p>
+        
+        <p><em>How can technology feel intuitive rather than learned?<br>
+        How can environments respond like systems instead of objects?<br>
+        How can interaction feel embodied rather than mediated?</em></p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>Studio</h2>
+        
+        <p>Crank Studio was founded by Allison Crank, a designer and researcher working across architecture, immersive technology, and intelligent systems.</p>
+        
+        <p>The studio collaborates internationally with cultural institutions, research labs, and organizations developing meaningful technologies.</p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>Philosophy</h2>
+        
+        <p>We believe the best design does not demand attention.<br>
+        It earns trust.</p>
+        
+        <p>The most powerful experiences are not the loudest or most complex, but the ones that feel immediately understandable — the ones that move with us, not against us.</p>
+        
+        <div class="divider">⸻</div>
+        
+        <h2>Contact</h2>
+        
+        <p>For collaborations, research partnerships, or project inquiries:</p>
+        
+        <p><a href="mailto:hello@crank.studio">hello@crank.studio</a></p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        // ============ RAINDROP SHADER ============
+        const raindropCanvas = document.getElementById('raindrop-canvas');
+        const raindropRenderer = new THREE.WebGLRenderer({ canvas: raindropCanvas, antialias: true, alpha: true });
+        raindropRenderer.setSize(window.innerWidth, window.innerHeight);
+
+        const raindropScene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        const raindropFragmentShader = `
+            uniform float iTime;
+            uniform vec3 iResolution;
+            uniform vec2 iMouse;
+            varying vec2 vUv;
+
+                #define RandomSeed 4.3315
+                #define NumberScaleOfStaticRaindrops 0.35
+                #define NumberScaleOfRollingRaindrops 0.35
+                #define StaticRaindropUVScale 20.0
+                #define RollingRaindropUVScaleLayer01 2.25
+                #define RollingRaindropUVScaleLayer02 2.25
+
+                vec4 permute(vec4 t) {
+                    return t * (t * 34.0 + 133.0);
+                }
+
+                vec3 grad(float hash) {
+                    vec3 cube = mod(floor(hash / vec3(1.0, 2.0, 4.0)), 2.0) * 2.0 - 1.0;
+                    vec3 cuboct = cube;
+                    cuboct[int(hash / 16.0)] = 0.0;
+                    float type = mod(floor(hash / 8.0), 2.0);
+                    vec3 rhomb = (1.0 - type) * cube + type * (cuboct + cross(cube, cuboct));
+                    vec3 grad = cuboct * 1.22474487139 + rhomb;
+                    grad *= (1.0 - 0.042942436724648037 * type) * 3.5946317686139184;
+                    return grad;
+                }
+
+                vec4 os2NoiseWithDerivativesPart(vec3 X) {
+                    vec3 b = floor(X);
+                    vec4 i4 = vec4(X - b, 2.5);
+                    vec3 v1 = b + floor(dot(i4, vec4(.25)));
+                    vec3 v2 = b + vec3(1, 0, 0) + vec3(-1, 1, 1) * floor(dot(i4, vec4(-.25, .25, .25, .35)));
+                    vec3 v3 = b + vec3(0, 1, 0) + vec3(1, -1, 1) * floor(dot(i4, vec4(.25, -.25, .25, .35)));
+                    vec3 v4 = b + vec3(0, 0, 1) + vec3(1, 1, -1) * floor(dot(i4, vec4(.25, .25, -.25, .35)));
+                    vec4 hashes = permute(mod(vec4(v1.x, v2.x, v3.x, v4.x), 289.0));
+                    hashes = permute(mod(hashes + vec4(v1.y, v2.y, v3.y, v4.y), 289.0));
+                    hashes = mod(permute(mod(hashes + vec4(v1.z, v2.z, v3.z, v4.z), 289.0)), 48.0);
+                    vec3 d1 = X - v1; vec3 d2 = X - v2; vec3 d3 = X - v3; vec3 d4 = X - v4;
+                    vec4 a = max(0.75 - vec4(dot(d1, d1), dot(d2, d2), dot(d3, d3), dot(d4, d4)), 0.0);
+                    vec4 aa = a * a; vec4 aaaa = aa * aa;
+                    vec3 g1 = grad(hashes.x); vec3 g2 = grad(hashes.y);
+                    vec3 g3 = grad(hashes.z); vec3 g4 = grad(hashes.w);
+                    vec4 extrapolations = vec4(dot(d1, g1), dot(d2, g2), dot(d3, g3), dot(d4, g4));
+                    vec3 derivative = -8.0 * mat4x3(d1, d2, d3, d4) * (aa * a * extrapolations)
+                        + mat4x3(g1, g2, g3, g4) * aaaa;
+                    return vec4(derivative, dot(aaaa, extrapolations));
+                }
+
+                vec4 os2NoiseWithDerivatives_ImproveXY(vec3 X) {
+                    mat3 orthonormalMap = mat3(
+                        0.788675134594813, -0.211324865405187, -0.577350269189626,
+                        -0.211324865405187, 0.788675134594813, -0.577350269189626,
+                        0.577350269189626, 0.577350269189626, 0.577350269189626);
+                    X = orthonormalMap * X;
+                    vec4 result = os2NoiseWithDerivativesPart(X) + os2NoiseWithDerivativesPart(X + 144.5);
+                    return vec4(result.xyz * orthonormalMap, result.w);
+                }
+
+                float GradientWave(float b, float t) {
+                    return smoothstep(0., b, t)*smoothstep(1., b, t);
+                }
+
+                float Random(vec2 UV, float Seed) {
+                    return fract(sin(dot(UV.xy*13.235, vec2(12.9898,78.233)) * 0.000001) * 43758.5453123 * Seed);
+                }
+
+                vec3 RandomVec3(vec2 UV, float Seed) {
+                    return vec3(Random(UV, Seed), Random(UV * 2.0, Seed), Random(UV * 3.0, Seed));
+                }
+
+                vec3 RaindropSurface(vec2 XY, float DistanceScale, float ZScale) {
+                    float A = DistanceScale;
+                    float x = XY.x;
+                    float y = XY.y;
+                    float N = 1.5;
+                    float M = 0.5;
+                    float S = ZScale;
+                    float TempZ = 1.0-pow(x/A,2.0)-pow(y/A,2.0);
+                    float Z = pow(TempZ, A/2.0);
+                    float ZInMAndN = (Z-M)/(N-M);
+                    float t = min(max(ZInMAndN, 0.0), 1.0);
+                    float Height = S*t*t*(3.0-2.0*t);
+                    float Part01 = S*(6.0*t - 8.0*t*t);
+                    float Part02 = 1.0/(N - M);
+                    float Part03 = -1.0/A*pow(TempZ,A/2.0-1.0);
+                    float Part03OfX = x*Part03;
+                    float Part03OfY = y*Part03;
+                    float TempValue = (ZInMAndN > 0.0 && ZInMAndN < 1.0) ? Part01*Part02 : 0.0;
+                    float PartialDerivativeX=TempValue*Part03OfX;
+                    float PartialDerivativeY=TempValue*Part03OfY;
+                    vec2 PartialDerivative = Height > 0.0 ? vec2(PartialDerivativeX, PartialDerivativeY) : vec2(0.0,0.0);
+                    return vec3(Height, PartialDerivative);
+                }
+
+                float MapToRange(float edge0, float edge1, float x) {
+                    float t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+                    return t;
+                }
+
+                float ProportionalMapToRange(float edge0, float edge1, float x) {
+                    float t = edge0+(edge1-edge0)*x;
+                    return t;
+                }
+
+                vec3 StaticRaindrops(vec2 UV, float Time, float UVScale) {
+                    vec2 TempUV = UV;
+                    TempUV *= UVScale;
+                    vec2 ID = floor(TempUV);
+                    vec3 RandomValue = RandomVec3(vec2(ID.x*470.15, ID.y*653.58), RandomSeed);
+                    TempUV = fract(TempUV)-0.5;
+                    vec2 RandomPoint = (RandomValue.xy-0.5)*0.25;
+                    vec2 XY = RandomPoint - TempUV;
+                    float Distance = length(TempUV-RandomPoint);
+                    vec3 X = vec3(vec2(TempUV.x*305.0*0.02, TempUV.y*305.0*0.02), 1.8660254037844386);
+                    vec4 noiseResult = os2NoiseWithDerivatives_ImproveXY(X);
+                    float EdgeRandomCurveAdjust = noiseResult.w*mix(0.02, 0.175, fract(RandomValue.x));
+                    Distance = EdgeRandomCurveAdjust*0.5+Distance;
+                    Distance = Distance* clamp(mix(1.0, 55.0,RandomPoint.x),1.0, 3.0);
+                    float Height = smoothstep(.2, 0., Distance);
+                    float GradientFade = GradientWave(.0005, fract(Time*0.02+RandomValue.z));
+                    float DistanceMaxRange =  1.45 * GradientFade;
+                    vec2 Direction = (TempUV-RandomPoint);
+                    float Theta = 3.141592653-acos(dot(normalize(Direction), vec2(0.0,1.0)));
+                    Theta = Theta * RandomValue.z;
+                    float DistanceScale = 0.2/(1.0-0.8*cos(Theta-3.141593/2.0-1.6));
+                    float YDistance = length(vec2(0.0,TempUV.y)-vec2(0.0,RandomPoint.y));
+                    float NewDistance = MapToRange(0.0,DistanceMaxRange*pow(DistanceScale,1.0),Distance);
+                    float Scale = 1.65*(0.2+DistanceScale*1.0)*DistanceMaxRange*mix(1.5,0.5,RandomValue.x);
+                    vec2 TempXY = vec2(XY.x*1.0,XY.y)*4.0;
+                    float RandomScale = ProportionalMapToRange(0.85,1.35,RandomValue.z);
+                    TempXY.x = RandomScale*mix(TempXY.x ,TempXY.x / smoothstep(1.0,0.4,YDistance*RandomValue.z),smoothstep(1.0,0.0,RandomValue.x));
+                    TempXY = TempXY + EdgeRandomCurveAdjust*1.0;
+                    vec3 HeightAndNormal = RaindropSurface(TempXY, Scale,1.0);
+                    HeightAndNormal.yz = -HeightAndNormal.yz;
+                    float RandomVisible = (fract(RandomValue.z*10.*RandomSeed) < NumberScaleOfStaticRaindrops ? 1.0 : 0.0);
+                    HeightAndNormal.yz = HeightAndNormal.yz*RandomVisible;
+                    HeightAndNormal.x = smoothstep(0.0, 1.0, HeightAndNormal.x)*RandomVisible;
+                    return HeightAndNormal;
+                }
+
+                vec4 RollingRaindrops(vec2 UV, float Time, float UVScale) {
+                    vec2 LocalUV = UV*UVScale;
+                    vec2 TempUV = LocalUV;
+                    vec2 ConstantA = vec2(6.0, 1.0);
+                    vec2 GridNum = ConstantA*2.0;
+                    vec2 GridID = floor(LocalUV*GridNum);
+                    float RandomFloat = Random(vec2(GridID.x*131.26, GridID.x*101.81), RandomSeed);
+                    float TimeMovingY = Time*0.85*ProportionalMapToRange(0.1,0.25,RandomFloat);
+                    LocalUV.y += TimeMovingY;
+                    float YShift = RandomFloat;
+                    LocalUV.y += YShift;
+                    vec2 ScaledUV = LocalUV*GridNum;
+                    GridID = floor(ScaledUV);
+                    vec3 RandomVec3 = RandomVec3(vec2(GridID.x*17.32, GridID.y*2217.54), RandomSeed);
+                    vec2 GridUV = fract(ScaledUV)-vec2(0.5, 0.0);
+                    float SwingX = RandomVec3.x-0.5;
+                    float SwingY = TempUV.y*20.0;
+                    float SwingPosition = sin(SwingY+sin(GridID.y*RandomVec3.z+SwingY)+GridID.y*RandomVec3.z);
+                    SwingX += SwingPosition*(0.5-abs(SwingX))*(RandomVec3.z-0.5);
+                    SwingX *= 0.65;
+                    float RandomNormalizedTime = fract(TimeMovingY+RandomVec3.z)*1.0;
+                    SwingY = (GradientWave(0.87, RandomNormalizedTime)-0.5)*0.9+0.5;
+                    SwingY = clamp(SwingY,0.15,0.85);
+                    vec2 Position = vec2(SwingX, SwingY);
+                    vec2 XY = Position - GridUV;
+                    vec2 Direction = (GridUV-Position)*ConstantA.yx;
+                    float Distance = length(Direction);
+                    vec3 X = vec3(vec2(TempUV.x*513.20*0.02, TempUV.y*779.40*0.02), 2.1660251037743386);
+                    vec4 NoiseResult = os2NoiseWithDerivatives_ImproveXY(X);
+                    float EdgeRandomCurveAdjust = NoiseResult.w*mix(0.02, 0.175, fract(RandomVec3.y));
+                    Distance = EdgeRandomCurveAdjust+Distance;
+                    float Height = smoothstep(.2, 0., Distance);
+                    float NewDistance = MapToRange(0.0,0.2,Distance);
+                    float DistanceMaxRange =  1.45;
+                    float Theta = 3.141592653-acos(dot(normalize(Direction), vec2(0.0,1.0)));
+                    Theta = Theta * RandomVec3.z;
+                    float DistanceScale = 0.2/(1.0-0.8*cos(Theta-3.141593/2.0-1.6));
+                    float Scale = 1.65*(0.2+DistanceScale*1.0)*DistanceMaxRange*mix(1.0,0.25,RandomVec3.x*1.0);
+                    vec2 TempXY = vec2(XY.x*1.0,XY.y)*4.0;
+                    float RandomScale = ProportionalMapToRange(0.85,1.35,RandomVec3.z);
+                    TempXY = TempXY*vec2(1.0,4.2) + EdgeRandomCurveAdjust*0.85;
+                    vec3 HeightAndNormal = RaindropSurface(TempXY, Scale,1.0);
+                    float TrailY = pow(smoothstep(1.0, SwingY, GridUV.y), 0.5);
+                    float TrailX = abs(GridUV.x-SwingX)*mix(0.8,4.0,smoothstep(0.0,1.0,RandomVec3.x));
+                    float Trail = smoothstep(0.25*TrailY, 0.15*TrailY*TrailY, TrailX);
+                    float TrailClamp = smoothstep(-0.02, 0.02, GridUV.y-SwingY);
+                    Trail *= TrailClamp*TrailY;
+                    float SignOfTrailX = sign(GridUV.x-SwingX);
+                    vec3 NoiseInput = vec3(vec2(TempUV.x*513.20*0.02*SignOfTrailX, TempUV.y*779.40*0.02), 2.1660251037743386);
+                    vec4 TrailNoiseResult = os2NoiseWithDerivatives_ImproveXY(NoiseInput);
+                    float TrailEdgeRandomCurveAdjust = TrailNoiseResult.w*mix(0.002, 0.175, fract(RandomVec3.y));
+                    float TrailXDistance = MapToRange(0.0,0.1,TrailEdgeRandomCurveAdjust*0.5+TrailX);
+                    vec2 TrailDirection = SignOfTrailX*vec2(1.0,0.0) + vec2(0.0,1.0)*smoothstep(1.0, 0.0,Trail)*0.5;
+                    vec2 TrailXY = TrailDirection*1.0*TrailXDistance;
+                    vec3 TrailHeightAndNormal = RaindropSurface(TrailXY, 1.0,1.0);
+                    TrailHeightAndNormal = TrailHeightAndNormal * pow(Trail*RandomVec3.y, 2.0);
+                    TrailHeightAndNormal.x = smoothstep(0.0, 1.0, TrailHeightAndNormal.x);
+                    SwingY = TempUV.y;
+                    float RemainTrail = smoothstep(0.2*TrailY, 0.0, TrailX);
+                    float RemainDroplet = max(0.0, (sin(SwingY*(1.0-SwingY)*120.0)-GridUV.y))*RemainTrail*TrailClamp*RandomVec3.z;
+                    SwingY = fract(SwingY*10.0)+(GridUV.y-0.5);
+                    vec2 RemainDropletXY= GridUV-vec2(SwingX, SwingY);
+                    RemainDropletXY = RemainDropletXY * vec2(1.2,0.8);
+                    RemainDropletXY = RemainDropletXY + EdgeRandomCurveAdjust*0.85;
+                    vec3 RemainDropletHeightAndNormal = RaindropSurface(RemainDropletXY, 2.0*RemainDroplet,1.0);
+                    RemainDropletHeightAndNormal.x = smoothstep(0.0, 1.0, RemainDropletHeightAndNormal.x);
+                    RemainDropletHeightAndNormal = TrailHeightAndNormal.x > 0.0 ? vec3(0.0,0.0,0.0) : RemainDropletHeightAndNormal;
+                    vec4 ReturnValue;
+                    ReturnValue.x = HeightAndNormal.x + TrailHeightAndNormal.x*TrailY*TrailClamp + RemainDropletHeightAndNormal.x*TrailY*TrailClamp;
+                    ReturnValue.yz = HeightAndNormal.yz + TrailHeightAndNormal.yz + RemainDropletHeightAndNormal.yz;
+                    ReturnValue.w = Trail;
+                    float RandomVisible = (fract(RandomVec3.z*20.*RandomSeed) < NumberScaleOfRollingRaindrops ? 1.0 : 0.0);
+                    ReturnValue = ReturnValue * RandomVisible;
+                    return ReturnValue;
+                }
+
+                vec4 Raindrops(vec2 UV, float Time, float UVScale00, float UVScale01, float UVScale02) {
+                    vec3 StaticRaindrop = StaticRaindrops(UV, Time, UVScale00);
+                    vec4 RollingRaindrop01 = RollingRaindrops(UV, Time, UVScale01);
+                    float Height = StaticRaindrop.x + RollingRaindrop01.x;
+                    vec2 Normal = StaticRaindrop.yz + RollingRaindrop01.yz;
+                    float Trail = RollingRaindrop01.w;
+                    return vec4(Height, Normal, Trail);
+                }
+
+                void main() {
+                    float Time = iTime;
+                    vec2 fragCoord = vUv * iResolution.xy;
+                    vec2 GlobalUV = fragCoord.xy/iResolution.xy;
+                    vec2 LocalUV = (fragCoord.xy-.5*iResolution.xy) / iResolution.y;
+
+                    // Create center exclusion mask for text area
+                    float centerMaskWidth = 0.45;
+                    float centerMaskSoftness = 0.1;
+                    float horizontalMask = smoothstep(centerMaskWidth - centerMaskSoftness, centerMaskWidth, abs(GlobalUV.x - 0.5));
+                    
+                    vec4 Raindrop = Raindrops(LocalUV, Time,
+                        StaticRaindropUVScale, RollingRaindropUVScaleLayer01, RollingRaindropUVScaleLayer02);
+
+                    // Apply center mask to raindrops
+                    Raindrop *= horizontalMask;
+
+                    float RaindropHeight = Raindrop.x;
+                    float RaindropTrail = Raindrop.w;
+                    vec2 RaindropNormal = -Raindrop.yz;
+                    RaindropNormal = RaindropHeight > 0.0 ? RaindropNormal*0.15 : vec2(0.0,0.0);
+
+                    vec2 UVWithNormal = GlobalUV+RaindropNormal;
+                    float EdgeColorScale = smoothstep(0.2, 0.0, length(RaindropNormal));
+                    EdgeColorScale = RaindropHeight > 0.0 ? pow(EdgeColorScale,0.5)*0.2 + 0.8 : 1.0;
+
+                    // Mouse interaction - create a glow/ripple effect
+                    float mouseDist = length(GlobalUV - iMouse);
+                    float mouseGlow = smoothstep(0.3, 0.0, mouseDist) * 0.5;
+                    vec3 mouseColor = vec3(1.0, 0.9, 0.5);
+                    
+                    // Create animated gradient blobs - more visible
+                    vec2 blob1Pos = vec2(0.5 + sin(Time * 0.3) * 0.3, 0.5 + cos(Time * 0.2) * 0.3);
+                    vec2 blob2Pos = vec2(0.5 + cos(Time * 0.25) * 0.4, 0.5 + sin(Time * 0.35) * 0.3);
+                    vec2 blob3Pos = vec2(0.5 + sin(Time * 0.18) * 0.35, 0.5 + cos(Time * 0.28) * 0.35);
+                    
+                    float blob1 = smoothstep(0.5, 0.0, length(UVWithNormal - blob1Pos));
+                    float blob2 = smoothstep(0.45, 0.0, length(UVWithNormal - blob2Pos));
+                    float blob3 = smoothstep(0.4, 0.0, length(UVWithNormal - blob3Pos));
+                    
+                    // Bright blob colors that will show through fog
+                    vec3 blobColor1 = vec3(0.95, 0.6, 1.0); // Bright Purple
+                    vec3 blobColor2 = vec3(0.5, 0.8, 1.0); // Bright Blue  
+                    vec3 blobColor3 = vec3(1.0, 0.7, 0.85); // Bright Pink
+                    
+                    // Much more transparent - let background show through
+                    vec3 gradient = vec3(0.0);
+                    gradient = mix(gradient, blobColor1, blob1 * 0.08);
+                    gradient = mix(gradient, blobColor2, blob2 * 0.08);
+                    gradient = mix(gradient, blobColor3, blob3 * 0.08);
+                    gradient = mix(gradient, mouseColor, mouseGlow * 0.15);
+                    
+                    // Apply edge color and raindrop refraction
+                    vec3 FinalColor = gradient * EdgeColorScale;
+
+                    gl_FragColor = vec4(FinalColor, 0.15);
+                }
+            `;
+
+        const raindropMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                iTime: { value: 0 },
+                iResolution: { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 1) },
+                iMouse: { value: new THREE.Vector2(0.5, 0.5) }
+            },
+            vertexShader,
+            fragmentShader: raindropFragmentShader,
+            transparent: true,
+            blending: THREE.NormalBlending
+        });
+
+        const raindropMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), raindropMaterial);
+        raindropScene.add(raindropMesh);
+
+        // ============ STEAM/FOG SHADER ============
+        const steamCanvas = document.getElementById('steam-canvas');
+        const steamRenderer = new THREE.WebGLRenderer({ canvas: steamCanvas, antialias: true, alpha: true });
+        steamRenderer.setSize(window.innerWidth, window.innerHeight);
+
+        const buffers = {
+            read: new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, { type: THREE.FloatType }),
+            write: new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, { type: THREE.FloatType })
+        };
+
+        const steamBufferShader = `
+            uniform sampler2D iChannel0;
+            uniform vec2 iResolution;
+            uniform vec2 iMouse;
+            uniform float iTime;
+            uniform bool iMouseDown;
+            varying vec2 vUv;
+
+            void main() {
+                vec2 res = iResolution;
+                vec4 prev = texture2D(iChannel0, vUv);
+                
+                if(prev.a < 0.01) prev = vec4(1.0);
+                
+                float fog = prev.x;
+                float dist = distance(vUv * res, iMouse);
+                
+                float radius = iMouseDown ? 100.0 : 70.0;
+                float strength = iMouseDown ? 0.6 : 0.4;
+                
+                if (dist < radius) {
+                    float clean = (1.0 - smoothstep(0.0, radius, dist)) * strength;
+                    fog = clamp(fog - clean, 0.0, 1.0);
+                }
+
+                fog += 0.0005;
+                fog = clamp(fog, 0.0, 1.0);
+                gl_FragColor = vec4(fog, 0.0, 0.0, 1.0);
+            }
+        `;
+
+        const steamMainShader = `
+            uniform sampler2D iChannel0;
+            varying vec2 vUv;
+
+            void main() {
+                float fogFactor = texture2D(iChannel0, vUv).x;
+                vec3 steamColor = vec3(1.0, 1.0, 1.0);
+                float alpha = smoothstep(0.0, 0.8, fogFactor) * 0.15;
+                gl_FragColor = vec4(steamColor, alpha);
+            }
+        `;
+
+        const bufferScene = new THREE.Scene();
+        const bufferMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                iChannel0: { value: null },
+                iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                iMouse: { value: new THREE.Vector2(0, 0) },
+                iTime: { value: 0 },
+                iMouseDown: { value: false }
+            },
+            vertexShader,
+            fragmentShader: steamBufferShader
+        });
+        const bufferMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), bufferMaterial);
+        bufferScene.add(bufferMesh);
+
+        const steamScene = new THREE.Scene();
+        const steamMaterial = new THREE.ShaderMaterial({
+            uniforms: { iChannel0: { value: null } },
+            vertexShader,
+            fragmentShader: steamMainShader,
+            transparent: true
+        });
+        const steamMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), steamMaterial);
+        steamScene.add(steamMesh);
+
+        // ============ MOUSE & CURSOR ============
+        const cursor = document.querySelector('.cursor');
+        const mouse = new THREE.Vector2(0, 0);
+        let mouseDown = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+
+        gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!cursor.classList.contains('visible')) {
+                cursor.classList.add('visible');
+            }
+
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+
+            mouse.x = e.clientX;
+            mouse.y = window.innerHeight - e.clientY;
+
+            gsap.set(cursor, { x: e.clientX, y: e.clientY, xPercent: -50, yPercent: -50 });
+
+            // Update raindrop shader
+            raindropMaterial.uniforms.iMouse.value.set(
+                e.clientX / window.innerWidth,
+                1.0 - (e.clientY / window.innerHeight)
+            );
+
+            // Update steam shader
+            bufferMaterial.uniforms.iMouse.value.set(e.clientX, window.innerHeight - e.clientY);
+        });
+
+        window.addEventListener('mousedown', () => {
+            mouseDown = true;
+            bufferMaterial.uniforms.iMouseDown.value = true;
+        });
+
+        window.addEventListener('mouseup', () => {
+            mouseDown = false;
+            bufferMaterial.uniforms.iMouseDown.value = false;
+        });
+
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            link.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // ============ RESIZE HANDLER ============
+        window.addEventListener('resize', () => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            raindropRenderer.setSize(w, h);
+            raindropMaterial.uniforms.iResolution.value.set(w, h, 1);
+
+            steamRenderer.setSize(w, h);
+            buffers.read.setSize(w, h);
+            buffers.write.setSize(w, h);
+            bufferMaterial.uniforms.iResolution.value.set(w, h);
+        });
+
+        // ============ ANIMATION LOOP ============
+        function animate(time) {
+            requestAnimationFrame(animate);
+            const t = time * 0.001;
+
+            // Update Raindrop Shader
+            raindropMaterial.uniforms.iTime.value = t;
+            raindropRenderer.render(raindropScene, camera);
+
+            // Update Steam Buffer
+            bufferMaterial.uniforms.iTime.value = t;
+            bufferMaterial.uniforms.iChannel0.value = buffers.read.texture;
+            steamRenderer.setRenderTarget(buffers.write);
+            steamRenderer.render(bufferScene, camera);
+
+            // Render Steam Main
+            steamMaterial.uniforms.iChannel0.value = buffers.write.texture;
+            steamRenderer.setRenderTarget(null);
+            steamRenderer.render(steamScene, camera);
+
+            // Swap buffers
+            let tmp = buffers.read;
+            buffers.read = buffers.write;
+            buffers.write = tmp;
+        }
+
+        animate(0);
+    </script>
+</body>
+</html>
